@@ -1,0 +1,130 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.dashboard{
+    width: 100%;
+    height: auto;
+    background: linear-gradient(30deg,rgb(28, 37, 122), rgb(0, 0, 14) , rgb(4, 4, 26)30%, rgb(28, 37, 122) 70%, rgb(0, 0, 14), rgb(0, 0, 14));
+    padding-top: 70px;
+    padding-bottom: 10%;
+}
+
+.dashboard-container{
+    width: 80%;
+    height: 90%; /* should be changed to auto */
+    background: #03033d;
+    margin: auto;
+}
+
+.dashboard-header{
+    width: 80%;
+    height: 70px;
+    position: fixed;
+    top: 0;
+    background: linear-gradient(to bottom, #FFFFFF, #a9bde6);
+    color: #EC255A;
+    font-weight: 600;  
+}
+ul{
+    display: flex;
+    align-items:flex-start;
+}
+li{
+    flex-basis: 33.33%;
+    list-style: none;
+    display: block;
+    line-height: 70px;
+}
+
+.dashboard-desc{
+    padding-top: 80px;
+    color: #fff;
+}
+
+.upper-row{
+    display: flex;
+    color: #fff;
+    /* align-items: center;
+    justify-content: space-between; */
+}
+
+.upper-col{
+    flex-basis: 50%;
+    box-shadow: 20px 20px 20px rgb(6, 6, 37);    
+}
+
+.upper-col h1{
+    padding: 20px;
+}
+
+.upper-col p{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 25px;
+    padding: 10px;
+}
+.dashboard-comp-user{
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+/* rows */
+
+.rows{
+    margin-top: 50px;
+}
+
+.dashboard-row{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dashboard-col{
+    flex: 25%;
+    padding: 20px;
+    margin: 20px;
+    color: #fff;
+    background-color: rgb(3, 3, 61);
+    align-self:normal;
+    box-shadow: 10px 10px 10px rgb(6, 6, 37);
+}
+
+.dashboard-col:hover{
+    background-color: rgb(6, 6, 37);
+}
+
+.dashboard-col-title h2{
+    font-size: 20px;
+    word-spacing: 5px;
+}
+
+.services-col-desc{
+    font-family: 'Times New Roman', Times, serif;;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-top: 20px;
+    line-height: 25px;
+    font-size: 14px;
+    text-transform: lowercase;
+}
+
+.service-btn{
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 15px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.service-btn:hover{
+    background-color: #EC255A;
+    color: #fff;
+}
