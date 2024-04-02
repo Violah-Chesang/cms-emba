@@ -5,6 +5,7 @@ import './main.css';
 import { Route, Routes } from 'react-router-dom';
 import Register from '../pages/register/Register';
 import CreateMember from '../routes/createMember/CreateMember';
+import FetchAllMembers from '../routes/fetch-members/FetchAllMembers';
 
 function Main() {
   return (
@@ -15,6 +16,7 @@ function Main() {
             <Route path="/login" element={ < Login /> } />
             <Route path="/register" element={ < Register /> } />
             <Route path="/add" element={ < CreateMember /> } />
+            <Route path="/all-members" element = {<FetchAllMembers />} />
         </Routes>
       
     </div>
