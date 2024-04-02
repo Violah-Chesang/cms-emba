@@ -245,7 +245,7 @@ router.get("/member/find/all", async (req, res) => {
     const allMembers = await Member.find({ deleted: false });
     res
       .status(200)
-      .json({ message: "Members successfull retrieved", allMembers });
+      .json(allMembers);
   } catch (err) {
     const errorMessage = err.message || "Error getting members";
     res
