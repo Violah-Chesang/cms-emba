@@ -1,5 +1,7 @@
 import axios from "axios";
+import './fetchMember.css';
 import React, { useState, useEffect } from "react";
+import DeleteMember from "../deleteMember/DeleteMember";
 
 function FetchMember() {
   const [memberID, setmemberID] = useState('');
@@ -13,11 +15,33 @@ function FetchMember() {
   const [member, setMember] = useState([]);
   useEffect(() => {
     const getMember = async () => {
-      const res = await axios.post('http://localhost:4500/member/find', {memberId : memberID})
+      const res = await axios.post('http://localhost:5500/member/find', {memberId : memberID});
       setMember(res.data);
     }
     getMember()
-  },[memberID])
+  },[memberID]);
+
+  
+  ////////////////////////////////////////////////////////////////////////////////////////
+  // Delete a member
+  let mId = '';
+  if(member.length > 0){
+    mId= member[0]._id;
+  }else{
+    console.log("No member found!");
+  }
+  console.log(`mId is ${mId}`);
+
+  /*
+  DELETE A MEMBER
+  - From the get a member page
+  - Add a delete icon at the end
+  - When the delete icon is clicked,
+  - It should be linked to the Delete component
+  - in the delete component, it should receive the _id as a prop from find a user
+  - this should be sent to the delete API route as a post request and delete the member
+  */
+  ////////////////////////////////////////////////////////////////////////////////////////
 
   return (
     <div className="all-members">
@@ -26,7 +50,7 @@ function FetchMember() {
         <label htmlFor="memberId">Member ID</label>
         <input type="text" placeholder="Example: 20240001" name="memberId"/>
 
-        <button type="submit">Fetch Data</button>
+        <button type="submit">Search</button>
       </form>
       <table>
         <thead>
@@ -60,6 +84,7 @@ function FetchMember() {
             <th>Active</th>
             <th>Registration Date</th>
             <th>Minister's Note</th>            
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -95,12 +120,13 @@ function FetchMember() {
                 <td>{member.isActive}</td>
                 <td>{member.regDate}</td>
                 <td>{member.notes}</td>
+                <td>{<DeleteMember id = {mId} />}</td>
               </tr>
             ))
           }
         </tbody>
       </table>
-
+   
     </div>
   );
 }
