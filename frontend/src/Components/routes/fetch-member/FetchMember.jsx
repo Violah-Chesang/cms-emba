@@ -1,24 +1,33 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 
-function FetchAllMembers() {
-  const [members, setMembers] = useState([]);
-
+function FetchMember() {
+  const [memberID, setmemberID] = useState('');
+  const handleSubmit =  (e) => {
+      e.preventDefault();
+      const memberId = e.target.memberId.value;
+      setmemberID(memberId)
+  }
+  // console.log(`Member Id is: ${memberID}`);
+  
+  const [member, setMember] = useState([]);
   useEffect(() => {
-    const getMembers = async () => {
-      try {
-        const res = await axios.get("http://localhost:5500/member/find/all");
-        setMembers(res.data);
-      } catch (err) {
-        console.error("Error fetching members: ", err);
-      }
-    };
-    getMembers();
-  }, []);
+    const getMember = async () => {
+      const res = await axios.post('http://localhost:4500/member/find', {memberId : memberID})
+      setMember(res.data);
+    }
+    getMember()
+  },[memberID])
 
   return (
     <div className="all-members">
-      <h1>All Members</h1>
+      <h2>Member Record</h2>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="memberId">Member ID</label>
+        <input type="text" placeholder="Example: 20240001" name="memberId"/>
+
+        <button type="submit">Fetch Data</button>
+      </form>
       <table>
         <thead>
           <tr>
@@ -55,7 +64,7 @@ function FetchAllMembers() {
         </thead>
         <tbody>
           {
-            members.map((member, index) => (
+            member.map((member, index) => (
               <tr key={index}>
                 <td>{member.memberId}</td>
                 <td>{member.firstName}</td>
@@ -96,4 +105,4 @@ function FetchAllMembers() {
   );
 }
 
-export default FetchAllMembers;
+export default FetchMember;
