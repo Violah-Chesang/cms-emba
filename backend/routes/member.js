@@ -100,7 +100,6 @@ router.post('/member/spouse', async (req, res) => {
   }
 });
 
-
 //member's age
 router.post("/member/age", (req,res) => {
   try{
@@ -255,13 +254,14 @@ router.get("/member/find/all", async (req, res) => {
 });
 
 //Search a member record
-router.get("/member/find/:id", async (req, res) => {
+router.post("/member/find", async (req, res) => {
   try {
-    const member = await Member.find({ _id: req.params.id });
-    if (!req.params.id) {
-      res.json({ message: "Could not find the id" });
-    }
-    res.status(200).json({ message: "Member successfull retrieved", member });
+    const memberID = req.body.memberId
+    const member = await Member.find({ memberId: memberID });
+
+    res
+    .status(200)
+    .json(member);
   } catch (err) {
     const errorMessage = err.message || "Error getting the member";
     res.status(500).json({
