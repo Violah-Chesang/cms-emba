@@ -340,10 +340,11 @@ router.post("/member/update/:id", async (req, res) => {
 });
 
 //delete a member record
-router.post("/member/delete/:id", authorizeUser ,async (req, res) => {
+router.post("/member/delete", async (req, res) => {
   try {
-    //filter(search by id)
-    const record = await Member.findOne({ _id: req.params.id });
+    const memberId = req.body.id;
+    
+    const record = await Member.findOne( {_id: memberId});
     const id = record.id;
     //the update to be implemented on the filter
     const deleted = { $set: { deleted: true } };
@@ -354,7 +355,8 @@ router.post("/member/delete/:id", authorizeUser ,async (req, res) => {
     const deletedMember = await Member.findByIdAndUpdate(id, deleted, options);
     res
       .status(200)
-      .json({ message: "Record successfully deleted", deletedMember });
+      .json(deletedMember);
+
   } catch (err) {
     const errorMessage = err.message || "Error deleting the record";
     res.status(500).json({
