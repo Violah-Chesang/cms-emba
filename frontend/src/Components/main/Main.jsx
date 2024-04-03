@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 import Register from '../pages/register/Register';
 import CreateMember from '../routes/createMember/CreateMember';
 import FetchAllMembers from '../routes/fetch-members/FetchAllMembers';
+import FetchMember from '../routes/fetch-member/FetchMember';
 
 function Main() {
   return (
@@ -17,6 +18,7 @@ function Main() {
             <Route path="/register" element={ < Register /> } />
             <Route path="/add" element={ < CreateMember /> } />
             <Route path="/all-members" element = {<FetchAllMembers />} />
+            <Route path="/get-a-member" element = {<FetchMember />} />
         </Routes>
       
     </div>
