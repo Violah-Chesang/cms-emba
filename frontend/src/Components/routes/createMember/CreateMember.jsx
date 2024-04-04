@@ -10,7 +10,7 @@ function CreateMember() {
         getMemberId()
     }, []);
     const getMemberId = async () => {
-        const response = await axios.get('http://localhost:8000/member/memberId');
+        const response = await axios.get('http://localhost:5500/member/memberId');
         const id = response.data;
   
         setMemberId(id)
@@ -30,7 +30,7 @@ function CreateMember() {
     const getAge=async (isoDOB)=> {
         //get age
         try{
-            const ageRes = await axios.post('http://localhost:8000/member/age',{dob : isoDOB})
+            const ageRes = await axios.post('http://localhost:5500/member/age',{dob : isoDOB})
             setAge(ageRes.data)
             console.log(ageRes.data);
         }catch(err){
@@ -46,7 +46,7 @@ function CreateMember() {
         await getFathersName(fathersPhoneNo)
     }
     const getFathersName =async (fathersPhoneNo)=> {
-        const fatherDetails = await axios.post('http://localhost:8000/member/father-details', {fatherPhone : fathersPhoneNo});
+        const fatherDetails = await axios.post('http://localhost:5500/member/father-details', {fatherPhone : fathersPhoneNo});
         setFatherName(fatherDetails.data);
     }
     // const res = await axios.post('http://localhost:8000/member/mother-details')
@@ -60,21 +60,38 @@ const handleMotherPhone =async (e) => {
     await getMotherName(mothersPhoneNo);
 }
 const getMotherName =async (mothersPhoneNo)=> {
-    const mothersDetails = await axios.post('http://localhost:8000/member/mother-details', {motherPhone : mothersPhoneNo});
+    const mothersDetails = await axios.post('http://localhost:5500/member/mother-details', {motherPhone : mothersPhoneNo});
     setMotherName(mothersDetails.data);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const [phone, setPhone] = useState('');
 const [spouseName, setspouseName] = useState('');
 
-const handleSpousePhone =async (e) => {
-    const spousePhoneNo = e.target.value;
-    await getSpouseName(spousePhoneNo)
-}
-const getSpouseName =async (spousePhoneNo)=> {
-    const spouseDetails = await axios.post('http://localhost:8000/member/spouse', {spousePhone : spousePhoneNo});
-    setspouseName(spouseDetails.data);
-}
+useEffect(() => {
+    const getSpouseName = async() => {
+        try{
+            const res = await axios.post('http://localhost:5500/member/spouse', {spousePhone : phone});
+            setspouseName(res.data)
+        }catch(err){
+            console.error("Error getting spouse name", err)
+        }
+    }
+    getSpouseName()
+}, [phone]);
+
+
+
+// const [spouseName, setspouseName] = useState('');
+
+// const handleSpousePhone =async (e) => {
+//     const spousePhoneNo = e.target.value;
+//     await getSpouseName(spousePhoneNo)
+// }
+// const getSpouseName =async (spousePhoneNo)=> {
+//     const spouseDetails = await axios.post('http://localhost:8000/member/spouse', {spousePhone : spousePhoneNo});
+//     setspouseName(spouseDetails.data);
+// }
 //spouse name
 
 // const [spousePhone, setSpousePhone] = useState('');
@@ -180,7 +197,7 @@ useEffect(() => {
         }
 
         // create a user
-        const res = await axios.post('http://localhost:8000/member/add', memberData);
+        const res = await axios.post('http://localhost:5500/member/add', memberData);
         console.log(res.data);
 
     }
@@ -272,7 +289,7 @@ useEffect(() => {
 
 
                                 <label htmlFor='spousePhone'> Spouse Phone No. :</label>
-                                <input type="text" name="spousePhone" onChange={handleSpousePhone} />                                
+                                <input type="text" name="spousePhone" onChange={(e) => setPhone(e.target.value)}  />                                
 
                                 <label htmlFor='spouseName'> Spouse Name:</label>
                                 <input type="text" name="spouseName" value={spouseName}/>                    
