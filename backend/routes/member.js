@@ -86,11 +86,11 @@ router.post('/member/spouse', async (req, res) => {
   try{
     //search for the spouse's details by phone no.
     const spouseDetails = await Member.findOne({ phoneNumber: req.body.spousePhone });
-    // if(!spouseDetails){
-    //   res.json({message: "Could not find spouse's details"});
-    // }
-
-    
+    if(!spouseDetails){
+      res
+      .status(400)
+      .json({message: "Could not find spouse's details"});
+    }    
     // use the phone number to search for spouse's name
     const spouseName = `${spouseDetails.firstName } ${spouseDetails.lastName}`;
     res.json(spouseName)
