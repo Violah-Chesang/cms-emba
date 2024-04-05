@@ -6,7 +6,7 @@ const authorizeUser = require("../middlewares/authorization");
 const router = express.Router();
 
 // Define variables that will get its info froum other routes handles
-let memberId = '';
+let memberId = null;
 let age = 0;
 let fatherName = '';
 let motherName = '';
@@ -15,8 +15,8 @@ let spouseName = '';
 //test
 router.post("/member/test", async (req, res) => {
   // get father's details
-  const fathersPhone = req.body.phoneNumber;
-  const member = await Member.findOne({ phoneNumber: fathersPhone });
+  const fathersPhone = req.body.phone;
+  const member = await Member.findOne({ phone: fathersPhone });
   if (!member) {
     res.json({ message: "Father's details not found" });
   }
@@ -71,32 +71,30 @@ router.get('/member/memberId',async (req,res)=> {
 
     // concatenate year and padded seqId
     memberId = `${year}${paddedSeqId}`;
-    console.log(memberId);
     res.json(memberId)
-
+    console.log(`Member id inside try is ${memberId}`);
   }catch(err){
-    console.error(err)
+    console.error({message: "Could not access the memberId", Error: err})
     res.json({message: "No member Id", Error: err})
   }
   
 });
-
 // Spouse details
 router.post('/member/spouse', async (req, res) => {
   try{
     //search for the spouse's details by phone no.
-    const spouseDetails = await Member.findOne({ phoneNumber: req.body.spousePhone });
+    const spouseDetails = await Member.findOne({ phone: req.body.spousePhone });
     if(!spouseDetails){
       res
       .status(400)
       .json({message: "Could not find spouse's details"});
     }    
     // use the phone number to search for spouse's name
-    const spouseName = `${spouseDetails.firstName } ${spouseDetails.lastName}`;
+    const spouseName = `${spouseDetails.firstName} ${spouseDetails.middleName} ${spouseDetails.surName}`;
     res.json(spouseName)
   }catch(err){
-    console.error(err);
-    res.status(500).json({message: "Server error trying to find spouse's phone number"});
+    console.error({message: "Server error trying to find spouse's phone number", error: err});
+    // res.status(500).json({message: "Server error trying to find spouse's phone number"});
   }
 });
 
@@ -129,16 +127,15 @@ router.post('/member/father-details',async (req,res) => {
           res.json({ message: "Please enter the father's phone number" });
     }
     //search for the father's details by phone no.
-    const fatherDetails = await Member.findOne({ phoneNumber: fathersPhone });
+    const fatherDetails = await Member.findOne({ phone: fathersPhone });
     if(!fatherDetails){
-      res.json({message: "Could not find father's deatils"});
+      res.json({message: "Could not find father's details"});
     }
     // use the phone number to search for father's name
-    const fatherName = `${fatherDetails.firstName } ${fatherDetails.lastName}`;
+    const fatherName = `${fatherDetails.firstName} ${fatherDetails.middleName} ${fatherDetails.surName}`;
     res.json(fatherName)
   }catch(err){
-    console.error(err);
-    res.status(500).json({message: "Server error trying to find father's phone number"});
+    console.error({message: "Server error trying to find father's phone number", error: err});
   }
 });
 
@@ -150,37 +147,40 @@ router.post('/member/mother-details',async (req,res) => {
           res.json({ message: "Please enter the mother's phone number" });
     }
 
-
     //search for the mother's details by phone no.
-    const motherDetails = await Member.findOne({ phoneNumber: mothersPhone });
+    const motherDetails = await Member.findOne({ phone: mothersPhone });
     if(!motherDetails){
       res.json({message: "Could not find mother's details"});
     }
+
     // use the phone number to search for mother's name
-    const motherName = `${motherDetails.firstName } ${motherDetails.lastName}`;
+    const motherName = `${motherDetails.firstName } ${motherDetails.middleName} ${motherDetails.surName}`;
     res.json(motherName)
   }catch(err){
-    console.error(err);
-    res.status(500).json({message: "Server error trying to find father's phone number"});
+    console.error({message: "Server error trying to find mother's phone number", error: err});
   }
 });
 
 //create a member record
 router.post("/member/add", async (req, res) => {
+  console.log(`Member id is ${memberId}`);
   try {
     const regDate = Date.now().toLocaleString();
+
     const {
+      memberId,
       firstName,
-      lastName,
+      middleName,
+      surName,
       email,
-      phoneNumber,
+      phone,
       physicalAddress,
       dob,
       fatherPhone,
       motherPhone,
       maritalStatus,
       spouseId,
-      idNo,
+      nationalId,
       gender,
       marriageType,
       occupation,
@@ -188,22 +188,24 @@ router.post("/member/add", async (req, res) => {
       baptisedStatus,
       otherChurchMembership,
       memberType,
-      churchCellGroup,
+      cellGroup,
       ministry,
+      fellowship,
       deleted,
       notes,
     } = req.body;
 
     ///////////////////////////////////////////////////////
     const newMember = new Member({
-      memberId: memberId,
+      memberId,
       firstName,
-      lastName,
+      middleName,
+      surName,
       email,
-      phoneNumber,
+      phone,
       physicalAddress,
       dob,
-      idNo,
+      nationalId,
       age: age,
       fatherPhone,
       motherPhone,
@@ -219,17 +221,17 @@ router.post("/member/add", async (req, res) => {
       baptisedStatus,
       otherChurchMembership,
       memberType,
-      churchCellGroup,
+      cellGroup,
       ministry,
+      fellowship,
       deleted,
-      // regDate: regDate,
       notes,
     });
 
     const newRecord = await newMember.save();
     res
       .status(201)
-      .json({ message: "Member registered successfully", newRecord });
+      .json(newRecord);
   } catch (err) {
     const errorMessage = err.message || "An error while registering the member";
     res
@@ -283,10 +285,10 @@ router.post("/member/update/:id", async (req, res) => {
       firstName,
       lastName,
       email,
-      phoneNumber,
+      phone,
       physicalAddress,
       dob,
-      idNo,
+      nationalId,
       maritalStatus,
       spouseId,
       gender,
@@ -295,7 +297,7 @@ router.post("/member/update/:id", async (req, res) => {
       savedStatus,
       baptisedStatus,
       otherChurchMembership,
-      churchCellGroup,
+      cellGroup,
       ministry,
       deleted,
       notes,
@@ -304,16 +306,17 @@ router.post("/member/update/:id", async (req, res) => {
     //options
     const options = { new: true };
 
+
     // the update
     const newUpdate = await Member.findByIdAndUpdate(
       id,
       { firstName,
         lastName,
         email,
-        phoneNumber,
+        phone,
         physicalAddress,
         dob,
-        idNo,
+        nationalId,
         maritalStatus,
         spouseId,
         gender,
@@ -322,7 +325,7 @@ router.post("/member/update/:id", async (req, res) => {
         savedStatus,
         baptisedStatus,
         otherChurchMembership,
-        churchCellGroup,
+        cellGroup,
         ministry,
         deleted,
         notes
@@ -370,8 +373,8 @@ router.post("/member/delete", async (req, res) => {
 // Reports
 // Find All MMF
 router.get("/reports/men-fellowship", async (req, res) => {
-  const mmf = await Member.aggregate([{ $match: { ministry: "MMF" } }]);
-  if (mmf == "") {
+  const mmf = await Member.aggregate([{ $match: { fellowship: "mmf" } }]);
+  if (mmf === null) {
     res.json("Men Fellowship report not found");
   }
   res.json(mmf);
