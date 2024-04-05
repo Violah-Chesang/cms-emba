@@ -10,7 +10,7 @@ function CreateMember() {
         getMemberId()
     }, []);
     const getMemberId = async () => {
-        const response = await axios.get('http://localhost:5500/member/memberId');
+        const response = await axios.get('http://localhost:5000/member/memberId');
         const id = response.data;
   
         setMemberId(id)
@@ -30,7 +30,7 @@ function CreateMember() {
     const getAge=async (isoDOB)=> {
         //get age
         try{
-            const ageRes = await axios.post('http://localhost:5500/member/age',{dob : isoDOB})
+            const ageRes = await axios.post('http://localhost:5000/member/age',{dob : isoDOB})
             setAge(ageRes.data)
             console.log(ageRes.data);
         }catch(err){
@@ -39,30 +39,39 @@ function CreateMember() {
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Father's name
-    const [fatherName, setFatherName] = useState('');
+    const [fatherPhone, setFatherPhone] = useState('');
+    let [fatherName, setFatherName] = useState('');
 
-    const handleFatherPhone =async (e) => {
-        const fathersPhoneNo = e.target.value;
-        await getFathersName(fathersPhoneNo)
-    }
-    const getFathersName =async (fathersPhoneNo)=> {
-        const fatherDetails = await axios.post('http://localhost:5500/member/father-details', {fatherPhone : fathersPhoneNo});
-        setFatherName(fatherDetails.data);
-    }
-    // const res = await axios.post('http://localhost:8000/member/mother-details')
+    useEffect(() => {
+        const getFathersName =async ()=> {
+            const fatherDetails = await axios.post('http://localhost:5000/member/father-details', {fatherPhone : fatherPhone});
+    
+            if(fatherDetails.data === null){
+                setFatherName(fatherName = '');
+            }
+            setFatherName(fatherDetails.data);
+        }
+        getFathersName()
+    }, [fatherPhone]); 
+    
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // mother's name
-const [motherName, setMotherName] = useState('');
+const [motherPhone, setMotherPhone] = useState('');
+let [motherName, setMotherName] = useState('');
 
-const handleMotherPhone =async (e) => {
-    const mothersPhoneNo = e.target.value;
-    await getMotherName(mothersPhoneNo);
-}
-const getMotherName =async (mothersPhoneNo)=> {
-    const mothersDetails = await axios.post('http://localhost:5500/member/mother-details', {motherPhone : mothersPhoneNo});
-    setMotherName(mothersDetails.data);
-}
+useEffect(() => {
+    const getMotherName =async ()=> {
+        const mothersDetails = await axios.post('http://localhost:5000/member/mother-details', {motherPhone : motherPhone});
+    
+        if(mothersDetails.data === null){
+            setMotherName(motherName = '');
+        }
+    
+        setMotherName(mothersDetails.data);    
+    }
+    getMotherName();
+}, [motherPhone])
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const [phone, setPhone] = useState('');
@@ -71,7 +80,7 @@ const [spouseName, setspouseName] = useState('');
 useEffect(() => {
     const getSpouseName = async() => {
         try{
-            const res = await axios.post('http://localhost:5500/member/spouse', {spousePhone : phone});
+            const res = await axios.post('http://localhost:5000/member/spouse', {spousePhone : phone});
             setspouseName(res.data)
         }catch(err){
             console.error("Error getting spouse name", err)
@@ -79,36 +88,6 @@ useEffect(() => {
     }
     getSpouseName()
 }, [phone]);
-
-
-
-// const [spouseName, setspouseName] = useState('');
-
-// const handleSpousePhone =async (e) => {
-//     const spousePhoneNo = e.target.value;
-//     await getSpouseName(spousePhoneNo)
-// }
-// const getSpouseName =async (spousePhoneNo)=> {
-//     const spouseDetails = await axios.post('http://localhost:8000/member/spouse', {spousePhone : spousePhoneNo});
-//     setspouseName(spouseDetails.data);
-// }
-//spouse name
-
-// const [spousePhone, setSpousePhone] = useState('');
-// const [spouseName, setSpouseName] = useState('');
-// const handleSpousePhone= async (e) => {
-//     const spousePhoneNo = e.target.value;
-//     setSpousePhone(spousePhoneNo);
-// }
-
-// useEffect(() => {
-//     const getSpouseName =async (spousePhone)=> {
-//         const spouseDetails = await axios.post('http://localhost:8000/member/spouse', {spousePhone : spousePhone});
-//         setSpouseName(spouseDetails.data);
-//     }
-//     getSpouseName();
-// }, [])
-
 
 //////////////////////////////////////////////////
 //Registration Date
@@ -122,7 +101,6 @@ useEffect(() => {
     let month = dateArray[0];
     if(month.length < 2){
         month = month.padStart(2, '0');
-        console.log(`Padded month is ${month}`);
     }
 
     let day = dateArray[1];
@@ -131,33 +109,21 @@ useEffect(() => {
     }
     const newDate = `${year}-${month}-${day}`;
 
-    setRegDate(newDate)
-    console.log(`Registration date is ${newDate}`);
+    setRegDate(newDate);
 }, [regDate]);
-
-///////////////////////////////////////////////////////////
-// Test
-// const [test, setTest] = useState('');
-// let testRef = useRef('')
-
-// const handleTest = (e) => {
-//     const testValue = e.target.value;
-//     testRef.current = testValue
-//     setTest(testRef.current);
-// }
-
 
 //////////////////////////////////////////////////
     const handleForm = async (e) => {
         e.preventDefault();
 
         const firstName = e.target.firstName.value;
-        const lastName = e.target.lastName.value;
+        const middleName = e.target.middleName.value;
+        const surName = e.target.surName.value;
         const dob = e.target.dob.value;
         const email = e.target.email.value;
-        const phoneNumber = e.target.phoneNumber.value;
+        const phone = e.target.phone.value;
         const physicalAddress = e.target.physicalAddress.value;
-        const idNo = e.target.idNo.value;
+        const nationalId = e.target.nationalId.value;
         const occupation = e.target.occupation.value;
         const gender = e.target.gender.value;
         const motherPhone = e.target.motherPhone.value;
@@ -167,19 +133,23 @@ useEffect(() => {
         const baptisedStatus = e.target.baptisedStatus.value;
         const otherChurchMembership = e.target.otherChurchMembership.value;
         const memberType = e.target.memberType.value;
-        const churchCellGroup = e.target.churchCellGroup.value;
+        const cellGroup = e.target.cellGroup.value;
         const ministry = e.target.ministry.value;
+        const fellowship = e.target.fellowship.value;
         const notes = e.target.notes.value;
 
 
         const memberData = {
+            memberId :memberId,
             firstName : firstName,
-            lastName : lastName,
+            middleName:middleName,
+            surName : surName,
             dob : dob,
+            age:age,
             email : email,
-            phoneNumber : phoneNumber,
+            phone : phone,
             physicalAddress : physicalAddress,
-            idNo : idNo,
+            nationalId : nationalId,
             occupation : occupation,
             gender : gender,
             // fatherPhone : fatherPhone,
@@ -190,15 +160,18 @@ useEffect(() => {
             baptisedStatus : baptisedStatus,
             otherChurchMembership : otherChurchMembership,
             memberType : memberType,
-            churchCellGroup : churchCellGroup,
+            cellGroup : cellGroup,
             ministry : ministry,
-            notes : notes,
-            // regDate : regDate
+            fellowship : fellowship,
+            notes : notes
         }
 
         // create a user
-        const res = await axios.post('http://localhost:5500/member/add', memberData);
+        const res = await axios.post('http://localhost:5000/member/add', memberData);
         console.log(res.data);
+        if(res.status === 202){
+            alert(`${res.data.firstName}, your records have been successfully saved!`)
+        }
 
     }
     return (
@@ -220,23 +193,26 @@ useEffect(() => {
                             <label htmlFor='firstName'>First Name:</label>
                             <input type="text" name="firstName" required placeholder='Jon' />
 
+                            <label htmlFor='middleName'>Middle Name:</label>
+                            <input type="text" name="middleName" required placeholder='Doe' />
+
                             <label>Last Name:</label>
-                            <input type="text" name="lastName" required placeholder='Doe' />
+                            <input type="text" name="surName" placeholder='Doe' />
                             
                             <label> Date of Birth: </label>
                             <input type="date" name="dob" required onChange={handleDobChange} />
 
                             <label htmlFor='email'> Email: </label>
-                            <input type="email" name="email" required  placeholder='jondoe@gmail.com'/>
+                            <input type="email" name="email"  placeholder='jondoe@gmail.com'/>
 
-                            <label htmlFor='phoneNumber'> Phone Number: </label>
-                            <input type="tel" name="phoneNumber" placeholder='0712345678' />
+                            <label htmlFor='phone'> Phone Number: </label>
+                            <input type="tel" name="phone" placeholder='0712345678' />
                             
                             <label htmlFor='physicalAddress'> Physical Address:</label>
                             <input type="text" name="physicalAddress" placeholder='Fedha'/>
 
-                            <label htmlFor='idNo'> ID Number:</label>
-                            <input ype="number" name="idNo" placeholder='01234567'/>
+                            <label htmlFor='nationalId'> ID Number:</label>
+                            <input type="text" name="nationalId" placeholder='01234567'/>
 
                             <label htmlFor='age'> Age: </label>
                             <input type="number" name="age" value={age}/>
@@ -258,10 +234,10 @@ useEffect(() => {
                                 <label className='fieldset-header'>Parents details</label>
 
                                 <label htmlFor='fatherPhone'> Father's Phone:</label>
-                                <input type="tel" name="fatherPhone" placeholder='0712345678' onChange={handleFatherPhone}/>
+                                <input type="tel" name="fatherPhone" placeholder='0712345678' onChange={(e) => setFatherPhone(e.target.value)}/>
 
                                 <label htmlFor='motherPhone'> Mother's Phone: </label>
-                                <input type="tel" name="motherPhone" placeholder='0712345678' onChange={handleMotherPhone}/>
+                                <input type="tel" name="motherPhone" placeholder='0712345678' onChange={(e) => setMotherPhone(e.target.value)}/>
                                                 
                                 <label htmlFor='fatherName'> Father's Name:</label>
                                 <input type="text" name="fatherName" value={fatherName} />
@@ -331,8 +307,8 @@ useEffect(() => {
                             </select>
                             
 
-                            <label htmlFor='churchCellGroup'>Cell Group:</label>
-                            <select name='churchCellGroup'>
+                            <label htmlFor='cellGroup'>Cell Group:</label>
+                            <select name='cellGroup'>
                                 <option>Select</option>
                                 <option value="week2">Week 2</option>
                                 <option value="week3">Week 3</option>
@@ -349,6 +325,15 @@ useEffect(() => {
                                 <option value="hospitality">Hospitality</option>
                                 <option value="csr">CSR</option>
                                 <option value="missions&Evangelism">Missions & Evangelism</option>
+                            </select>
+
+                            <label htmlFor='fellowship'> Fellowship: </label>
+                            <select name='fellowship'>
+                                <option>Select</option>
+                                <option value="mmf">MMF</option>
+                                <option value="mwf">Women Fellowship</option>
+                                <option value="jss">JSS</option>
+                                <option value="youth">Youth</option>
                             </select>
                         </fieldset>
                         <fieldset className='row1-col'>
