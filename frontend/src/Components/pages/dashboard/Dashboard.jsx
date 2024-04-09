@@ -1,18 +1,19 @@
 import React from 'react';
 import './dashboard.css';
 import compUser from '../../../images/comp-user.jpg';
+import { Link } from 'react-router-dom';
 
 function Dashboard(){  
   return (  
       <div className='dashboard'>
         <div className='dashboard-container'>
-          <div className='dashboard-header'>
+          {/* <div className='dashboard-header'>
             <ul>
               <li>LOGO</li>
               <li>DASHBOARD</li>
               <li>LOGOUT</li>
             </ul>
-          </div>
+          </div> */}
           {/* Upper columns of the dashboard */}
           <div className='upper-row'>
             <div className='upper-col'>
@@ -29,9 +30,11 @@ function Dashboard(){
                 <h2>Register a member</h2>
                 
               </div>
-              <div className='dashboard-col'>
-                <h2>Search a member</h2>
-              </div>
+              <Link to="/all-members">
+                <div className='dashboard-col'>                
+                    <h2>Search a member</h2>                
+                </div>
+              </Link>
               <div className='dashboard-col'>
                 <h2>Find all members</h2>
               </div>
