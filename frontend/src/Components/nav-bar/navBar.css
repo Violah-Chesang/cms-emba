@@ -1,0 +1,31 @@
+nav{
+    width: 100%;
+    height: 100px;
+    background-color: #03033d;
+}
+ul{
+    float: right;
+}
+ul li{
+    list-style: none;
+    line-height: 100px;
+    display: block;
+    width: 100px;
+    margin-left: 10px;
+    padding-left: 10px;
+    cursor: pointer;
+}
+ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+ul li a:hover {
+    color: rgb(217, 255, 0);
+}
+
+ul li a.active {
+    color: #EC255A;
+}
