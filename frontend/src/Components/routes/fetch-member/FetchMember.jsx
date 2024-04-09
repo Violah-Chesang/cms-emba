@@ -98,9 +98,9 @@ function FetchMember() {
                 <td>{member.dob}</td>
                 <td>{member.age}</td>
                 <td>{member.email}</td>
-                <td>{member.phoneNumber}</td>
+                <td>{member.phone}</td>
                 <td>{member.physicalAddress}</td>
-                <td>{member.idNo}</td>
+                <td>{member.nationalId}</td>
                 <td>{member.occupation}</td>
                 <td>{member.fatherName}</td>
                 <td>{member.motherName}</td>

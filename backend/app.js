@@ -18,7 +18,6 @@ app.use(express.urlencoded({extended: true}));
 app.use(memberRouter);
 app.use(userRouter);
 
-
 const PORT = process.env.PORT || 5500;
 
 const urlConnection = db()
