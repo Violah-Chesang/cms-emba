@@ -373,17 +373,24 @@ router.post("/member/delete", async (req, res) => {
 // Reports
 // Find All MMF
 router.get("/reports/men-fellowship", async (req, res) => {
-  const mmf = await Member.aggregate([{ $match: { fellowship: "mmf" } }]);
-  if (mmf === null) {
-    res.json("Men Fellowship report not found");
+  try{
+    const mmf = await Member.aggregate([{ $match: { fellowship: "mmf" } }]);
+    if (mmf.length === 0) {
+      res.json("Men Fellowship report not found");
+    }
+    res.json(mmf);
+  }catch(err){
+    console.error({message: "No MMF report found", error: err});
+    res
+    .status(404)
+    .json({message: "No MMF report found", error: err})
   }
-  res.json(mmf);
 });
 
 // Find All MWF
 router.get("/reports/women-fellowship", async (req, res) => {
-  const mwf = await Member.aggregate([{ $match: { ministry: "MWF" } }]);
-  if (mwf == "") {
+  const mwf = await Member.aggregate([{ $match: { fellowship: "mwf" } }]);
+  if (mwf.length === 0) {
     res.json("Women fellowship report not found");
   }
   res.json(mwf);
@@ -391,25 +398,25 @@ router.get("/reports/women-fellowship", async (req, res) => {
 
 // Find the youth
 router.get("/reports/youth-fellowship", async (req, res) => {
-  const myf = await Member.aggregate([{ $match: { ministry: "MYF" } }]);
-  if (myf == "") {
+  const myf = await Member.aggregate([{ $match: { fellowship: "youth" } }]);
+  if (myf.length === 0) {
     res.json("Youth report not found");
   }
   res.json(myf);
 });
 
 // Find JSS
-router.get("/reports/JSS", async (req, res) => {
+router.get("/reports/jss", async (req, res) => {
   try {
-    const jss = await Member.aggregate([{ $match: { ministry: "JSS" } }]);
-    if (jss == "") {
+    const jss = await Member.aggregate([{ $match: { fellowship: "jss" } }]);
+    if (jss.length === 0) {
       res.json("JSS report not found");
     }
     res.json(jss);
   } catch (err) {
     res
       .status(400)
-      .json({ message: "Error jenerating the report!", error: err.message });
+      .json({ message: "Error generating the report!", error: err.message });
   }
 });
 
@@ -461,9 +468,12 @@ router.get("/reports/full-members", async (req, res) => {
   const fullMembers = await Member.aggregate([
     { $match: { memberType: "full" } },
   ]);
-
+  if(fullMembers.length === 0){
+    res.json("No full members");
+  }
   res.json(fullMembers);
 });
+
 // Find All associate members
 router.get("/reports/associate-members", async (req, res) => {
   const associateMembers = await Member.aggregate([
