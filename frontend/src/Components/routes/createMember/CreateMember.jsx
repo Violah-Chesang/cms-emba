@@ -10,7 +10,7 @@ function CreateMember() {
         getMemberId()
     }, []);
     const getMemberId = async () => {
-        const response = await axios.get('http://localhost:5000/member/memberId');
+        const response = await axios.get('http://localhost:5500/member/memberId');
         const id = response.data;
   
         setMemberId(id)
@@ -30,7 +30,7 @@ function CreateMember() {
     const getAge=async (isoDOB)=> {
         //get age
         try{
-            const ageRes = await axios.post('http://localhost:5000/member/age',{dob : isoDOB})
+            const ageRes = await axios.post('http://localhost:5500/member/age',{dob : isoDOB})
             setAge(ageRes.data)
             console.log(ageRes.data);
         }catch(err){
@@ -44,7 +44,7 @@ function CreateMember() {
 
     useEffect(() => {
         const getFathersName =async ()=> {
-            const fatherDetails = await axios.post('http://localhost:5000/member/father-details', {fatherPhone : fatherPhone});
+            const fatherDetails = await axios.post('http://localhost:5500/member/father-details', {fatherPhone : fatherPhone});
     
             if(fatherDetails.data === null){
                 setFatherName(fatherName = '');
@@ -62,7 +62,7 @@ let [motherName, setMotherName] = useState('');
 
 useEffect(() => {
     const getMotherName =async ()=> {
-        const mothersDetails = await axios.post('http://localhost:5000/member/mother-details', {motherPhone : motherPhone});
+        const mothersDetails = await axios.post('http://localhost:5500/member/mother-details', {motherPhone : motherPhone});
     
         if(mothersDetails.data === null){
             setMotherName(motherName = '');
@@ -80,7 +80,7 @@ const [spouseName, setspouseName] = useState('');
 useEffect(() => {
     const getSpouseName = async() => {
         try{
-            const res = await axios.post('http://localhost:5000/member/spouse', {spousePhone : phone});
+            const res = await axios.post('http://localhost:5500/member/spouse', {spousePhone : phone});
             setspouseName(res.data)
         }catch(err){
             console.error("Error getting spouse name", err)
@@ -167,7 +167,7 @@ useEffect(() => {
         }
 
         // create a user
-        const res = await axios.post('http://localhost:5000/member/add', memberData);
+        const res = await axios.post('http://localhost:5500/member/add', memberData);
         console.log(res.data);
         if(res.status === 202){
             alert(`${res.data.firstName}, your records have been successfully saved!`)
@@ -302,8 +302,8 @@ useEffect(() => {
                             <label htmlFor='memberType'> Member Type: </label>
                             <select name='memberType'>
                                 <option>Select</option>
-                                <option value="fullMember">Full</option>
-                                <option value="partialMember">Associate</option>
+                                <option value="full">Full</option>
+                                <option value="associate">Associate</option>
                             </select>
                             
 
