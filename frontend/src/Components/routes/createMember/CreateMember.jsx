@@ -222,7 +222,7 @@ useEffect(() => {
 
                             <label htmlFor='gender'> Gender:</label>
                             <select name='gender'>
-                                <option>Select</option>
+                                <option value=''>Select</option>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
                             </select>                   
@@ -251,14 +251,14 @@ useEffect(() => {
 
                                 <label htmlFor='maritalStatus'> Marital Status:</label>
                                 <select name='maritalStatus'>
-                                    <option>Select</option>
+                                    <option value=''>Select</option>
                                     <option value="married">Married</option>
                                     <option value="single">Single</option>
                                 </select>
 
                                 <label htmlFor='marriageType'> Marriage Type:</label>
                                 <select name='marriageType'>
-                                    <option>Select</option>
+                                    <option value=''>Select</option>
                                     <option value="monogamous">Monogamous</option>
                                     <option value="polygamous">Polygamous</option>
                                 </select>
@@ -280,28 +280,28 @@ useEffect(() => {
 
                             <label htmlFor='savedStatus'> Saved Status:</label>
                                 <select name='savedStatus'>
-                                    <option>Select</option>
+                                    <option value=''>Select</option>
                                     <option value="saved">Yes</option>
                                     <option value="notSaved">No</option>
                                 </select>            
 
                             <label htmlFor='baptisedStatus'> Baptised Status:</label>
                             <select name='baptisedStatus'>
-                                <option>Select</option>
+                                <option value=''>Select</option>
                                 <option value="baptised">Yes</option>
                                 <option value="notBaptised">No</option>
                             </select>            
 
                             <label htmlFor='otherChurchMembership'> Other Church Membership: </label>
                             <select name='otherChurchMembership'>
-                                <option>Select</option>
+                                <option value=''>Select</option>
                                 <option value="yesOtherMembership">Yes</option>
                                 <option value="noOtherMembership">No</option>
                             </select>
 
                             <label htmlFor='memberType'> Member Type: </label>
                             <select name='memberType'>
-                                <option>Select</option>
+                                <option value=''>Select</option>
                                 <option value="full">Full</option>
                                 <option value="associate">Associate</option>
                             </select>
@@ -309,7 +309,7 @@ useEffect(() => {
 
                             <label htmlFor='cellGroup'>Cell Group:</label>
                             <select name='cellGroup'>
-                                <option>Select</option>
+                                <option value=''>Select</option>
                                 <option value="week2">Week 2</option>
                                 <option value="week3">Week 3</option>
                                 <option value="week4">Week 4</option>
@@ -317,7 +317,7 @@ useEffect(() => {
 
                             <label htmlFor='ministry'> Ministry: </label>
                             <select name='ministry'>
-                                <option>Select</option>
+                                <option value=''>Select</option>
                                 <option value="intercessory">Intercessory</option>
                                 <option value="choir">Choir</option>
                                 <option value="praise&Worship">Praise & Worship</option>
@@ -329,7 +329,7 @@ useEffect(() => {
 
                             <label htmlFor='fellowship'> Fellowship: </label>
                             <select name='fellowship'>
-                                <option>Select</option>
+                                <option value=''>Select</option>
                                 <option value="mmf">MMF</option>
                                 <option value="mwf">Women Fellowship</option>
                                 <option value="jss">JSS</option>
@@ -338,7 +338,7 @@ useEffect(() => {
                         </fieldset>
                         <fieldset className='row1-col'>
                             <label className='fieldset-header'>For Official Use Only</label>
-                            <label> Notes:</label>
+                            <label> Reverend's comments:</label>
                             <textarea name="notes"  cols={45} rows={10} /> <br/>
 
                             <label htmlFor='regDate'> Registration Date: </label>
