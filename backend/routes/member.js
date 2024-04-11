@@ -260,7 +260,10 @@ router.post("/member/find", async (req, res) => {
   try {
     const memberID = req.body.memberId
     const member = await Member.find({ memberId: memberID });
-
+    
+    if(member.deleted === true){
+      res.json("Member record nolonger exists")
+    }
     res
     .status(200)
     .json(member);
