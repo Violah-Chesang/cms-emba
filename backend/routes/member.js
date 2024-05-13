@@ -7,20 +7,24 @@ const router = express.Router();
 
 // Define variables that will get its info froum other routes handles
 let memberId = null;
-let age = 0;
+let age = null;
 let fatherName = '';
 let motherName = '';
 let spouseName = '';
 
+
 //test
 router.post("/member/test", async (req, res) => {
+  // No. of members
+  // const count = await Member.countDocuments({});
+
   // get father's details
-  const fathersPhone = req.body.phone;
-  const member = await Member.findOne({ phone: fathersPhone });
-  if (!member) {
-    res.json({ message: "Father's details not found" });
-  }
-  const father = `${member.firstName} ${member.lastName}`;
+  // const fathersPhone = req.body.phone;
+  // const member = await Member.findOne({ phone: fathersPhone });
+  // if (!member) {
+  //   res.json({ message: "Father's details not found" });
+  // }
+  // const father = `${member.firstName} ${member.lastName}`;
   res.json(father);
 
   //aggregation pipeline
@@ -123,14 +127,14 @@ router.post("/member/age", (req,res) => {
 router.post('/member/father-details',async (req,res) => {
   try{
     const fathersPhone = req.body.fatherPhone;
-    if (!(fathersPhone)) {
-          res.json({ message: "Please enter the father's phone number" });
-    }
+    // if (!(fathersPhone)) {
+    //       res.json({ message: "Please enter the father's phone number" });
+    // }
     //search for the father's details by phone no.
     const fatherDetails = await Member.findOne({ phone: fathersPhone });
-    if(!fatherDetails){
-      res.json({message: "Could not find father's details"});
-    }
+    // if(!fatherDetails){
+    //   res.json({message: "Could not find father's details"});
+    // }
     // use the phone number to search for father's name
     const fatherName = `${fatherDetails.firstName} ${fatherDetails.middleName} ${fatherDetails.surName}`;
     res.json(fatherName)
@@ -163,7 +167,6 @@ router.post('/member/mother-details',async (req,res) => {
 
 //create a member record
 router.post("/member/add", async (req, res) => {
-  console.log(`Member id is ${memberId}`);
   try {
     const regDate = Date.now().toLocaleString();
 
@@ -173,11 +176,16 @@ router.post("/member/add", async (req, res) => {
       middleName,
       surName,
       email,
-      phone,
+      phone,//for spouse
+      phoneNumber,
       physicalAddress,
       dob,
+      age,
+      fatherName,
+      motherName,
       fatherPhone,
       motherPhone,
+      spouseName,
       maritalStatus,
       spouseId,
       nationalId,
@@ -203,17 +211,18 @@ router.post("/member/add", async (req, res) => {
       surName,
       email,
       phone,
+      phoneNumber,
       physicalAddress,
       dob,
       nationalId,
-      age: age,
+      age,
       fatherPhone,
       motherPhone,
-      fatherName: fatherName,
-      motherName: motherName,
+      fatherName,
+      motherName,
       maritalStatus,
       spouseId,
-      spouseName: spouseName,
+      spouseName,
       gender,
       marriageType,
       occupation,
@@ -471,10 +480,12 @@ router.get("/reports/full-members", async (req, res) => {
   const fullMembers = await Member.aggregate([
     { $match: { memberType: "full" } },
   ]);
+
+  const fullMembersCount = fullMembers.length;
   if(fullMembers.length === 0){
     res.json("No full members");
   }
-  res.json(fullMembers);
+  res.json({fullMembers: fullMembers, fullCount: fullMembersCount});
 });
 
 // Find All associate members
@@ -482,8 +493,9 @@ router.get("/reports/associate-members", async (req, res) => {
   const associateMembers = await Member.aggregate([
     { $match: { memberType: "associate" } },
   ]);
+  const associateCount = associateMembers.length;
 
-  res.json(associateMembers);
+  res.json({assoMembers: associateMembers, assoCount : associateCount});
 });
 
 module.exports = router;
