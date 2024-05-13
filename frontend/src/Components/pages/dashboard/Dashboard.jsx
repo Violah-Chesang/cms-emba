@@ -1,25 +1,50 @@
-import React from 'react';
 import './dashboard.css';
 import compUser from '../../../images/comp-user.jpg';
 import { Link } from 'react-router-dom';
-import logo from '../../../../src/images/mck-logo.png';
+import GetMmf from '../../routes/fetch-mmf/GetMmf';
+import { useState } from 'react';
+import WomenFellowship from '../../routes/women-fellowship/womenFellowship';
+import FetchAllMembers from '../../routes/fetch-members/FetchAllMembers';
+import Youth from '../../routes/youth/Youth';
+import Jss from '../../routes/jss/Jss';
 
-function Dashboard(){  
+function Dashboard(){
+  const [mmfCount, setMmfCount] = useState(0);
+  const [mwfCount, setMwfCount] = useState(0);
+  const [totalMembersCount, setTotalMembersCount] = useState(0);
+  const [myfCount, setMyfCount] = useState(0);
+  const [jssCount, setJssCount] = useState(0);
+
+  // mmf
+  const updateMmfCount = (count) => {
+    setMmfCount(count);
+  }  
+  
+  // mwf
+  const updateMwfCount = (count) => {
+    setMwfCount(count);
+  }
+  // all members count
+  const updateTotalMembers = (count) => {
+    setTotalMembersCount(count)
+  }
+
+  // myf
+  const updateMyfCount = (count) => {
+    setMyfCount(count);
+    console.log(`Youth count is: ${count}`);
+  }
+
+  // jss
+  const updateJssCount = (count) => {
+    setJssCount(count);
+  }
   return (  
       <div className='dashboard'>
         <div className='dashboard-container'>
-          {/* <div className='dashboard-header'>
-            <ul>
-              <li>LOGO</li>
-              <li>DASHBOARD</li>
-              <li>LOGOUT</li>
-            </ul>
-          </div> */}
-          {/* Upper columns of the dashboard */}
           <div className='upper-row'>
             <div className='upper-col'>
-              {/* <img src={logo} alt='logo' /> */}
-              <h1>Welcome to Church Central management System</h1>
+              <h1>Welcome to MCK Embakasi Church management system</h1>
               <p>Church management made  simple. <br /> Get the church information with a click! </p>
             </div>
             <div className='upper-col'>
@@ -60,19 +85,7 @@ function Dashboard(){
                 <button className='sidebar-btn'>View W.F member</button>
               </Link>
 
-              <Link to="/married" className='report-link'>
-                <button className='sidebar-btn'>All Married member</button>
-              </Link>
-
-              <Link to="/active" className='report-link'>
-                <button className='sidebar-btn'>View Active member</button>
-              </Link>
-
-              <Link to="/active" className='report-link'>
-                <button className='sidebar-btn'>Update a Member</button>
-              </Link>
-
-              <Link to="/full" className='report-link'>
+              <Link to="/full-members" className='report-link'>
                 <button className='sidebar-btn'>View full member</button>
               </Link>
 
@@ -82,52 +95,79 @@ function Dashboard(){
             </div>
 
             <div className='rows'>
-            <div className='dashboard-row'>
+              <div className='dashboard-row'> 
+
+                  <div className='dashboard-col'>   
+                    <span class="material-symbols-outlined">
+                      query_stats
+                    </span> 
+                    <h3>All Members</h3>
+                    <h1>{totalMembersCount}</h1>
+                    <span className='dashboard-children'>{< FetchAllMembers updateTotalMembers={updateTotalMembers} />}</span>
+
+                  </div>
+
+                              
+                  <div className='dashboard-col'>
+                    <span class="material-symbols-outlined">
+                      male
+                    </span>
+                    <h3>Men Fellowship members</h3>
+                    <h1>{ mmfCount }</h1>
+                    <span className='dashboard-children'>{< GetMmf updateMmfCount={updateMmfCount} />}</span>
+                  </div>  
+
+                  <div className='dashboard-col'>
+                    <span class="material-symbols-outlined">
+                      female
+                    </span>
+                    <h3>Women Fellowship members</h3>
+                    <h1>{mwfCount}</h1>
+                    <span className='dashboard-children'>{< WomenFellowship updateMwfCount={updateMwfCount} />}</span>
+                  </div>             
+              </div>
+
+              <div className='dashboard-row'>       
+                  <div className='dashboard-col'>
+                    <span class="material-symbols-outlined">
+                      diversity_1
+                    </span>
+                    <h3>Find youth members</h3>
+                    <h1>{myfCount}</h1>
+                    <span className='dashboard-children'>{< Youth updateMyfCount={updateMyfCount} />}</span>
+
+                  </div>            
+              </div>
+
+              {/* Another row */}
+              <div className='dashboard-row'>              
                 <div className='dashboard-col'>
-                  <h2>Register a member</h2>                
-                </div>              
-                <div className='dashboard-col'>                
-                    <h2>Search a member</h2>                
-                </div>              
-                <div className='dashboard-col'>
-                  <h2>Find all members</h2>
+                  <sh3an class="material-symbols-outlined">
+                    diversity_3
+                  </sh3an>
+                  <h3>JSS Members</h3>
+                  <h1>{jssCount}</h1>
+                  <span className='dashboard-children'>{< Jss updateJssCount={updateJssCount} />}</span>
+
                 </div>
-              <div className='dashboard-col'>
-                <h2>Update a member</h2>
-              </div>              
-            </div>
 
-            <div className='dashboard-row'>
                 <div className='dashboard-col'>
-                  <h2>Delete a member</h2>
-                </div>              
-                <div className='dashboard-col'>
-                  <h2>Find MMF members</h2>
-                </div>              
-                <div className='dashboard-col'>
-                  <h2>Find WF members</h2>
-                </div>              
-                <div className='dashboard-col'>
-                  <h2>Find youth members</h2>
-                </div>            
-            </div>
+                  <sh3an class="material-symbols-outlined">
+                    church
+                  </sh3an>
+                  <h3>Full members</h3>
+                  {/* <h1>{full}</h1> */}
+                </div>
 
-            {/* Another row */}
-            <div className='dashboard-row'>              
                 <div className='dashboard-col'>
-                  <h2>Find JSS Members</h2>
-                </div>              
-                <div className='dashboard-col'>
-                  <h2>Find full members</h2>
-                </div>              
-                <div className='dashboard-col'>
-                  <h2>Find associate Members</h2>
-                </div>               
-                <div className='dashboard-col'>
-                  <h2>Find married members</h2>
-                </div>            
-            </div>          
-          </div>
+                  <sh3an class="material-symbols-outlined">
+                    other_houses
+                  </sh3an>
+                  <h3>Associate Members</h3>
+                  {/* <h1>{associate}</h1> */}
+                </div>           
+              </div>          
+            </div>
           </div>
         </div>
       </div>

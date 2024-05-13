@@ -23,7 +23,8 @@ function Main() {
     <div className="main">
       <NavBar />
         <Routes> 
-          <Route path="/" element={<Home />} />       
+          <Route path="/" element={<Home />} />
+          <Route path="/men-fellowship" element = {<GetMmf />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/test" element={ < Test/> } />
           <Route path="/login" element={ < Login /> } />
@@ -31,7 +32,6 @@ function Main() {
           <Route path="/add" element={ < CreateMember /> } />
           <Route path="/all-members" element = {<FetchAllMembers />} />
           <Route path="/get-a-member" element = {<FetchMember />} />
-          <Route path="/men-fellowship" element = {<GetMmf />} />
           <Route path="/women-fellowship" element = {<WomenFellowship />} />
           <Route path="/youth" element = {<Youth />} />
           <Route path="/jss" element = {<Jss />} />

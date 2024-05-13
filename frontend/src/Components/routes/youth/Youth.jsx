@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-function Youth() {
+function Youth({updateMyfCount}) {
   const [youth, setYouth] = useState([]);
 
   useEffect(() => {
@@ -9,13 +9,13 @@ function Youth() {
       try{
         const res = await axios.get("http://localhost:5500/reports/youth-fellowship");
         setYouth(res.data);
+        updateMyfCount(res.data.length);
       }catch(err){
         console.error("Error retriving the youth report", err);
       }
     };
     getYouth();
-  },[]);
-  console.log(youth);
+  },[updateMyfCount]);
   
   return (
     <>

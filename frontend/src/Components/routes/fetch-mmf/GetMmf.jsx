@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import './getMmf.css';
 
-function GetMmf() {
+function GetMmf({ updateMmfCount }) {
   const [mmf, setMmf] = useState([]);
 
   useEffect(() => {
@@ -9,14 +10,14 @@ function GetMmf() {
       try{
         const res = await axios.get("http://localhost:5500/reports/men-fellowship");
         setMmf(res.data);
+        console.log(`Men are ${res.data.length} in number in GetMmf page`);
+        updateMmfCount(res.data.length);
       }catch(err){
         console.error("Error retriving mmf report", err);
       }
     };
     getMMF();
-  },[]);
-  console.log(mmf);
-  
+  },[updateMmfCount]);
   return (
     <>
       <table>

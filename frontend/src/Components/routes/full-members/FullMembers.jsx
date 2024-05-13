@@ -3,19 +3,20 @@ import axios from "axios";
 
 function FullMember() {
   const [fullMember, setFullMember] = useState([]);
+  const [fullCount, setFullCount] = useState(0);
 
   useEffect(() => {
     const getFullMember = async () => {
       try{
         const res = await axios.get("http://localhost:5500/reports/full-members");
-        setFullMember(res.data);
+        setFullMember(res.data.fullMembers);
+        setFullCount(res.data.fullCount);
       }catch(err){
         console.error("Error retrieving the Full member's report", err);
       }
     };
     getFullMember();
   },[]);
-  console.log(fullMember);
   
   return (
     <>

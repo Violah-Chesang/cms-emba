@@ -1,23 +1,30 @@
 import React from 'react';
-import { useEffect ,useState} from 'react';
+import { useMemo, useEffect ,useState} from 'react';
 import axios from 'axios';
 import './createMember.css';
+import { useNavigate } from 'react-router-dom';
 
 function CreateMember() {
+    const navigate = useNavigate();
     // Setting member ID
     const [memberId, setMemberId] = useState('');
-    useEffect( () => {
-        getMemberId()
-    }, []);
-    const getMemberId = async () => {
+    const receiveMemberId = useMemo(async () => {
         const response = await axios.get('http://localhost:5500/member/memberId');
-        const id = response.data;
-  
-        setMemberId(id)
-    }
+        return response.data;
+    }, [])
+
+    useEffect(() => {
+      const getId =async () => {
+        const id = await receiveMemberId;
+        setMemberId(id);
+      }
+
+      getId()
+    }, [receiveMemberId])
+    
     ///////////////////////////////////////////////////////////////////////////////////////////
-    // Display DOB on its input field
-    const [age, setAge] = useState(0);
+    // Display age on its input field
+    let [age, setAge] = useState(null);
 
     const handleDobChange = async(e) => {
         const dob = e.target.value;
@@ -32,14 +39,13 @@ function CreateMember() {
         try{
             const ageRes = await axios.post('http://localhost:5500/member/age',{dob : isoDOB})
             setAge(ageRes.data)
-            console.log(ageRes.data);
         }catch(err){
             console.error(err);
         }
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Father's name
-    const [fatherPhone, setFatherPhone] = useState('');
+    let [fatherPhone, setFatherPhone] = useState('');
     let [fatherName, setFatherName] = useState('');
 
     useEffect(() => {
@@ -57,7 +63,7 @@ function CreateMember() {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // mother's name
-const [motherPhone, setMotherPhone] = useState('');
+let [motherPhone, setMotherPhone] = useState('');
 let [motherName, setMotherName] = useState('');
 
 useEffect(() => {
@@ -74,8 +80,8 @@ useEffect(() => {
 }, [motherPhone])
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const [phone, setPhone] = useState('');
-const [spouseName, setspouseName] = useState('');
+let [phone, setPhone] = useState('');
+let [spouseName, setspouseName] = useState('');
 
 useEffect(() => {
     const getSpouseName = async() => {
@@ -94,23 +100,13 @@ useEffect(() => {
 const [regDate, setRegDate] = useState(null);
 
 useEffect(() => {
-    let currentDate = new Date().toLocaleDateString()
-    const dateArray = currentDate.split('/');
-    const year = dateArray[2];
-
-    let month = dateArray[0];
-    if(month.length < 2){
-        month = month.padStart(2, '0');
-    }
-
-    let day = dateArray[1];
-    if(day.length < 2){
-        day = day.padStart(2, "0");
-    }
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    let month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    let day = currentDate.getDate().toString().padStart(2, '0');
     const newDate = `${year}-${month}-${day}`;
-
     setRegDate(newDate);
-}, [regDate]);
+}, []);
 
 //////////////////////////////////////////////////
     const handleForm = async (e) => {
@@ -121,7 +117,7 @@ useEffect(() => {
         const surName = e.target.surName.value;
         const dob = e.target.dob.value;
         const email = e.target.email.value;
-        const phone = e.target.phone.value;
+        const phoneNumber = e.target.phoneNumber.value;
         const physicalAddress = e.target.physicalAddress.value;
         const nationalId = e.target.nationalId.value;
         const occupation = e.target.occupation.value;
@@ -136,8 +132,7 @@ useEffect(() => {
         const cellGroup = e.target.cellGroup.value;
         const ministry = e.target.ministry.value;
         const fellowship = e.target.fellowship.value;
-        const notes = e.target.notes.value;
-
+        const notes = e.target.notes.value
 
         const memberData = {
             memberId :memberId,
@@ -147,13 +142,17 @@ useEffect(() => {
             dob : dob,
             age:age,
             email : email,
-            phone : phone,
+            phoneNumber:phoneNumber,
+            phone : phone, // spouse phone no.
+            spouseName: spouseName,
             physicalAddress : physicalAddress,
             nationalId : nationalId,
             occupation : occupation,
             gender : gender,
-            // fatherPhone : fatherPhone,
+            fatherPhone : fatherPhone,
             motherPhone : motherPhone,
+            fatherName: fatherName,
+            motherName: motherName,
             maritalStatus : maritalStatus,
             marriageType : marriageType,
             savedStatus : savedStatus,
@@ -169,14 +168,15 @@ useEffect(() => {
         // create a user
         const res = await axios.post('http://localhost:5500/member/add', memberData);
         console.log(res.data);
-        if(res.status === 202){
-            alert(`${res.data.firstName}, your records have been successfully saved!`)
+        if(res.status === 201){
+            alert(`${res.data.firstName}, your records have been successfully saved!`);
+            navigate('/dashboard');
         }
 
     }
     return (
         <div className='create'>
-            <div className='cover'>
+            <div className='create-cover'>
                 <form className='create-form' onSubmit={handleForm}>
                     <div className='row1'>
                     <div className='skew'>
@@ -205,8 +205,8 @@ useEffect(() => {
                             <label htmlFor='email'> Email: </label>
                             <input type="email" name="email"  placeholder='jondoe@gmail.com'/>
 
-                            <label htmlFor='phone'> Phone Number: </label>
-                            <input type="tel" name="phone" placeholder='0712345678' />
+                            <label htmlFor='phoneNumber'> Phone Number: </label>
+                            <input type="tel" name="phoneNumber" placeholder='0712345678' />
                             
                             <label htmlFor='physicalAddress'> Physical Address:</label>
                             <input type="text" name="physicalAddress" placeholder='Fedha'/>
@@ -264,8 +264,8 @@ useEffect(() => {
                                 </select>
 
 
-                                <label htmlFor='spousePhone'> Spouse Phone No. :</label>
-                                <input type="text" name="spousePhone" onChange={(e) => setPhone(e.target.value)}  />                                
+                                <label htmlFor='phone'> Spouse Phone No. :</label>
+                                <input type="text" name="phone" onChange={(e) => setPhone(e.target.value)}  />                                
 
                                 <label htmlFor='spouseName'> Spouse Name:</label>
                                 <input type="text" name="spouseName" value={spouseName}/>                    
@@ -338,7 +338,7 @@ useEffect(() => {
                         </fieldset>
                         <fieldset className='row1-col'>
                             <label className='fieldset-header'>For Official Use Only</label>
-                            <label> Reverend's comments:</label>
+                            <label> Minister's comments:</label>
                             <textarea name="notes"  cols={45} rows={10} /> <br/>
 
                             <label htmlFor='regDate'> Registration Date: </label>

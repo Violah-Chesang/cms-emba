@@ -7,3 +7,79 @@
     'opsz' 48;
     cursor: pointer;
 }
+
+form {
+    padding: 40px 0;
+    width: 40%;
+    margin: auto;
+    background-color: #1e1e1e;
+}
+
+.fetch-member-label{
+    background-color: rgb(3, 77, 3);
+    padding: 10px 30px;
+    width: 50%;
+    margin-left: 0;
+    margin-bottom: 30px;
+    float: left;
+    color: #fff;
+}
+
+.form-input {
+    float: center;
+    margin: auto;
+    width: 50%;
+}
+
+button {
+    width: 50%;
+    /* float: left; */
+    /* margin-bottom: 130px; */
+}
+
+.search-member h2{
+    margin-top: 50px;
+}
+
+table {
+    width: 40%;
+    padding-top: 20px;
+    border-collapse: collapse;
+    margin: auto;
+    background-color: rgb(245, 238, 238);
+    border-radius: 10px;
+}
+tr {
+    width: 100%;
+    margin: auto;
+}
+  
+.member-table {
+    text-align: center;
+}
+  
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid lightblue;
+}
+  
+.field {
+    color: blue;
+    font-weight: bold;
+}
+  
+.value {
+    color: darkblue;
+}
+  
+  /* Apply light blue background to even rows */
+tr:nth-child(even) {
+    background-color: lightblue;
+}
+  
+  /* Apply white background to odd rows */
+tr:nth-child(odd) {
+    background-color: white;
+}
+  

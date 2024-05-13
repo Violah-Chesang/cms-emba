@@ -1,0 +1,31 @@
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .header-cell {
+    background-color: blue;
+    color: white;
+    font-weight: bold;
+    padding: 8px;
+  }
+  
+  /* Add right border to table cells */
+  .custom-table td {
+    border-right: 1px solid lightblue;
+    padding: 8px;
+  }
+  
+  /* Add bottom border to table cells */
+  .custom-table td:last-child {
+    border-right: none;
+  }
+  
+  /* Add alternating row colors */
+  .custom-table tbody tr:nth-child(even) {
+    background-color: lightblue;
+  }
+  
+  .custom-table tbody tr:nth-child(odd) {
+    background-color: white;
+  }

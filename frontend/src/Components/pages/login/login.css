@@ -8,12 +8,16 @@
     height: 100vh;
     padding-top: 10px;
 }
+
+.login h1{
+    padding-top: 50px;
+}
 .cover{
     width: 50%;
     height: 80%;
     margin: auto;
     margin-top: 10px;
-    background-color: #111F4D;
+    background-color: #03033D;
     color: #fff;
     border-radius: 10px;
     display: flex;
@@ -58,7 +62,7 @@
     margin-bottom: 20px;
 }
 
-.submit{
+.login-submit{
     background-color: #e41919;
     color: #fff;
     cursor: pointer;

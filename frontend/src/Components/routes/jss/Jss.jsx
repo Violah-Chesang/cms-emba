@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-function Jss() {
+function Jss({updateJssCount}) {
   const [jss, setJss] = useState([]);
 
   useEffect(() => {
@@ -9,12 +9,13 @@ function Jss() {
       try{
         const res = await axios.get("http://localhost:5500/reports/jss");
         setJss(res.data);
+        updateJssCount(res.data.length);
       }catch(err){
         console.error("Error retriving the JSS report", err);
       }
     };
     getJss();
-  },[]);
+  },[updateJssCount]);
   console.log(jss);
   
   return (

@@ -44,84 +44,178 @@ function FetchMember() {
   ////////////////////////////////////////////////////////////////////////////////////////
 
   return (
-    <div className="all-members">
-      <h2>Member Record</h2>
+    <div className="search-member">
+      <h2>Search Member</h2>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="memberId">Member ID</label>
-        <input type="text" placeholder="Example: 20240001" name="memberId"/>
+        <label htmlFor="memberId" className="fetch-member-label">Member ID</label> <br />
+        <div className="form-input">
+          <input type="text" placeholder="Example: 20240001" name="memberId"/>
+          <button type="submit">Search</button>
+        </div>
 
-        <button type="submit">Search</button>
+        
       </form>
       <table>
-        <thead>
-          <tr>
-            <th>Member ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Gender</th>
-            <th>Date Of Birth</th>
-            <th>Age</th>
-            <th>Email Address</th>
-            <th>Phone Number</th>
-            <th>Physical Address</th>
-            <th>National ID No.</th>
-            <th>Occupation</th>
-            <th>Father's Name</th>
-            <th>Mother's Name</th>
-            <th>Father's Phone No.</th>
-            <th>Mother's Phone No.</th>
-            <th>Marital Status</th>
-            <th>Marriage type</th>
-            <th>Spouse Name</th>
-            <th>Spouse's Phone No.</th>
-            <th>Born Again</th>
-            <th>Baptised</th>
-            <th>Another Church Membership</th>
-            <th>Member Type</th>
-            <th>Cell Group</th>
-            <th>Ministry</th>
-            <th>Fellowship</th>
-            <th>Active</th>
-            <th>Registration Date</th>
-            <th>Minister's Note</th>            
-            <th>Delete</th>
-          </tr>
-        </thead>
         <tbody>
           {
-            member.map((member, index) => (
-              <tr key={index}>
-                <td>{member.memberId}</td>
-                <td>{member.firstName}</td>
-                <td>{member.lastName}</td>
-                <td>{member.gender}</td>
-                <td>{member.dob}</td>
-                <td>{member.age}</td>
-                <td>{member.email}</td>
-                <td>{member.phone}</td>
-                <td>{member.physicalAddress}</td>
-                <td>{member.nationalId}</td>
-                <td>{member.occupation}</td>
-                <td>{member.fatherName}</td>
-                <td>{member.motherName}</td>
-                <td>{member.fatherPhone}</td>
-                <td>{member.motherPhone}</td>
-                <td>{member.maritalStatus}</td>
-                <td>{member.marriageType}</td>
-                <td>{member.spouseName}</td>
-                <td>{member.spousePhone}</td>
-                <td>{member.savedStatus}</td>
-                <td>{member.baptisedStatus}</td>
-                <td>{member.otherChurchMembership}</td>
-                <td>{member.memberType}</td>
-                <td>{member.churchCellGroup}</td>
-                <td>{member.ministry}</td>
-                <td>{member.fellowship}</td>
-                <td>{member.isActive}</td>
-                <td>{member.regDate}</td>
-                <td>{member.notes}</td>
-                <td>{<DeleteMember id = {mId} />}</td>
-              </tr>
+            member.map((member) => (
+              <div className="member-table">
+                <h2>Details for {member.firstName} {member.middleName}</h2>
+                <tr>
+                  <th className="field">Member ID</th>
+                  <td className="value">{member.memberId}</td>
+                </tr>
+                <tr>
+                  <th className="field">First Name</th>
+                  <td className="value">{member.firstName}</td>
+                </tr>
+
+                <tr>
+                  <th className="field">Middle Name</th>
+                  <td className="value">{member.middleName}</td>
+                </tr>
+                
+                <tr>
+                  <th className="field">Last Name</th>
+                  <td className="value">{member.surName}</td>
+                </tr>
+                
+
+                  <tr>
+                    <th className="field">Gender</th>
+                    <td className="value">{member.gender}</td>
+                  </tr>
+  
+                  <tr>
+                    <th className="field">Date Of Birth</th>
+                    <td className="value">{member.dob}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Age</th>
+                    <td className="value">{member.age}</td>
+                  </tr>                  
+
+                  <tr>
+                    <th className="field">Email</th>
+                    <td className="value">{member.email}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Phone Number</th>
+                    <td className="value">{member.phoneNumber}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">physical Address</th>
+                    <td className="value">{member.physicalAddress}</td>
+                    </tr>
+
+                  <tr>
+                    <th className="field">national Id</th>
+                    <td className="value">{member.nationalId}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Occupation</th>
+                    <td className="value">{member.occupation}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Father's Name</th>
+                    <td className="value">{member.fatherName}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Mother's Name</th>
+                    <td className="value">{member.motherName}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Father's Phone Number</th>
+                    <td className="value">{member.fatherPhone}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Mother's Phone Number</th>
+                    <td className="value">{member.motherPhone}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Marital Status</th>
+                    <td className="value">{member.maritalStatus}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Marriage Type</th>
+                    <td className="value">{member.marriageType}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Spouse Name</th>
+                    <td className="value">{member.spouseName}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Spouse Phone Number</th>
+                    <td className="value">{member.spousePhone}</td>
+                  </tr>
+                  
+                  <tr>
+                    <th className="field">Saved</th>
+                    <td className="value">{member.savedStatus}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Baptised</th>
+                    <td className="value">{member.baptisedStatus}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Member of other Church</th>
+                    <td className="value">{member.otherChurchMembership}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Member Type</th>
+                    <td className="value">{member.memberType}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Cell Group</th>
+                    <td className="value">{member.churchCellGroup}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Ministry</th>
+                    <td className="value">{member.ministry}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Fellowship</th>
+                    <td className="value">{member.fellowship}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Active status</th>
+                    <td className="value">{member.isActive}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Registration Date</th>
+                    <td className="value">{member.regDate}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Reverend's Comment</th>
+                    <td className="value">{member.notes}</td>
+                  </tr>
+
+                  <tr>
+                    <th className="field">Delete</th>
+                    <td className="value">{<DeleteMember id = {mId} />}</td>
+                  </tr>
+              </div>
             ))
           }
         </tbody>

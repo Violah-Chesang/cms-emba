@@ -47,7 +47,7 @@ function Login() {
                           <label htmlFor='password'>Password:</label><br/>
                           <input name='password' type='password'/> <br/>
 
-                          <input type='submit' name='submit' className='submit'/>
+                          <input type='submit' name='submit' className='login-submit'/>
                       </form>
 
                       <p>Don't have an account? Contact the admin</p>

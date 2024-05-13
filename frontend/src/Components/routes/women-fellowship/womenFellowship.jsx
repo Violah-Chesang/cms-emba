@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-function WomenFellowship() {
+function WomenFellowship({ updateMwfCount }) {
   const [womenFellowship, setWomenFellowship] = useState([]);
 
   useEffect(() => {
@@ -9,13 +9,13 @@ function WomenFellowship() {
       try{
         const res = await axios.get("http://localhost:5500/reports/women-fellowship");
         setWomenFellowship(res.data);
+        updateMwfCount(res.data.length)
       }catch(err){
         console.error("Error retriving women fellowship report", err);
       }
     };
     getWomenFellowship();
-  },[]);
-  console.log(womenFellowship);
+  },[updateMwfCount]);
   
   return (
     <>

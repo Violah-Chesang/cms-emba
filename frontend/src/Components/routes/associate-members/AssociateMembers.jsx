@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Dashboard from "../../pages/dashboard/Dashboard";
 
 function AssociateMembers() {
   const [associateMembers, setAssociateMembers] = useState([]);
+  const [associateCount, setAssociateCount] = useState([]);
 
   useEffect(() => {
     const getAssociateMembers = async () => {
       try{
         const res = await axios.get("http://localhost:5500/reports/associate-members");
-        setAssociateMembers(res.data);
+        setAssociateMembers(res.data.assoMembers);
+        setAssociateCount(res.data.assoCount)
       }catch(err){
         console.error("Error retrieving the associate member's report", err);
       }
@@ -19,6 +22,7 @@ function AssociateMembers() {
   
   return (
     <>
+      <Dashboard assoMembersCount = {associateCount} />
       <table>
         <thead>
           <tr>

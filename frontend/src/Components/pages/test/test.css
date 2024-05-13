@@ -1,4 +1,4 @@
-
+/* 
 .test{
     width: 100%;
     height: 100vh;
@@ -13,4 +13,39 @@
     float: right;
     border-radius: 200px 0 400px 300px;
     margin-top: 200px;
+} */
+.hand-fan {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hand-fan .segment {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 100px 50px;
+    border-color: transparent transparent lightblue transparent;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform-origin: top left;
+    transform: rotate(30deg);
+}
+
+.hand-fan .segment:nth-child(2) {
+    transform: rotate(60deg);
+}
+
+.hand-fan .segment:nth-child(3) {
+    transform: rotate(90deg);
+}
+
+.hand-fan .segment:nth-child(4) {
+    transform: rotate(120deg);
+}
+
+.hand-fan .segment:nth-child(5) {
+    transform: rotate(150deg);
 }
