@@ -29,7 +29,7 @@ const Login = () => {
           Username:
         </label>
         <br />
-        <input className="w-72 h-8 rounded m-1" name="username" type="text" />{" "}
+        <input className="w-72 h-8 rounded m-1" name="username" type="text" />
         <br />
         <br />
         <label className="text-gray-400" htmlFor="password">
@@ -47,7 +47,7 @@ const Login = () => {
           className="text-white w-48 h-10 bg-sky-700 rounded m-1"
           type="submit"
           name="submit"
-        />{" "}
+        />
         <br />
         <br />
       </form>

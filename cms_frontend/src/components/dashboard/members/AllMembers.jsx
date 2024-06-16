@@ -17,20 +17,25 @@ const columns = [
 ];
 
 const AllMembers = () => {
-  const { data, loading, error } = useFetchData("http://localhost:5500/member/find/all");
+  const { data, loading, error } = useFetchData(
+    "http://localhost:5500/member/find/all"
+  );
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredData = data.filter((member) =>
-    `${member.firstName} ${member.middleName} ${member.surName}`
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase()) ||
-    member.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    member.physicalAddress.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    member.nationalId.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredData = data.filter(
+    (member) =>
+      `${member.firstName} ${member.middleName} ${member.surName}`
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      member.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.physicalAddress
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      member.nationalId.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
