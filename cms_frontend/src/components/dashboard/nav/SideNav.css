@@ -1,3 +1,35 @@
 .bg-efbf04 {
     background-color: #EFBF04;
   }
+  .sidenav {
+    transition: width 0.3s;
+  }
+  
+  .sidenav-closed {
+    width: 60px;
+  }
+  
+  .sidenav-open {
+    width: 240px;
+  }
+  
+  .icon-only {
+    display: none;
+  }
+  
+  .sidenav-closed .icon-only {
+    display: inline;
+  }
+  
+  .sidenav-open .icon-only {
+    display: none;
+  }
+  
+  .text-only {
+    display: inline;
+  }
+  
+  .sidenav-closed .text-only {
+    display: none;
+  }
+  

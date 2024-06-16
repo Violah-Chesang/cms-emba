@@ -5,19 +5,33 @@ import useFetchData from "../../../hooks/fetchData";
 const columns = [
   { header: "Member ID", accessor: "memberId" },
   { header: "Name", accessor: "name" },
-  { header: "Phone Number", accessor: "phone" },
-  { header: "Physical Address", accessor: "physicalAddress" },
-  { header: "National ID No.", accessor: "nationalId" },
+  { header: "Phone No.", accessor: "phone" },
+  { header: "Address", accessor: "physicalAddress" },
+  { header: "ID No.", accessor: "nationalId" },
   { header: "Marital Status", accessor: "maritalStatus" },
-  { header: "Baptised", accessor: "baptisted" },
+  { header: "Baptised", accessor: "baptisedStatus" },
   { header: "Cell Group", accessor: "cellGroup" },
   { header: "Ministry", accessor: "ministry" },
   { header: "Fellowship", accessor: "fellowship" },
-  { header: "Status", accessor: "status" },
+  { header: "Status", accessor: "isActive" },
 ];
 
 const AllMembers = () => {
-  const { loading, error } = useFetchData("http://localhost:3000/api/users");
+  const { data, loading, error } = useFetchData("http://localhost:5500/member/find/all");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredData = data.filter((member) =>
+    `${member.firstName} ${member.middleName} ${member.surName}`
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase()) ||
+    member.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    member.physicalAddress.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    member.nationalId.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div>
@@ -26,16 +40,16 @@ const AllMembers = () => {
         <div>
           <input
             type="search"
-            name=""
-            id=""
-            placeholder="Search by Name, Phone no., ddress or ID....."
-            className="border-x-2 border-blue-950 w-96 h-11 rounded-lg border-spacing-2 border-gray-1 pl-5  bg-blue-950 text-white"
+            placeholder="Search by Name, Phone no., Address or ID..."
+            className="border-x-2 border-blue-950 w-96 h-11 rounded-lg border-spacing-2 border-gray-1 pl-5 bg-blue-950 text-white"
+            value={searchQuery}
+            onChange={handleSearchChange}
           />
         </div>
       </div>
       <Fellowship
         title=""
-        fetchUrl="http://localhost:3000/api/users"
+        data={filteredData}
         columns={columns}
         loading={loading}
         error={error}

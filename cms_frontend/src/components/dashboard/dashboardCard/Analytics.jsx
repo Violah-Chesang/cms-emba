@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import useFetchData from "../../../hooks/fetchData";
 
 const fellowshipGroups = [
-  { group: "men", label: "Men" },
-  { group: "women", label: "Women" },
-  { group: "youth", label: "Youth" },
+  { group: "men-fellowship", label: "Men" },
+  { group: "women-fellowship", label: "Women" },
+  { group: "youth-fellowship", label: "Youth" },
   { group: "jss", label: "JSS" },
   { group: "all", label: "All" },
 ];
 
 function AnalyticsCard({ group, number, percentage }) {
   return (
-    <div className="bg-blue-100 w-1/6 p-3 rounded-lg m-2">
+    <div className="bg-blue-100 p-3 rounded-lg m-1 flex-1">
       <div className="flex flex-row items-center justify-between">
         <div className="w-full">
           <p className="capitalize font-bold text-md">{group} Fellowship</p>
@@ -34,11 +34,12 @@ function AnalyticsCard({ group, number, percentage }) {
   );
 }
 
+
 const FellowshipAnalytics = ({ group, totalMembers }) => {
   const url =
     group.group === "all"
-      ? "http://localhost:3000/api/users"
-      : `http://localhost:3000/api/users/by-fellowship/${group.group}`;
+      ? "http://localhost:5500/member/find/all"
+      : `http://localhost:5500/reports/${group.group}`;
 
   const { data, loading, error } = useFetchData(url);
 
@@ -60,7 +61,7 @@ const FellowshipAnalytics = ({ group, totalMembers }) => {
 const AnalyticsList = () => {
   const [totalMembers, setTotalMembers] = useState(0);
   const { data, loading, error } = useFetchData(
-    "http://localhost:3000/api/users"
+    "http://localhost:5500/member/find/all"
   );
 
   useEffect(() => {
@@ -75,7 +76,7 @@ const AnalyticsList = () => {
   return (
     <div>
       <p className="text-xl font-bold pt-2">Member Statistics</p>
-      <div className="flex flex-row flex-wrap mt-4">
+      <div className="flex flex-row flex-wrap mt-4 ">
         {fellowshipGroups.map((group) => (
           <FellowshipAnalytics
             key={group.group}

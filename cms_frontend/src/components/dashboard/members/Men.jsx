@@ -1,5 +1,6 @@
 import React from "react";
 import FellowshipComponent from "./Fellowship";
+import useFetchData from "../../../hooks/fetchData";
 
 const columns = [
   { header: "Member ID", accessor: "memberId" },
@@ -8,22 +9,26 @@ const columns = [
   { header: "Physical Address", accessor: "physicalAddress" },
   { header: "National ID No.", accessor: "nationalId" },
   { header: "Marital Status", accessor: "maritalStatus" },
-  { header: "Baptised", accessor: "baptisted" },
+  { header: "Baptised", accessor: "baptisedStatus" },
   { header: "Cell Group", accessor: "cellGroup" },
   { header: "Ministry", accessor: "ministry" },
   { header: "Fellowship", accessor: "fellowship" },
-  { header: "Status", accessor: "status" },
+  { header: "Status", accessor: "isActive" },
 ];
 
 function MenFellowship() {
+  const { data, loading, error } = useFetchData(
+    "http://localhost:5500/reports/men-fellowship"
+  );
   return (
     <FellowshipComponent
       title="Men Fellowship"
-      fetchUrl="http://localhost:3000/api/users/by-fellowship/men"
+      data={data}
       columns={columns}
+      loading={loading}
+      error={error}
     />
   );
 }
 
 export default MenFellowship;
-
