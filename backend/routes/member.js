@@ -432,31 +432,6 @@ router.get("/reports/jss", async (req, res) => {
   }
 });
 
-// Find All those under age 18
-router.get("/reports/under-18", async (req, res) => {
-  const members = await Member.find();
-  // console.log(members);
-  let underEighteen = [];
-  for (x = 0; x < members.length; x++) {
-    if (members[x].age <= 18) {
-      underEighteen.push(members[x]);
-    }
-  }
-  res.json(underEighteen);
-});
-
-//
-// Find All married members
-router.get("/reports/married", async (req, res) => {
-  const members = await Member.find();
-  let married = [];
-  for (x = 0; x < members.length; x++) {
-    if (members[x].maritalStatus == "married") {
-      married.push(members[x]);
-    }
-  }
-  res.json(married);
-});
 
 // Find All active members
 router.get("/reports/active", async (req, res) => {

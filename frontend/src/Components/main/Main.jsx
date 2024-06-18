@@ -17,7 +17,6 @@ import AssociateMembers from '../routes/associate-members/AssociateMembers';
 import NotFound from '../NotFound';
 import Home from '../pages/home/Home';
 import NavBar from '../nav-bar/NavBar';
-
 function Main() {
   return (
     <div className="main">

@@ -14,21 +14,21 @@
 }
 
 .register h1 {
-    padding: 10px;
-    color: #111F4D;
+    color: red;
 }
 
-form {
+.signup-form {
     width: 30%; /* Adjusted width */
-    background-color: #111F4D;
+    /* background-color: #d8d3d3; */
     text-align: center;
     padding: 10px;
     border-radius: 5px;
 }
 
-label {
-    color: #e41919;
-    font-size: 16px;
+.reg-label {
+    /* color: #EC255A; */
+    color: #fff;
+    font-size: 14px;
     font-weight: 600;
     padding-left: 10px;
     margin-left: 30px;
@@ -39,22 +39,27 @@ label {
 }
 
 input {
-    padding: 10px;
+    padding: 5px;
     width: 80%;
     margin-bottom: 10px;
     box-sizing: border-box;
+    border-width: 0 0 thin 0;
 }
 
 .form-submit {
     width: 60%;
-    background: #e41919;
+    background: #ccc;
     border-radius: 5px;
-    color: #fff;
-    font-size: 16px;font-weight: 600;
+    color: red;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
 }
 
 .form-submit:hover {
     background-color: #fff;
-    color: #111F4D;
+    color: red;
+}
+p {
+    color: red;
 }

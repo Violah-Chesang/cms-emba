@@ -16,12 +16,12 @@ function Login() {
           password : password
         }
         try{  
-          const res = await axios.post('http://localhost:8000/user/login', data);
+          const res = await axios.post('http://localhost:5500/user/login', data);
           if(!res){
             console.log("Error logging the user in!", console.error);
           }      
           console.log(res.data);
-          alert("Succesfully logged in. Dashboard coming soon...!")
+          res.data && window.location.replace('/dashboard');
         
         }catch(err){
           console.error('Error:', err);
