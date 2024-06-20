@@ -17,6 +17,7 @@ function connectToDb(){
     const memberModel = require('../models/member');
     const counterModel = require('../models/counter');
     const userModel = require('../models/user');
+    const eventModel = require('../models/event');
     
     return db;
 }

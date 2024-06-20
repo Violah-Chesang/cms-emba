@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const db = require('./config/db');
 const memberRouter = require('./routes/member');
 const userRouter = require('./routes/user');
+const EventRouter = require('./routes/event');
 const cors = require('cors');
 
 dotenv.config()
@@ -17,6 +18,7 @@ app.use(express.urlencoded({extended: true}));
 //middlewares
 app.use(memberRouter);
 app.use(userRouter);
+app.use(EventRouter);
 
 const PORT = process.env.PORT || 5500;
 

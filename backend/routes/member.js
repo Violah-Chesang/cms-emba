@@ -296,6 +296,7 @@ router.post("/member/update/:id", async (req, res) => {
     const {
       firstName,
       lastName,
+      surName,
       email,
       phone,
       physicalAddress,
@@ -316,7 +317,7 @@ router.post("/member/update/:id", async (req, res) => {
     } = req.body;
 
     //options
-    const options = { new: true };
+    const options = { new: true, upsert : true };
 
 
     // the update
@@ -324,6 +325,7 @@ router.post("/member/update/:id", async (req, res) => {
       id,
       { firstName,
         lastName,
+        surName,
         email,
         phone,
         physicalAddress,
@@ -344,7 +346,7 @@ router.post("/member/update/:id", async (req, res) => {
       },
       options
     );
-    res.status(200).json({ message: "Record successfully updated", newUpdate });
+    res.status(200).json(newUpdate);
   } catch (err) {
     const errorMessage = err.message || "Error updating the record";
     res.status(500).json({
