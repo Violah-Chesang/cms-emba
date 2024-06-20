@@ -8,8 +8,8 @@ const router = express.Router();
 router.post('/add-event', async (req, res) => {
     try{
         // extract req.body info
-        const {title, eventDate, leaderInCharge, deleted} = req.body;
-        if(!title || !eventDate || !leaderInCharge ||deleted){
+        const {title, eventDate, endOfEventDate, leaderInCharge, deleted} = req.body;
+        if(!title || !eventDate || !endOfEventDate || !leaderInCharge ||deleted){
             res.status(400).json({message : "Please enter all the required information"})
         }
 
@@ -19,13 +19,14 @@ router.post('/add-event', async (req, res) => {
         let timeDifference = eventDateObj - currentDateObj; // Difference in milliseconds
         let dayDifference = timeDifference / (1000 * 60 * 60 * 24); // Convert milliseconds to days
 
-        const timeline = Math.floor(dayDifference)
+        const daysTo = Math.floor(dayDifference)
 
         let newEvent = new Event({
             title, 
             eventDate, 
+            endOfEventDate,
             leaderInCharge, 
-            timeline,
+            daysTo,
             deleted
         });
 

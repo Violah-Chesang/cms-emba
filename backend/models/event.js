@@ -3,8 +3,9 @@ const mongoose = require('mongoose');
 const eventSchema = new mongoose.Schema({
     title : {type: String, required: true, unique: true},
     eventDate : {type: Date, required: true},
+    endOfEventDate: {type: Date, required: false},
     leaderInCharge : {type: String, required: false, unique: false},
-    timeline : {type: Number, required: true, unique: false},
+    daysTo : {type: Number, required: true, unique: false},
     deleted: {type: Boolean, default: false}
 },
 {
