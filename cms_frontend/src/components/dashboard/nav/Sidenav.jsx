@@ -24,7 +24,7 @@ const Sidenav = () => {
     <div
       className={`sidenav ${
         isOpen ? "sidenav-open" : "sidenav-closed"
-      } bg-blue-950 h-dvh`}
+      } bg-blue-950`}
     >
       <div
         className={`flex ${
@@ -45,12 +45,13 @@ const Sidenav = () => {
       </div>
 
       <div className="flex flex-col items-center justify-center p-1">
-        <div className="rounded-full bg-white p-2">
-          <img
-            src="../../src/assets/react.svg"
-            alt=""
-            className={`size-${isOpen ? 16 : 5}`}
-          />
+        <div className="">
+          {isOpen ?  <p className={`text-6xl font-normal text-blue-900 rounded-full py-4 px-7 bg-white` }>
+            R
+          </p> :  <p className={`text-3xl font-normal text-blue-900 rounded-full py-1 px-3 bg-white` }>
+            R
+          </p>}
+         
         </div>
 
         {isOpen && (

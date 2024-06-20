@@ -2,16 +2,22 @@
     background-color: #EFBF04;
   }
   .sidenav {
-    transition: width 0.3s;
+    top: 0;
+    left: 0;
+    width: 250px;
+    min-height: 100%;
+    overflow-y: auto;
+    transition: width 0.3s; 
   }
   
   .sidenav-closed {
-    width: 60px;
+    width: 80px;
   }
   
   .sidenav-open {
-    width: 240px;
+    width: 250px; 
   }
+  
   
   .icon-only {
     display: none;

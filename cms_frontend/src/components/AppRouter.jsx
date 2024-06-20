@@ -12,11 +12,13 @@ import Jss from "./dashboard/members/Jss";
 import TopNav from "./dashboard/nav/TopNav";
 import AllMembers from "./dashboard/members/AllMembers";
 import Login from "./auth/Login";
+import Signup from "./auth/Signup";
 
 const AppRouter = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
       <Route
         path="*"
         element={

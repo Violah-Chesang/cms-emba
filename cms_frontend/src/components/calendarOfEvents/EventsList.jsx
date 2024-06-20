@@ -1,65 +1,63 @@
-import React from "react";
-import { FaPenFancy } from "react-icons/fa";
-
-const events = [
-  {
-    id: 1,
-    date: "09 July 2024",
-    title: "Youth Service",
-    leaderInCharge: "John Doee",
-    timeline: "2 days away",
-  },
-  {
-    id: 2,
-    date: "09 July 2024",
-    title: "Youth Service",
-    leaderInCharge: "John Doee",
-    timeline: "2 days away",
-  },
-  {
-    id: 3,
-    date: "09 July 2024",
-    title: "Youth Service",
-    leaderInCharge: "John Doee",
-    timeline: "2 days away",
-  },
-  {
-    id: 4,
-    date: "09 July 2024",
-    title: "Youth Service",
-    leaderInCharge: "John Doee",
-    timeline: "2 days away",
-  },
-];
-
-const EventsCard = ({ date, title, timeline, leaderInCharge }) => {
-  return (
-    <div className="bg-gradient-to-b from-sky-600 to-blue-950 rounded-xl p-4 mb-4">
-      <div className="flex justify-between items-center mb-2 gap-10">
-        <p className="text-white text-sm">{date}</p>
-        <button className="bg-white text-black flex items-center px-2 py-1 rounded text-sm">
-          Edit <FaPenFancy className="ml-1" />
-        </button>
-      </div>
-      <div>
-        <p className="text-white font-semibold text-md">{title}</p>
-        <p className="text-white font-light text-md mb-2">{leaderInCharge}</p>
-        <p className="text-gray-400 text-sm">{timeline}</p>
-      </div>
-    </div>
-  );
-};
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import EventsCard from "./EventsCard";
 
 const EventsList = () => {
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get("http://localhost:5500/all-events");
+        setEvents(response.data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  const handleUpdateEvent = async (eventId, updatedData) => {
+    try {
+      await axios.put(`http://localhost:5500/update-event/${eventId}`, updatedData);
+      // Optionally, fetch events again after update
+      fetchEvents();
+    } catch (error) {
+      console.error("Error updating event:", error);
+    }
+  };
+
+  // Get current date
+  const currentDate = new Date();
+
+  // Filter events for current month and future dates
+  const filteredEvents = events.filter((event) => {
+    const eventDate = new Date(event.eventDate);
+    return (
+      eventDate.getMonth() === currentDate.getMonth() &&
+      eventDate.getFullYear() === currentDate.getFullYear() &&
+      eventDate >= currentDate
+    );
+  });
+
+  // Sorting filtered events by eventDate (closest to farthest)
+  filteredEvents.sort((a, b) => {
+    const dateA = new Date(a.eventDate);
+    const dateB = new Date(b.eventDate);
+    return dateA - dateB;
+  });
+
   return (
     <div className="flex flex-col mt-4 w-80">
-      {events.map((event) => (
+      {filteredEvents.map((event) => (
         <EventsCard
-          key={event.id}
-          date={event.date}
+          key={event._id}
+          eventDate={new Date(event.eventDate).toLocaleDateString()}
           title={event.title}
           leaderInCharge={event.leaderInCharge}
-          timeline={event.timeline}
+          daysTo={event.daysTo}
+          onEdit={(updatedData) => handleUpdateEvent(event._id, updatedData)}
         />
       ))}
     </div>
