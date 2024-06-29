@@ -34,7 +34,7 @@ export const fetchUserDetails = createAsyncThunk(
   async (username, thunkAPI) => {
     try {
       const response = await axios.post('http://localhost:5500/get-user', { userName: username });
-      console.log(response)
+      localStorage.setItem('userDetails', JSON.stringify(response.data)); // Store user details in localStorage
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message || error.message);
@@ -45,7 +45,7 @@ export const fetchUserDetails = createAsyncThunk(
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: null,
+    user: JSON.parse(localStorage.getItem('userDetails')) || null, // Initialize with userDetails from localStorage
     token: localStorage.getItem('token') || null, 
     status: 'idle',
     error: null,
@@ -55,6 +55,7 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       localStorage.removeItem('token');
+      localStorage.removeItem('userDetails'); // Remove userDetails from localStorage on logout
     },
   },
   extraReducers: (builder) => {
