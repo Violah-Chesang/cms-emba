@@ -127,7 +127,7 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
       <div className="flex flex-wrap justify-end px-5 my-2">
         {canAdd && (
           <button
-            className="flex justify-center items-center py-2 px-5 text-sm font-medium text-white bg-green-800 rounded-lg hover:bg-green-500"
+            className="flex justify-center items-center py-2 px-5 text-sm font-medium text-white bg-blue-950 rounded-lg hover:bg-blue-600"
             onClick={handleAddClick}
           >
             <IoMdAdd size={20} />

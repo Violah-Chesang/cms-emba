@@ -60,7 +60,7 @@ const SideCalendar = () => {
         <div className="flex items-center gap-36 mt-5 justify-evenly">
           {canAddEvent && (
             <button
-              className="bg-blue-950 text-white px-2 py-2 rounded-md flex items-center text-sm hover:bg-amber-500"
+              className="bg-blue-950 text-white px-2 py-2 rounded-md flex items-center text-sm hover:bg-blue-600"
               onClick={openModal}
             >
               Create Event <IoIosAdd color="white" size={20} />

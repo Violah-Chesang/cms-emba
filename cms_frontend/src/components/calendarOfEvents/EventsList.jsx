@@ -18,9 +18,9 @@ const EventsList = () => {
     fetchEvents();
   }, []);
 
-  const handleUpdateEvent = async (eventId, updatedData) => {
+  const handleUpdateEvent = async (_id, updatedData) => {
     try {
-      await axios.put(`http://localhost:5500/update-event/${eventId}`, updatedData);
+      await axios.put(`http://localhost:5500/update-event/${_id}`, updatedData);
       // Optionally, fetch events again after update
       fetchEvents();
     } catch (error) {

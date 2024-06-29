@@ -14,12 +14,10 @@ const TopNav = () => {
           <p className=" text-blue-900 font-bold text-2xl">
             Welcome {userDetails ? userDetails.userName : ""}
           </p>
-          <div className="flex-row">
-            <p className="text-gray-600 text-sm">Today is </p>
-            <div>
-              <DateToday/>
-            </div>
-          </div>
+          <p className="text-gray-600 front- text-sm flex">
+            Today is {"  "}
+            <DateToday className="pr-3 ml-2" />
+          </p>
         </div>
         <div>
           <input

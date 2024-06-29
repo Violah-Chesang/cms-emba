@@ -12,7 +12,7 @@ const EventsTable = ({ events, onAdd, onEdit, onDelete }) => {
       <div className="flex justify-end mb-4">
         {canAdd && (
           <button
-            className="bg-blue-950 text-white py-2 px-4 rounded"
+            className="bg-blue-950 text-white py-2 px-4 rounded hover:bg-blue-600"
             onClick={onAdd}
           >
             Add Event
@@ -39,7 +39,7 @@ const EventsTable = ({ events, onAdd, onEdit, onDelete }) => {
               <td className="py-2 px-4 border border-gray-300">
                 {canEditDelete && (
                   <button
-                    className="bg-green-500 text-white py-1 px-2 mr-2 rounded text-sm"
+                    className="bg-blue-500 text-white py-1 px-2 mr-2 rounded text-sm"
                     onClick={() => onEdit(event)}
                   >
                     Edit
