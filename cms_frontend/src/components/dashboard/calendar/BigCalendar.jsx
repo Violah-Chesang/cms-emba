@@ -4,12 +4,13 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import EventsTable from '../../calendarOfEvents/EventsTable';
 import { IoIosAdd } from 'react-icons/io';
-import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchEvents, addEvent, editEvent, deleteEvent } from '../../../store/slice/eventSlice';
 
 const localizer = momentLocalizer(moment);
 
 const BigCalendar = () => {
-  const [events, setEvents] = useState([]);
+  const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const initialFormData = {
     title: "",
@@ -19,23 +20,11 @@ const BigCalendar = () => {
   };
   const [formData, setFormData] = useState(initialFormData);
 
+  const { events, status, error } = useSelector((state) => state.events);
+
   useEffect(() => {
-    fetch('http://localhost:5500/all-events')
-      .then(response => response.json())
-      .then(data => {
-        const formattedEvents = data.map(event => ({
-          title: `${event.title} (${event.leaderInCharge})`,
-          start: new Date(event.eventDate),
-          end: new Date(event.endOfEventDate),
-          leaderInCharge: event.leaderInCharge,
-          _id: event._id // Assuming the event has an _id property
-        }));
-        setEvents(formattedEvents);
-      })
-      .catch(error => {
-        console.error('Error fetching events:', error);
-      });
-  }, []);
+    dispatch(fetchEvents());
+  }, [dispatch]);
 
   const handleAddEvent = () => {
     setIsModalOpen(true);
@@ -44,12 +33,14 @@ const BigCalendar = () => {
   const handleEditEvent = (event) => {
     const updatedTitle = prompt('Enter new title', event.title);
     if (updatedTitle) {
-      setEvents(events.map(e => e._id === event._id ? { ...e, title: updatedTitle } : e));
+      dispatch(editEvent({ ...event, title: updatedTitle }));
     }
   };
 
   const handleDeleteEvent = (event) => {
-    setEvents(events.filter(e => e._id !== event._id));
+    if (window.confirm('Are you sure you want to delete this event?')) {
+      dispatch(deleteEvent(event._id));
+    }
   };
 
   const handleChange = (e) => {
@@ -59,29 +50,16 @@ const BigCalendar = () => {
     });
   };
 
-  const handleCreateEvent = async (e) => {
+  const handleCreateEvent = (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:5500/add-event",
-        formData
-      );
-      console.log("Event created successfully:", response.data);
-      setIsModalOpen(false);
-      setFormData(initialFormData);
-      // Refresh events after adding new event
-      const updatedEvents = await axios.get('http://localhost:5500/all-events');
-      const formattedEvents = updatedEvents.data.map(event => ({
-        title: `${event.title} (${event.leaderInCharge})`,
-        start: new Date(event.eventDate),
-        end: new Date(event.endOfEventDate),
-        leaderInCharge: event.leaderInCharge,
-        _id: event._id
-      }));
-      setEvents(formattedEvents);
-    } catch (error) {
-      console.error("Error creating event:", error);
-    }
+    dispatch(addNewEvent(formData))
+      .then(() => {
+        setIsModalOpen(false);
+        setFormData(initialFormData);
+      })
+      .catch((error) => {
+        console.error("Error creating event:", error);
+      });
   };
 
   const closeModal = () => {
