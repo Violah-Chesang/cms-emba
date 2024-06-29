@@ -2,6 +2,19 @@ const express = require("express");
 const Member = require("../models/member");
 const Counter = require("../models/counter");
 const authorizeUser = require("../middlewares/authorization");
+const { 
+  MaritalStatus, 
+  Fellowship, 
+  Ministry, 
+  MarriageType, 
+  Gender, 
+  ChurchCellGroup, 
+  Roles, 
+  SavedStatus,
+  OtherChurchMembership,
+  BaptisedStatus,
+  MemberType 
+} = require('../models/options')
 
 const router = express.Router();
 
@@ -500,4 +513,201 @@ router.get("/reports/associate-members", async (req, res) => {
   res.json({assoMembers: associateMembers, assoCount : associateCount});
 });
 
+// create fellowship
+router.post('/fellowships', async (req,res) => {
+  const {id, title} = req.body;
+  const newFellowship = new Fellowship ({
+    id,
+    title
+  })
+
+  const fellowship = await newFellowship.save();
+  res.status(201).json(fellowship);
+})
+
+// get fellowship
+router.get('/fellowships', async (req, res) => {
+  const fellowships = await Fellowship.find()
+  res.status(200).json(fellowships);
+})
+
+// create marital status
+router.post('/marital-status', async(req,res) => {
+  const {id, title} = req.body;
+
+  const newStatus = new MaritalStatus({
+    id, title
+  })
+
+  const maritalStatus = await newStatus.save();
+  res.status(201).json(maritalStatus);
+})
+
+// get marital status
+router.get('/marital-status', async (req, res) => {
+  const maritalStatus = await MaritalStatus.find()
+  res.status(200).json(maritalStatus);
+})
+
+// create ministry
+router.post('/ministry', async (req,res) => {
+  const {id, title} = req.body;
+  const newMinistry = new Ministry ({
+    id,
+    title
+  })
+
+  const ministry = await newMinistry.save();
+  res.status(201).json(ministry);
+})
+
+// get ministry
+router.get('/ministry', async (req, res) => {
+  const ministry = await Ministry.find()
+  res.status(200).json(ministry);
+})
+
+// cell groups
+router.post('/cell-groups', async (req,res) => {
+  const {id, title} = req.body;
+  const newCellGroup = new ChurchCellGroup ({
+    id,
+    title
+  })
+
+  const cellGroup = await newCellGroup.save();
+  res.status(201).json(cellGroup);
+})
+
+// get cell groups
+router.get('/cell-groups', async (req, res) => {
+  const cellGroup = await ChurchCellGroup.find()
+  res.status(200).json(cellGroup);
+})
+
+// create MarriageType
+router.post('/marriage-type', async (req,res) => {
+  const {id, title} = req.body;
+  const newMarriageType = new MarriageType ({
+    id,
+    title
+  })
+
+  const marriageType = await newMarriageType.save();
+  res.status(201).json(marriageType);
+})
+
+// get MarriageType
+router.get('/marriage-type', async (req, res) => {
+  const marriageType = await MarriageType.find()
+  res.status(200).json(marriageType);
+})
+
+// create gender
+router.post('/gender', async (req,res) => {
+  const {id, title} = req.body;
+  const newGender = new Gender ({
+    id,
+    title
+  })
+
+  const gender = await newGender.save();
+  res.status(201).json(gender);
+})
+
+// get gender
+router.get('/gender', async (req, res) => {
+  const gender = await Gender.find()
+  res.status(200).json(gender);
+})
+
+// create roles
+router.post('/roles', async (req,res) => {
+  const {id, title} = req.body;
+  const newRoles = new Roles ({
+    id,
+    title
+  })
+
+  const roles = await newRoles.save();
+  res.status(201).json(roles);
+})
+
+// get roles
+router.get('/roles', async (req, res) => {
+  const roles = await Roles.find()
+  res.status(200).json(roles);
+})
+
+// create saved status
+router.post('/saved-status', async (req,res) => {
+  const {id, title} = req.body;
+  const newSavedStatus = new SavedStatus ({
+    id,
+    title
+  })
+
+  const savedStatus = await newSavedStatus.save();
+  res.status(201).json(savedStatus);
+})
+
+// get saved status
+router.get('/saved-status', async (req, res) => {
+  const savedStatus = await SavedStatus.find()
+  res.status(200).json(savedStatus);
+})
+
+// create Other church membership
+router.post('/other-church-membership', async (req,res) => {
+  const {id, title} = req.body;
+  const newChurchMembeship = new OtherChurchMembership ({
+    id,
+    title
+  })
+
+  const churchMembeship = await newChurchMembeship.save();
+  res.status(201).json(churchMembeship);
+})
+
+// get other-church-membership
+router.get('/other-church-membership', async (req, res) => {
+  const churchMembeship = await OtherChurchMembership.find()
+  res.status(200).json(churchMembeship);
+})
+
+// Baptised status
+router.post('/baptised-status', async (req,res) => {
+  const {id, title} = req.body;
+  const newBaptismStatus = new BaptisedStatus ({
+    id,
+    title
+  })
+
+  const BaptismStatus = await newBaptismStatus.save();
+  res.status(201).json(BaptismStatus);
+})
+
+// get baptised status
+router.get('/baptised-status', async (req, res) => {
+  const baptismStatus = await BaptisedStatus.find();
+  res.status(200).json(baptismStatus);
+})
+
+// member type
+router.post('/member-type', async (req,res) => {
+  const {id, title} = req.body;
+  const newMemberType = new MemberType ({
+    id,
+    title
+  })
+
+  const memberType = await newMemberType.save();
+  res.status(201).json(memberType);
+})
+
+// get baptised status
+router.get('/member-type', async (req, res) => {
+  const memberType = await MemberType.find();
+  res.status(200).json(memberType);
+})
 module.exports = router;
