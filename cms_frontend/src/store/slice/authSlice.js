@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { setRole } from './accessControlSlice'; // Adjust the import path as needed
 
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
@@ -92,6 +93,8 @@ const authSlice = createSlice({
         state.status = 'succeeded';
         state.user = action.payload;
         state.error = null;
+
+        thunkAPI.dispatch(setRole(action.payload.role));
       })
       .addCase(fetchUserDetails.rejected, (state, action) => {
         state.status = 'failed';

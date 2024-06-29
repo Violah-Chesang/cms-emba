@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IoMdAdd } from "react-icons/io";
 import {
   addMember,
@@ -12,6 +12,7 @@ import ViewForm from "./ViewForm";
 
 const Fellowship = ({ title, data, columns, loading, error }) => {
   const dispatch = useDispatch();
+  const userRole = useSelector((state) => state.auth.user?.role);
   const [editData, setEditData] = useState(null);
   const [viewData, setViewData] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -72,6 +73,8 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
     );
   });
 
+  const canAdd = ["Minister", "Executive Leader"].includes(userRole);
+
   return (
     <div className="mt-1">
       <p className="text-xl font-bold text-blue-950">{title}</p>
@@ -121,18 +124,21 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
       </div>
 
       <div className="flex flex-wrap justify-end px-5 my-2">
-        <button
-          className="flex justify-center items-center py-2 px-5 text-sm font-medium text-white bg-green-800 rounded-lg hover:bg-green-500"
-          onClick={handleAddClick}
-        >
-          <IoMdAdd size={20} />
-          Add New Member
-        </button>
+        {canAdd && (
+          <button
+            className="flex justify-center items-center py-2 px-5 text-sm font-medium text-white bg-green-800 rounded-lg hover:bg-green-500"
+            onClick={handleAddClick}
+          >
+            <IoMdAdd size={20} />
+            Add New Member
+          </button>
+        )}
       </div>
 
       <DataTable
         columns={columns}
         data={filteredData}
+        userRole={userRole}
         onEditClick={handleEditClick}
         onViewClick={handleViewClick}
         onDeleteClick={handleDeleteClick}

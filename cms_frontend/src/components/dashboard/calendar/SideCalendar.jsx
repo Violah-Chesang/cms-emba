@@ -4,6 +4,7 @@ import EventsList from "../../calendarOfEvents/EventsList";
 import { IoIosAdd } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const SideCalendar = () => {
   const initialFormData = {
@@ -14,8 +15,8 @@ const SideCalendar = () => {
   };
 
   const [formData, setFormData] = useState(initialFormData);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const userRole = useSelector((state) => state.auth.user?.role);
 
   const handleChange = (e) => {
     setFormData({
@@ -48,19 +49,29 @@ const SideCalendar = () => {
     setIsModalOpen(false);
   };
 
+  // Determine if user can add event based on role
+  const canAddEvent = ['Minister', 'Executive Leader'].includes(userRole);
+
   return (
     <div>
       <div className="flex justify-center items-center flex-col">
         <p className="text-2xl font-semibold text-center">Calendar of events</p>
         <MyCalendar />
-        <div className="flex justify-between items-center gap-36 mt-5">
-          <button
-            className="bg-blue-950 text-white px-2 py-2 rounded-md flex items-center text-sm hover:bg-amber-500"
-            onClick={openModal}
+        <div className="flex items-center gap-36 mt-5 justify-evenly">
+          {canAddEvent && (
+            <button
+              className="bg-blue-950 text-white px-2 py-2 rounded-md flex items-center text-sm hover:bg-amber-500"
+              onClick={openModal}
+            >
+              Create Event <IoIosAdd color="white" size={20} />
+            </button>
+          )}
+          <a
+            href="/calendar"
+            className="font-medium text-sm flex items-center hover:text-amber-600 "
           >
-            Create Event <IoIosAdd color="white" size={20} />
-          </button>
-          <a href="/calendar" className="font-medium text-sm flex items-center hover:text-amber-600">  View all <IoIosArrowForward size={20} /></a>
+            View all <IoIosArrowForward size={20} />
+          </a>
         </div>
         <EventsList className="w-full" />
       </div>

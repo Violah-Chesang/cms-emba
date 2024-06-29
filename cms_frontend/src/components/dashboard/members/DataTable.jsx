@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { FaEllipsisV } from "react-icons/fa";
 
-const DataTable = ({ data, columns, onEditClick, onViewClick, onDeleteClick }) => {
+const DataTable = ({ data, columns, userRole, onEditClick, onViewClick, onDeleteClick }) => {
   const [dropdownOpen, setDropdownOpen] = useState(null);
 
   const handleDropdownToggle = (index) => {
     setDropdownOpen(dropdownOpen === index ? null : index);
   };
+
+  const canEdit = ["Minister", "Executive Leader", "Fellowship Leader"].includes(userRole);
+  const canDelete = ["Minister", "Executive Leader"].includes(userRole);
 
   return (
     <table className="min-w-full bg-white border-collapse border border-gray-300 mb-12">
@@ -42,15 +45,17 @@ const DataTable = ({ data, columns, onEditClick, onViewClick, onDeleteClick }) =
               </button>
               {dropdownOpen === index && (
                 <div className="absolute right-0 mt-2 py-2 w-28 bg-white rounded-md shadow-2xl z-10">
-                  <button
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                    onClick={() => {
-                      onEditClick(row);
-                      handleDropdownToggle(null);
-                    }}
-                  >
-                    Edit
-                  </button>
+                  {canEdit && (
+                    <button
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                      onClick={() => {
+                        onEditClick(row);
+                        handleDropdownToggle(null);
+                      }}
+                    >
+                      Edit
+                    </button>
+                  )}
                   <button
                     className="block px-4 py-2 text-sm text-blue-700 hover:bg-gray-100 w-full text-left"
                     onClick={() => {
@@ -60,15 +65,17 @@ const DataTable = ({ data, columns, onEditClick, onViewClick, onDeleteClick }) =
                   >
                     View
                   </button>
-                  <button
-                    className="block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 w-full text-left"
-                    onClick={() => {
-                      onDeleteClick(row);
-                      handleDropdownToggle(null);
-                    }}
-                  >
-                    Delete
-                  </button>
+                  {canDelete && (
+                    <button
+                      className="block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 w-full text-left"
+                      onClick={() => {
+                        onDeleteClick(row);
+                        handleDropdownToggle(null);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
               )}
             </td>
