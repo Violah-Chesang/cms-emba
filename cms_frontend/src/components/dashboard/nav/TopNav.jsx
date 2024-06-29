@@ -15,7 +15,7 @@ const TopNav = () => {
             Welcome {userDetails ? userDetails.userName : ""}
           </p>
           <div className="flex-row">
-            <p className="text-gray-600 front- text-sm">Today is </p>
+            <p className="text-gray-600 text-sm">Today is </p>
             <div>
               <DateToday/>
             </div>

@@ -1,5 +1,3 @@
-// membersSlice.js
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -39,30 +37,45 @@ export const fetchMembersByFellowship = createAsyncThunk(
 export const addMember = createAsyncThunk(
   "members/addMember",
   async (newMember) => {
-    const response = await axios.post(
-      "http://localhost:5500/member/add",
-      newMember
-    );
-    return response.data;
+    try {
+      const response = await axios.post(
+        "http://localhost:5500/member/add",
+        newMember
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error adding member:", error);
+      throw error;
+    }
   }
 );
 
 export const updateMember = createAsyncThunk(
   "members/updateMember",
-  async ({ memberId, updatedMember }) => {
-    const response = await axios.put(
-      `http://localhost:5500/member/update/${memberId}`,
-      updatedMember
-    );
-    return response.data;
+  async ({ _id, updatedMember }) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:5500/member/update/${_id}`,
+        updatedMember
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating member with ID ${_id}:`, error);
+      throw error;
+    }
   }
 );
 
 export const deleteMember = createAsyncThunk(
   "members/deleteMember",
-  async (memberId) => {
-    await axios.post("http://localhost:5500/member/delete", { memberId });
-    return memberId;
+  async (_id) => {
+    try {
+      await axios.delete(`http://localhost:5500/member/delete/${_id}`);
+      return _id;
+    } catch (error) {
+      console.error(`Error deleting member with ID ${_id}:`, error);
+      throw error;
+    }
   }
 );
 
@@ -105,21 +118,27 @@ const membersSlice = createSlice({
       .addCase(addMember.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
+      .addCase(addMember.rejected, (state, action) => {
+        state.error = action.error.message; // Handle add member error
+      })
       .addCase(updateMember.fulfilled, (state, action) => {
         const index = state.data.findIndex(
-          (member) => member.memberId === action.payload.memberId
+          (member) => member._id === action.payload._id
         );
         if (index !== -1) {
           state.data[index] = action.payload;
         }
       })
+      .addCase(updateMember.rejected, (state, action) => {
+        state.error = action.error.message; // Handle update member error
+      })
       .addCase(deleteMember.fulfilled, (state, action) => {
-        state.data = state.data.filter(
-          (member) => member.memberId !== action.payload
-        );
+        state.data = state.data.filter((member) => member._id !== action.payload);
+      })
+      .addCase(deleteMember.rejected, (state, action) => {
+        state.error = action.error.message; // Handle delete member error
       });
   },
 });
 
 export default membersSlice.reducer;
-

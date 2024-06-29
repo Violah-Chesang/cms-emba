@@ -9,6 +9,7 @@ import {
 import DataTable from "./DataTable";
 import EditForm from "./EditForm";
 import ViewForm from "./ViewForm";
+import AddForm from "./AddForm";
 
 const Fellowship = ({ title, data, columns, loading, error }) => {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
   const [viewData, setViewData] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isViewVisible, setIsViewVisible] = useState(false);
+  const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   const [filters, setFilters] = useState({
     fellowship: "",
     ministry: "",
@@ -39,12 +41,11 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
   };
 
   const handleAddClick = () => {
-    setEditData(null);
-    setIsFormVisible(true);
+    setIsAddFormVisible(true);
   };
 
   const handleDeleteClick = (rowData) => {
-    dispatch(deleteMember(rowData.memberId))
+    dispatch(deleteMember(rowData._id))
       .unwrap()
       .then(() => {
         alert("Member deleted successfully");
@@ -148,22 +149,38 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
         <EditForm
           editData={editData}
           onSave={(newData) => {
-            const action = editData ? updateMember : addMember;
-            dispatch(action(newData))
+            dispatch(updateMember({ _id: editData._id, updatedMember: newData }))
               .unwrap()
               .then(() => {
                 setIsFormVisible(false);
-                alert(`Member ${editData ? "updated" : "added"} successfully`);
+                alert("Member updated successfully");
               })
               .catch((error) => {
-                console.error(
-                  `Error ${editData ? "updating" : "adding"} member:`,
-                  error
-                );
-                alert(`Failed to ${editData ? "update" : "add"} member`);
+                console.error("Error updating member:", error);
+                alert("Failed to update member");
               });
           }}
           onCancel={() => setIsFormVisible(false)}
+        />
+      )}
+
+      {isAddFormVisible && (
+        <AddForm
+          onSave={(newData) => {
+            console.log(newData)
+            dispatch(addMember(newData))
+              .unwrap()
+              .then(() => {
+                setIsAddFormVisible(false);
+                alert("Member added successfully");
+              })
+              .catch((error) => {
+                console.error("Error adding member:", error);
+                alert("Failed to add member");
+              });
+          }}
+          onCancel={() => setIsAddFormVisible(false)}
+          renderFilterDropdown={renderFilterDropdown} // Ensure renderFilterDropdown is passed here if needed
         />
       )}
 

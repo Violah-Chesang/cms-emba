@@ -4,7 +4,7 @@ import { fetchMembers } from '../../../store/slice/memberSlice';
 import Fellowship from './Fellowship';
 
 const columns = [
-  { header: "ID", accessor: "memberId" },
+  { header: "MemberID", accessor: "memberId" },
   { header: "Name", accessor: "name" },
   { header: "Phone Number", accessor: "phone" },
   { header: "Physical Address", accessor: "physicalAddress" },
