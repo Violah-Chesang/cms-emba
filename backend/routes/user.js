@@ -8,10 +8,6 @@ dotenv.config();
 const router = express.Router();
 
 router.post('/user/register', async (req, res) => {
-    // import bcrypt
-    // accept user data
-    // check if the email exists and also check if all fields have been filled
-    // che
     try{
         // extract req.body info
         const {firstname, lastname, userName, email, password, role} = req.body;
@@ -83,13 +79,15 @@ router.post('/user/login', async(req, res) => {
 
 });
 
-// logout a user
-router.get('/user/logout', (req,res)=> {
-    const token = req.headers.token;
-    if(token){
-        {$set : {token: ''}}
-        res.json({message:"Logged out successfully!"});    
+// get a user
+router.post('/get-user',async (req,res)=> {
+    const userName = req.body.userName;
+    const user = await User.findOne({userName})
+    if(!user){
+        res.json({message:"user not found!"});    
     }
+
+    res.status(200).json(user);
     
     
 })
