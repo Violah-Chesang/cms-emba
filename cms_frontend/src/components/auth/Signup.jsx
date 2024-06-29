@@ -11,11 +11,10 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
-    username: '',
+    userName: '',
     role: 'Other', 
     email: '',
     password: '',
-    confirmPassword: '',
   });
 
   const handleInputChange = (e) => {
@@ -37,6 +36,7 @@ const Signup = () => {
 
   useEffect(() => {
     if (status === 'succeeded') {
+      console.log(status)
       navigate('/login');
     }
   }, [status, navigate]);
@@ -60,8 +60,8 @@ const Signup = () => {
             <input className="h-9 rounded m-1 p-2 w-96" type="text" name="lastname" placeholder="e.g. Doe" onChange={handleInputChange} />
           </div>
           <div className="flex flex-col mb-4">
-            <label className="text-white" htmlFor="username">Username:</label>
-            <input className="h-9 rounded m-1 p-2 w-96" type="text" name="username" placeholder="e.g. jdoe" onChange={handleInputChange} />
+            <label className="text-white" htmlFor="userName">Username:</label>
+            <input className="h-9 rounded m-1 p-2 w-96" type="text" name="userName" placeholder="e.g. jdoe" onChange={handleInputChange} />
           </div>
           <div className="flex flex-col mb-4">
             <label className="text-white" htmlFor="role">Role:</label>

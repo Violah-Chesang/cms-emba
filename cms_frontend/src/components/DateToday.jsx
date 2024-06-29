@@ -8,7 +8,7 @@ function TodayDate() {
   const year = today.getFullYear(); // Get year
 
   return (
-    <p>
+    <p className='text-gray-600 front- text-sm pr-3'>
       {day} {date} {month}, {year}
     </p>
   );

@@ -80,7 +80,6 @@ const Sidenav = () => {
           <li className="flex flex-row p-4 text-lg">
             <NavLink
               to="/dashboard"
-              activeClassName="bg-efbf04"
               className="flex flex-row items-center text-sm   hover:text-amber-400 active:text-amber-400"
             >
               <MdDashboard size={isOpen ? 25 : 35} className="pr-2" />
@@ -101,7 +100,6 @@ const Sidenav = () => {
                 <li className="flex flex-row p-2 text-lg ml-2">
                   <NavLink
                     to="/members/all"
-                    activeClassName="bg-efbf04"
                     className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
                   >
                     <BiSolidRightArrow size={24} className="pr-2" />
@@ -111,7 +109,6 @@ const Sidenav = () => {
                 <li className="flex flex-row p-2 text-lg ml-2">
                   <NavLink
                     to="/members/men"
-                    activeClassName="bg-efbf04"
                     className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
                   >
                     <BiSolidRightArrow size={24} className="pr-2" />
@@ -121,7 +118,6 @@ const Sidenav = () => {
                 <li className="flex flex-row p-2 text-lg ml-2">
                   <NavLink
                     to="/members/women"
-                    activeClassName="bg-efbf04"
                     className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
                   >
                     <BiSolidRightArrow size={24} className="pr-2" />
@@ -131,7 +127,6 @@ const Sidenav = () => {
                 <li className="flex flex-row p-2 text-lg ml-2">
                   <NavLink
                     to="/members/youth"
-                    activeClassName="bg-efbf04"
                     className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
                   >
                     <BiSolidRightArrow size={24} className="pr-2" />
@@ -141,7 +136,6 @@ const Sidenav = () => {
                 <li className="flex flex-row p-2 text-lg ml-2">
                   <NavLink
                     to="/members/junior"
-                    activeClassName="bg-efbf04"
                     className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
                   >
                     <BiSolidRightArrow size={24} className="pr-2" />
@@ -154,7 +148,6 @@ const Sidenav = () => {
           <li className="flex flex-row p-4 text-lg">
             <NavLink
               to="/calendar"
-              activeClassName="bg-efbf04"
               className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
             >
               <FaCalendarDays size={isOpen ? 25 : 35} className="pr-2" />
@@ -164,7 +157,6 @@ const Sidenav = () => {
           <li className="flex flex-row p-4 text-lg">
             <NavLink
               to="/finance"
-              activeClassName="bg-efbf04"
               className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
             >
               <FaMoneyBillWave size={isOpen ? 25 : 35} className="pr-2" />
@@ -174,7 +166,6 @@ const Sidenav = () => {
           <li className="flex flex-row p-4 text-lg">
             <NavLink
               to="/archives"
-              activeClassName="bg-efbf04"
               className="flex flex-row items-center text-sm hover:text-amber-400 active:text-amber-400"
             >
               <IoDocumentAttach size={isOpen ? 25 : 35} className="pr-2" />

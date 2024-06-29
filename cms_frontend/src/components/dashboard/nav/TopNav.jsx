@@ -2,9 +2,7 @@ import React from "react";
 import DateToday from "../../DateToday";
 import { IoNotifications } from "react-icons/io5";
 import { IoSettings } from "react-icons/io5";
-import { useSelector } from 'react-redux'; 
-
-
+import { useSelector } from "react-redux";
 
 const TopNav = () => {
   const userDetails = useSelector((state) => state.auth.user);
@@ -13,12 +11,15 @@ const TopNav = () => {
     <div className="flex flex-row h-16 bg-white items-center border-b-1 border-blue-950 shadow-2xl">
       <div className="flex flex-row w-10/12 justify-between">
         <div className="flex flex-col ml-3">
-          <p className=" text-blue-900 font-bold text-2xl">Welcome {userDetails ? userDetails.userName : ""}
+          <p className=" text-blue-900 font-bold text-2xl">
+            Welcome {userDetails ? userDetails.userName : ""}
           </p>
-          <p className="text-gray-600 front- text-sm flex">
-            Today is {"  "}
-            <DateToday className="pr-3" />
-          </p>
+          <div className="flex-row">
+            <p className="text-gray-600 front- text-sm">Today is </p>
+            <div>
+              <DateToday/>
+            </div>
+          </div>
         </div>
         <div>
           <input

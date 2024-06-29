@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { setRole } from './accessControlSlice'; // Adjust the import path as needed
+import { setRole } from './accessControlSlice';
 
+// Action creators
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (userData, thunkAPI) => {
@@ -9,7 +10,7 @@ export const registerUser = createAsyncThunk(
       const response = await axios.post('http://localhost:5500/user/register', userData);
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message || error.message);
+      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -20,12 +21,11 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await axios.post('http://localhost:5500/user/login', userData);
       const token = response.data.token;
-      localStorage.setItem('token', token); 
-
+      localStorage.setItem('token', token);
       const username = userData.userName;
-      return { token, username }; 
+      return { token, username };
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message || error.message);
+      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -35,19 +35,20 @@ export const fetchUserDetails = createAsyncThunk(
   async (username, thunkAPI) => {
     try {
       const response = await axios.post('http://localhost:5500/get-user', { userName: username });
-      localStorage.setItem('userDetails', JSON.stringify(response.data)); // Store user details in localStorage
+      localStorage.setItem('userDetails', JSON.stringify(response.data));
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message || error.message);
+      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
 
+// Slice definition
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: JSON.parse(localStorage.getItem('userDetails')) || null, // Initialize with userDetails from localStorage
-    token: localStorage.getItem('token') || null, 
+    user: JSON.parse(localStorage.getItem('userDetails')) || null,
+    token: localStorage.getItem('token') || null,
     status: 'idle',
     error: null,
   },
@@ -56,7 +57,7 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       localStorage.removeItem('token');
-      localStorage.removeItem('userDetails'); // Remove userDetails from localStorage on logout
+      localStorage.removeItem('userDetails');
     },
   },
   extraReducers: (builder) => {
@@ -67,7 +68,7 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.user = action.payload.user;
-        state.token = action.payload.token; 
+        state.token = action.payload.token;
         state.error = null;
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -93,8 +94,9 @@ const authSlice = createSlice({
         state.status = 'succeeded';
         state.user = action.payload;
         state.error = null;
-
-        thunkAPI.dispatch(setRole(action.payload.role));
+        if (action.payload.role) {
+          //Logic to be added later
+        }
       })
       .addCase(fetchUserDetails.rejected, (state, action) => {
         state.status = 'failed';

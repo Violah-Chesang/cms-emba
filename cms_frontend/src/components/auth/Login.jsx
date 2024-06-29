@@ -12,6 +12,7 @@ const Login = () => {
 
   useEffect(() => {
     if (status === 'succeeded' && username) {
+      console.log(status)
       dispatch(fetchUserDetails(username));
       navigate('/dashboard');
     }
