@@ -55,19 +55,17 @@ const SideCalendar = () => {
         <MyCalendar />
         <div className="flex justify-between items-center gap-36 mt-5">
           <button
-            className="bg-blue-950 text-white px-3 py-2 rounded-lg flex items-center text-sm hover:bg-amber-500"
+            className="bg-blue-950 text-white px-2 py-2 rounded-md flex items-center text-sm hover:bg-amber-500"
             onClick={openModal}
           >
-            Create Event <IoIosAdd color="white" size={25} />
+            Create Event <IoIosAdd color="white" size={20} />
           </button>
-          <p className="font-medium text-md flex items-center">
-            View all <IoIosArrowForward size={20} />
-          </p>
+          <a href="/calendar" className="font-medium text-sm flex items-center hover:text-amber-600">  View all <IoIosArrowForward size={20} /></a>
         </div>
         <EventsList className="w-full" />
       </div>
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-5 rounded-lg shadow-lg w-full max-w-md">
             <h2 className="text-xl font-semibold mb-4 text-blue-950">
               Create New Event

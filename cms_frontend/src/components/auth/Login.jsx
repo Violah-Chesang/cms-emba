@@ -1,29 +1,39 @@
-import React from "react";
+
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { loginUser, fetchUserDetails } from '../../store/slice/authSlice';
 
 const Login = () => {
-  const handleSubmit = async (event) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { token, status, error } = useSelector((state) => state.auth);
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    if (status === 'succeeded' && username) {
+      dispatch(fetchUserDetails(username));
+      navigate('/dashboard');
+    }
+  }, [status, token, username, dispatch, navigate]);
+
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     const username = event.target.username.value;
     const password = event.target.password.value;
 
-    let data = {
+    const data = {
       userName: username,
       password: password,
     };
-    try {
-      const res = await axios.post("http://localhost:5500/user/login", data);
-      if (!res) {
-        console.log("Error logging the user in!", console.error);
-      }
-      console.log(res.data);
-      alert("Succesfully logged in. Dashboard coming soon...!");
-    } catch (err) {
-      console.error("Error:", err);
-    }
+
+    dispatch(loginUser(data));
+    setUsername(username);
   };
+
   return (
-    <div className="flex flex-col justify-center items-center bg-auth-background h-dvh bg-cover bg-opacity-100 shadow-blue-lg">
+    <div className="flex flex-col justify-center items-center bg-auth-background h-screen bg-cover bg-opacity-100 shadow-blue-lg">
       <div className="absolute inset-0 bg-blue-950 bg-opacity-80"></div>
 
       <form
@@ -33,9 +43,7 @@ const Login = () => {
       >
         <img src="../src/assets/mck_logo.png" alt="" width={150} height={150} />
         <div className="flex flex-col mb-1">
-          <label className="text-white" htmlFor="username">
-            Username:
-          </label>
+          <label className="text-white" htmlFor="username">Username:</label>
           <input
             className="w-96 h-9 rounded m-1 p-2 text-gray-700"
             name="username"
@@ -43,9 +51,7 @@ const Login = () => {
           />
         </div>
         <div className="flex flex-col mb-1">
-          <label className="text-white mt-4" htmlFor="password">
-            Password:
-          </label>
+          <label className="text-white mt-4" htmlFor="password">Password:</label>
           <input
             className="w-96 h-9 rounded m-1 p-2 text-gray-700"
             name="password"
@@ -58,8 +64,10 @@ const Login = () => {
           name="submit"
           value="Login"
         />
+        {status === 'loading' && <p>Logging in...</p>}
+        {status === 'failed' && <p className="text-red-900">{error}</p>}
         <p className="relative z-10 text-gray-400 mt-4">
-          Don't have an account? <a href="" className="text-sky-700 hover:text-sky-900">Sign Up</a>
+          Don't have an account? <a href="/signup" className="text-sky-700 hover:text-sky-900">Sign Up</a>
         </p>
       </form>
     </div>

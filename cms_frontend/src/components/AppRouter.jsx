@@ -17,6 +17,7 @@ import Signup from "./auth/Signup";
 const AppRouter = () => {
   return (
     <Routes>
+      <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route
@@ -27,7 +28,6 @@ const AppRouter = () => {
             <div className="flex-grow">
               <TopNav />
               <Routes>
-                <Route path="/" element={<Dashboard />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/finance" element={<Finance />} />

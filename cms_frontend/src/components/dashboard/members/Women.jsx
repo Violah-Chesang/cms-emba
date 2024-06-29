@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMembersByFellowship } from "../../../store/slice/memberSlice";
 import FellowshipComponent from "./Fellowship";
-import useFetchData from "../../../hooks/fetchData";
 
 const columns = [
   { header: "Member ID", accessor: "memberId" },
@@ -16,19 +17,36 @@ const columns = [
   { header: "Status", accessor: "isActive" },
 ];
 
-function WomenFellowship() {
-  const { data, loading, error } = useFetchData(
-    "http://localhost:5500/reports/women-fellowship"
-  );
+const WomenFellowship = () => {
+  const dispatch = useDispatch();
+  const { data: members, loading, error } = useSelector((state) => state.members);
+
+  useEffect(() => {
+    dispatch(fetchMembersByFellowship("Women Fellowship"));
+  }, [dispatch]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
+  const transformedMembers = members.map(member => ({
+    ...member,
+    name: `${member.firstName} ${member.middleName} ${member.surName}`
+  }));
+
   return (
     <FellowshipComponent
       title="Women Fellowship"
-      data={data}
+      data={transformedMembers}
       columns={columns}
       loading={loading}
       error={error}
     />
   );
-}
+};
 
 export default WomenFellowship;

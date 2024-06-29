@@ -44,19 +44,28 @@ const DataTable = ({ data, columns, onEditClick, onViewClick, onDeleteClick }) =
                 <div className="absolute right-0 mt-2 py-2 w-28 bg-white rounded-md shadow-2xl z-10">
                   <button
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                    onClick={() => onEditClick(row)}
+                    onClick={() => {
+                      onEditClick(row);
+                      handleDropdownToggle(null);
+                    }}
                   >
                     Edit
                   </button>
                   <button
                     className="block px-4 py-2 text-sm text-blue-700 hover:bg-gray-100 w-full text-left"
-                    onClick={() => onViewClick(row)}
+                    onClick={() => {
+                      onViewClick(row);
+                      handleDropdownToggle(null);
+                    }}
                   >
                     View
                   </button>
                   <button
                     className="block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 w-full text-left"
-                    onClick={() => onDeleteClick(row)}
+                    onClick={() => {
+                      onDeleteClick(row);
+                      handleDropdownToggle(null);
+                    }}
                   >
                     Delete
                   </button>

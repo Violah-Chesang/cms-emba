@@ -2,15 +2,18 @@ import React, { useState } from "react";
 import { GrClose } from "react-icons/gr";
 import "./SideNav.css";
 import { MdDashboard } from "react-icons/md";
-import { FaUsers, FaCalendarDays, FaMoneyBillWave } from "react-icons/fa6";
+import { FaUsers, FaMoneyBillWave } from "react-icons/fa";
+import { FaCalendarDays } from "react-icons/fa6";
 import { IoDocumentAttach } from "react-icons/io5";
 import { BiSolidRightArrow } from "react-icons/bi";
 import { NavLink } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
+import { useSelector } from 'react-redux'; 
 
 const Sidenav = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const userDetails = useSelector((state) => state.auth.user);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -24,7 +27,7 @@ const Sidenav = () => {
     <div
       className={`sidenav ${
         isOpen ? "sidenav-open" : "sidenav-closed"
-      } bg-blue-950`}
+      } bg-blue-950 pb-96`}
     >
       <div
         className={`flex ${
@@ -46,21 +49,27 @@ const Sidenav = () => {
 
       <div className="flex flex-col items-center justify-center p-1">
         <div className="">
-          {isOpen ?  <p className={`text-6xl font-normal text-blue-900 rounded-full py-4 px-7 bg-white` }>
-            R
-          </p> :  <p className={`text-3xl font-normal text-blue-900 rounded-full py-1 px-3 bg-white` }>
-            R
-          </p>}
-         
+          {isOpen ? (
+            <p className={`text-6xl font-normal text-blue-900 rounded-full py-4 px-7 bg-white` }>
+              {userDetails ? userDetails.firstname.charAt(0) : ""}
+            </p>
+          ) : (
+            <p className={`text-3xl font-normal text-blue-900 rounded-full py-1 px-3 bg-white` }>
+              {userDetails ? userDetails.firstname.charAt(0) : ""}
+            </p>
+          )}
         </div>
 
-        {isOpen && (
+        {isOpen && userDetails && (
           <div className="flex flex-col items-center justify-center text-white pt-1">
-            <p className="font-bold text-md" style={{ color: "#EFBF04" }}>
-              Risper James
+            <p className="font-bold text-lg " style={{ color: "#EFBF04" }}>
+              {`${userDetails.firstname} ${userDetails.lastname}`}
+            </p>
+            <p className="font-normal text-md" style={{ color: "#EFBF04" }}>
+              {userDetails.email}
             </p>
             <p className="font-light text-sm" style={{ color: "#EFBF04" }}>
-              Youth Leader
+              {userDetails.role}
             </p>
           </div>
         )}

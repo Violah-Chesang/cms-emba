@@ -1,40 +1,43 @@
-import React, { useState } from "react";
-import Fellowship from "./Fellowship";
-import useFetchData from "../../../hooks/fetchData";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchMembers } from '../../../store/slice/memberSlice';
+import Fellowship from './Fellowship';
 
 const columns = [
-  { header: "Member ID", accessor: "memberId" },
+  { header: "ID", accessor: "memberId" },
   { header: "Name", accessor: "name" },
-  { header: "Phone No.", accessor: "phone" },
-  { header: "Address", accessor: "physicalAddress" },
-  { header: "ID No.", accessor: "nationalId" },
+  { header: "Phone Number", accessor: "phone" },
+  { header: "Physical Address", accessor: "physicalAddress" },
   { header: "Marital Status", accessor: "maritalStatus" },
   { header: "Baptised", accessor: "baptisedStatus" },
   { header: "Cell Group", accessor: "cellGroup" },
-  { header: "Ministry", accessor: "ministry" },
   { header: "Fellowship", accessor: "fellowship" },
   { header: "Status", accessor: "isActive" },
 ];
 
 const AllMembers = () => {
-  const { data, loading, error } = useFetchData(
-    "http://localhost:5500/member/find/all"
-  );
-  const [searchQuery, setSearchQuery] = useState("");
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector((state) => state.members);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    dispatch(fetchMembers());
+  }, [dispatch]);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredData = data.filter(
+  const transformedData = data.map((member) => ({
+    ...member,
+    name: `${member.firstName} ${member.middleName} ${member.surName}`,
+  }));
+
+  const filteredData = transformedData.filter(
     (member) =>
-      `${member.firstName} ${member.middleName} ${member.surName}`
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
+      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.physicalAddress
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
+      member.physicalAddress.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.nationalId.toLowerCase().includes(searchQuery.toLowerCase())
   );
 

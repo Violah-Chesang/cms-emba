@@ -1,11 +1,17 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { IoMdAdd } from "react-icons/io";
+import {
+  addMember,
+  updateMember,
+  deleteMember,
+} from "../../../store/slice/memberSlice";
 import DataTable from "./DataTable";
 import EditForm from "./EditForm";
 import ViewForm from "./ViewForm";
-import { IoMdAdd } from "react-icons/io";
-import axios from "axios";
 
 const Fellowship = ({ title, data, columns, loading, error }) => {
+  const dispatch = useDispatch();
   const [editData, setEditData] = useState(null);
   const [viewData, setViewData] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -15,11 +21,11 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
     ministry: "",
     cellGroup: "",
     status: "",
-    baptisted: "",
+    baptised: "",
   });
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) return <p>Error: {error}</p>;
 
   const handleEditClick = (rowData) => {
     setEditData(rowData);
@@ -36,16 +42,16 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
     setIsFormVisible(true);
   };
 
-  const handleDeleteClick = async (rowData) => {
-    try {
-      await axios.post("http://localhost:5500/member/delete", {
-        memberId: rowData.memberId,
+  const handleDeleteClick = (rowData) => {
+    dispatch(deleteMember(rowData.memberId))
+      .unwrap()
+      .then(() => {
+        alert("Member deleted successfully");
+      })
+      .catch((error) => {
+        console.error("Error deleting member:", error);
+        alert("Failed to delete member");
       });
-      alert("Member deleted successfully");
-    } catch (error) {
-      console.error("Error deleting member:", error);
-      alert("Failed to delete member");
-    }
   };
 
   const handleFilterChange = (event) => {
@@ -60,10 +66,8 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
     return (
       (filters.fellowship ? item.fellowship === filters.fellowship : true) &&
       (filters.ministry ? item.ministry === filters.ministry : true) &&
-      (filters.isActive ? item.isActive === filters.isActive : true) &&
-      (filters.baptisedStatus
-        ? item.baptisedStatus === filters.baptisedStatus
-        : true) &&
+      (filters.status ? item.status === filters.status : true) &&
+      (filters.baptised ? item.baptised === filters.baptised : true) &&
       (filters.cellGroup ? item.cellGroup === filters.cellGroup : true)
     );
   });
@@ -80,7 +84,7 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
             "Women",
             "Men",
             "JSS",
-          ])}
+          ], handleFilterChange)}
           {renderFilterDropdown("ministry", "Ministry", [
             "All",
             "praise&Worship",
@@ -93,7 +97,7 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
             "Csr",
             "missions&Evangelism",
             "Leader",
-          ])}
+          ], handleFilterChange)}
           {renderFilterDropdown("cellGroup", "Cell Group", [
             "All",
             "Nyayo Embakasi",
@@ -102,73 +106,83 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
             "Fedha/Mradi",
             "Syokimau",
             "Diaspora",
-          ])}
-          {renderFilterDropdown("isActive", "Status", ["All", "true", "false"])}
-          {renderFilterDropdown("baptisedStatus", "Baptism", [
+          ], handleFilterChange)}
+          {renderFilterDropdown("status", "Status", [
+            "All",
+            "active",
+            "inactive",
+          ], handleFilterChange)}
+          {renderFilterDropdown("baptised", "Baptised", [
             "All",
             "baptised",
-            "notBaptised",
-          ])}
-          <button
-            className="bg-blue-950 text-white px-4 py-2 flex items-center rounded-md"
-            onClick={handleAddClick}
-          >
-            Add member <IoMdAdd size={20} />
-          </button>
+            "Not Baptised",
+          ], handleFilterChange)}
         </div>
       </div>
+
+      <div className="flex flex-wrap justify-end px-5 my-2">
+        <button
+          className="flex justify-center items-center py-2 px-5 text-sm font-medium text-white bg-green-800 rounded-lg hover:bg-green-500"
+          onClick={handleAddClick}
+        >
+          <IoMdAdd size={20} />
+          Add New Member
+        </button>
+      </div>
+
       <DataTable
-        data={filteredData.map((item) => ({
-          ...item,
-          name: `${item.firstName} ${item.middleName} ${item.surName}`,
-        }))}
         columns={columns}
+        data={filteredData}
         onEditClick={handleEditClick}
         onViewClick={handleViewClick}
         onDeleteClick={handleDeleteClick}
       />
+
       {isFormVisible && (
         <EditForm
-          data={editData}
-          columns={columns}
-          onClose={() => setIsFormVisible(false)}
+          editData={editData}
+          onSave={(newData) => {
+            const action = editData ? updateMember : addMember;
+            dispatch(action(newData))
+              .unwrap()
+              .then(() => {
+                setIsFormVisible(false);
+                alert(`Member ${editData ? "updated" : "added"} successfully`);
+              })
+              .catch((error) => {
+                console.error(
+                  `Error ${editData ? "updating" : "adding"} member:`,
+                  error
+                );
+                alert(`Failed to ${editData ? "update" : "add"} member`);
+              });
+          }}
+          onCancel={() => setIsFormVisible(false)}
         />
       )}
+
       {isViewVisible && (
-        <ViewForm
-          data={viewData}
-          columns={columns}
-          onClose={() => setIsViewVisible(false)}
-        />
+        <ViewForm viewData={viewData} onClose={() => setIsViewVisible(false)} />
       )}
     </div>
   );
-
-  function renderFilterDropdown(name, label, options) {
-    return (
-      <div className="mr-4 mb-2">
-        <label
-          htmlFor={name}
-          className="block text-sm font-medium text-gray-700"
-        >
-          {label}:
-        </label>
-        <select
-          id={name}
-          name={name}
-          value={filters[name]}
-          onChange={handleFilterChange}
-          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-        >
-          {options.map((option) => (
-            <option key={option} value={option === "All" ? "" : option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
-  }
 };
+
+const renderFilterDropdown = (name, label, options, handleChange) => (
+  <div className="flex flex-col px-1 mr-1">
+    <label className="text-xs font-medium text-blue-950">{label}</label>
+    <select
+      name={name}
+      className="w-full p-2 mt-1 text-sm border border-gray-300 rounded-lg"
+      onChange={handleChange}
+    >
+      {options.map((option) => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  </div>
+);
 
 export default Fellowship;
