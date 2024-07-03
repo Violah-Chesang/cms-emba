@@ -18,14 +18,6 @@ const {
 
 const router = express.Router();
 
-// Define variables that will get its info froum other routes handles
-let memberId = null;
-let age = null;
-let fatherName = '';
-let motherName = '';
-let spouseName = '';
-
-
 //test
 router.post("/member/test", async (req, res) => {
   // No. of members
@@ -54,48 +46,6 @@ router.post("/member/test", async (req, res) => {
   // }
 });
 
-//memberId
-router.get('/member/memberId',async (req,res)=> {
-  try{
-    //user Counter model to increase sequence(seq) number
-    const counterData = await Counter.findOneAndUpdate(
-      { name: "counter name" },
-      //$inc increases seq by 1
-      { $inc: { seq: 1 } },
-      //return a new document
-      { new: true, upsert: true }
-    );
-
-    let seqId;
-    //give it a name if it's empty
-    if (counterData.name === null) {
-      name: "counter name";
-    }
-    //assign 1 if it's empty and save it
-    if (counterData.seq === null) {
-      const newCounterSeq = new Counter({ name: "counter name", seq: 1 });
-
-      await newCounterSeq.save();
-      seqId = 1;
-    } else {
-      //extract seq no from the aboved saved document and mmake it 4 digits
-      seqId = counterData.seq;
-      paddedSeqId = seqId.toString().padStart(4, "0");
-    }
-    //the member id to have YYYY concatenated with seqId
-    //Get the current full year
-    const year = new Date().getFullYear();
-
-    // concatenate year and padded seqId
-    memberId = `${year}${paddedSeqId}`;
-    res.json(memberId)
-    console.log(`Member id inside try is ${memberId}`);
-  }catch(err){
-    console.error({message: "Could not access the memberId", Error: err})
-    res.json({message: "No member Id", Error: err})
-  }
-  
-});
 // Spouse details
 router.post('/member/spouse', async (req, res) => {
   try{
@@ -125,7 +75,7 @@ router.post("/member/age", (req,res) => {
     const currentYear = new Date().getFullYear();
     const yearOfBirth = new Date(dob).getFullYear();
   
-    const age = currentYear - yearOfBirth;
+    let age = currentYear - yearOfBirth;
     res.json(age);
     console.log(age);
 
@@ -181,10 +131,43 @@ router.post('/member/mother-details',async (req,res) => {
 //create a member record
 router.post("/member/add", async (req, res) => {
   try {
+    // memberID
+      //user Counter model to increase sequence(seq) number
+      const counterData = await Counter.findOneAndUpdate(
+        { name: "counter name" },
+        //$inc increases seq by 1
+        { $inc: { seq: 1 } },
+        //return a new document
+        { new: true, upsert: true }
+      );
+  
+      let seqId;
+      //give it a name if it's empty
+      if (counterData.name === null) {
+        name: "counter name";
+      }
+      //assign 1 if it's empty and save it
+      if (counterData.seq === null) {
+        const newCounterSeq = new Counter({ name: "counter name", seq: 1 });
+  
+        await newCounterSeq.save();
+        seqId = 1;
+      } else {
+        //extract seq no from the aboved saved document and mmake it 4 digits
+        seqId = counterData.seq;
+        paddedSeqId = seqId.toString().padStart(4, "0");
+      }
+      //the member id to have YYYY concatenated with seqId
+      //Get the current full year
+      const year = new Date().getFullYear();
+  
+      // concatenate year and padded seqId
+      let memberId = `${year}${paddedSeqId}`;
+    ////////////////////////////////////////////////////////////
     const regDate = Date.now().toLocaleString();
 
     const {
-      memberId,
+      // memberId
       firstName,
       middleName,
       surName,
@@ -193,7 +176,7 @@ router.post("/member/add", async (req, res) => {
       phoneNumber,
       physicalAddress,
       dob,
-      age,
+      age : age,
       fatherName,
       motherName,
       fatherPhone,
@@ -218,7 +201,7 @@ router.post("/member/add", async (req, res) => {
 
     ///////////////////////////////////////////////////////
     const newMember = new Member({
-      memberId,
+      memberId : memberId,
       firstName,
       middleName,
       surName,
@@ -372,17 +355,18 @@ router.post("/member/update/:id", async (req, res) => {
 //delete a member record
 router.post("/member/delete", async (req, res) => {
   try {
-    const memberId = req.body.id;
+    const memberId = req.body.memberId;
     
-    const record = await Member.findOne( {_id: memberId});
-    const id = record.id;
+    const record = await Member.findOne( { memberId});
+    let id = record._id;
     //the update to be implemented on the filter
-    const deleted = { $set: { deleted: true } };
+    const deleted = { $set: {deleted : true } };
     //options
     const options = { new: true };
 
     // //perform the delete
     const deletedMember = await Member.findByIdAndUpdate(id, deleted, options);
+
     res
       .status(200)
       .json(deletedMember);
