@@ -68,7 +68,7 @@ const EditForm = ({ editData, onSave, onCancel, renderFilterDropdown }) => {
     { accessor: "notes", header: "Notes" },
   ];
 
-  const pageCount = 10;
+  const pageCount = 12;
   const pageColumns = [];
   for (let i = 0; i < columns.length; i += pageCount) {
     pageColumns.push(columns.slice(i, i + pageCount));
