@@ -7,7 +7,7 @@ import {
   deleteMember,
 } from "../../../store/slice/memberSlice";
 import DataTable from "./DataTable";
-import EditForm from "./EditForm";
+import ParentEditForm from "./ParentEditForm";
 import ViewForm from "./ViewForm";
 import AddForm from "./AddForm";
 
@@ -146,7 +146,7 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
       />
 
       {isFormVisible && (
-        <EditForm
+        <ParentEditForm
           editData={editData}
           onSave={(newData) => {
             dispatch(updateMember({ _id: editData._id, updatedMember: newData }))

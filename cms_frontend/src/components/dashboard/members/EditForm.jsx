@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateMember } from "../../../store/slice/memberSlice";
 
-const EditForm = ({ editData, onSave, onCancel }) => {
+const EditForm = ({ editData, onSave, onCancel, renderFilterDropdown }) => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState(() => {
     if (editData) {
@@ -39,34 +39,32 @@ const EditForm = ({ editData, onSave, onCancel }) => {
     }
   });
 
-  const [currentPage, setCurrentPage] = useState(0); // Define currentPage state
+  const [errors, setErrors] = useState({});
+  const [currentPage, setCurrentPage] = useState(0);
 
   const columns = [
-    { accessor: "_id", header: "ID" },
-    { accessor: "memberId", header: "Member ID" },
-    { accessor: "firstName", header: "First Name" },
-    { accessor: "middleName", header: "Middle Name" },
+    { accessor: "firstName", header: "First Name", required: true },
+    { accessor: "middleName", header: "Middle Name", required: true },
     { accessor: "surName", header: "Surname" },
-    { accessor: "dob", header: "Date of Birth" },
+    { accessor: "dob", header: "Date of Birth", required: true },
     { accessor: "phone", header: "Phone" },
     { accessor: "physicalAddress", header: "Physical Address" },
     { accessor: "nationalId", header: "National ID" },
     { accessor: "motherPhone", header: "Mother's Phone" },
     { accessor: "fatherName", header: "Father's Name" },
     { accessor: "motherName", header: "Mother's Name" },
-    { accessor: "maritalStatus", header: "Marital Status" },
-    { accessor: "marriageType", header: "Marriage Type" },
+    { accessor: "maritalStatus", header: "Marital Status", required: true },
+    { accessor: "marriageType", header: "Marriage Type", required: true },
     { accessor: "spouseName", header: "Spouse Name" },
-    { accessor: "gender", header: "Gender" },
+    { accessor: "gender", header: "Gender", required: true },
     { accessor: "occupation", header: "Occupation" },
-    { accessor: "savedStatus", header: "Saved Status" },
-    { accessor: "baptisedStatus", header: "Baptised Status" },
-    { accessor: "otherChurchMembership", header: "Other Church Membership" },
-    { accessor: "memberType", header: "Member Type" },
+    { accessor: "savedStatus", header: "Saved Status", required: true },
+    { accessor: "baptisedStatus", header: "Baptised Status", required: true },
+    { accessor: "otherChurchMembership", header: "Other Church Membership", required: true },
+    { accessor: "memberType", header: "Member Type", required: true },
     { accessor: "cellGroup", header: "Cell Group" },
     { accessor: "ministry", header: "Ministry" },
     { accessor: "fellowship", header: "Fellowship" },
-    { accessor: "age", header: "Age" },
     { accessor: "notes", header: "Notes" },
   ];
 
@@ -84,6 +82,31 @@ const EditForm = ({ editData, onSave, onCancel }) => {
     }));
   };
 
+  const validate = () => {
+    const newErrors = {};
+
+    if (!/^\d{8}$/.test(formData.nationalId)) {
+      newErrors.nationalId = "National ID must be exactly 8 digits.";
+    }
+
+    if (!/^\d{10,13}$/.test(formData.phone)) {
+      newErrors.phone = "Phone number must be between 10 and 13 digits.";
+    }
+
+    if (!formData.dob) {
+      newErrors.dob = "Date of Birth is required.";
+    }
+
+    columns.forEach((column) => {
+      if (column.required && !formData[column.accessor]) {
+        newErrors[column.accessor] = `${column.header} is required.`;
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleNext = () => {
     if (currentPage < pageColumns.length - 1) {
       setCurrentPage((prevPage) => prevPage + 1);
@@ -98,29 +121,28 @@ const EditForm = ({ editData, onSave, onCancel }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const { _id } = formData; // Assuming _id is part of formData or editData
-      await dispatch(updateMember({ _id: _id, updatedMember: formData }));
-  
-      onSave(formData);
-    } catch (error) {
-      console.error("Error updating member:", error);
-      if (error.response && error.response.status === 404) {
-        alert("Member not found. Please verify the member ID.");
-      } else {
-        alert("Failed to update member. Please try again later.");
+    if (validate()) {
+      try {
+        const { _id } = formData;
+        await dispatch(updateMember({ _id: _id, updatedMember: formData }));
+        onSave(formData);
+      } catch (error) {
+        console.error("Error updating member:", error);
+        if (error.response && error.response.status === 404) {
+          alert("Member not found. Please verify the member ID.");
+        } else {
+          alert("Failed to update member. Please try again later.");
+        }
       }
     }
   };
-  
-  
 
   const handleCancel = () => {
     onCancel();
   };
 
   if (!editData) {
-    return null; // or loading indicator if needed
+    return null;
   }
 
   return (
@@ -146,13 +168,33 @@ const EditForm = ({ editData, onSave, onCancel }) => {
             {pageColumns[currentPage].map((column) => (
               <div key={column.accessor}>
                 <label className="block mb-2">{column.header}</label>
-                <input
-                  type="text"
-                  name={column.accessor}
-                  value={formData[column.accessor]}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-                />
+                {["fellowship", "ministry", "cellGroup", "status", "baptisedStatus", "maritalStatus", "gender", "marriageType", "savedStatus", "otherChurchMembership", "memberType"].includes(column.accessor) ? (
+                  renderFilterDropdown(
+                    column.accessor,
+                    column.header,
+                    formData[column.accessor],
+                    handleInputChange
+                  )
+                ) : column.accessor === "dob" ? (
+                  <input
+                    type="date"
+                    name={column.accessor}
+                    value={formData[column.accessor]}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 px-4 py-2 rounded-lg"
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    name={column.accessor}
+                    value={formData[column.accessor]}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 px-4 py-2 rounded-lg"
+                  />
+                )}
+                {errors[column.accessor] && (
+                  <div className="text-red-500 text-sm">{errors[column.accessor]}</div>
+                )}
               </div>
             ))}
           </div>
