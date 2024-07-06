@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { GrClose } from "react-icons/gr";
 import "./SideNav.css";
 import { MdDashboard } from "react-icons/md";
@@ -8,13 +8,35 @@ import { IoDocumentAttach } from "react-icons/io5";
 import { BiSolidRightArrow } from "react-icons/bi";
 import { NavLink } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
-import { useSelector } from 'react-redux'; 
+import { useSelector } from 'react-redux';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const Sidenav = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const userDetails = useSelector((state) => state.auth.user);
+  const [parsedUserDetails, setParsedUserDetails] = useState(null);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const userDetailsCookie = Cookies.get('userDetails');
+    if (userDetailsCookie) {
+      try {
+        const parsedUserDetails = JSON.parse(userDetailsCookie);
+        setParsedUserDetails(parsedUserDetails);
+      } catch (error) {
+        console.error('Error parsing user details from cookie:', error);
+      }
+    }
+  }, []);
 
+  useEffect(() => {
+    if (userDetails) {
+      setParsedUserDetails(userDetails);
+    }
+  }, [userDetails]);
+  
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
@@ -49,27 +71,23 @@ const Sidenav = () => {
 
       <div className="flex flex-col items-center justify-center p-1">
         <div className="">
-          {isOpen ? (
-            <p className={`text-6xl font-normal text-blue-900 rounded-full py-4 px-7 bg-white` }>
-              {userDetails ? userDetails.firstname.charAt(0) : ""}
-            </p>
-          ) : (
-            <p className={`text-3xl font-normal text-blue-900 rounded-full py-1 px-3 bg-white` }>
-              {userDetails ? userDetails.firstname.charAt(0) : ""}
+          {isOpen && parsedUserDetails && (
+            <p className={`text-${isOpen ? "6xl" : "3xl"} font-normal text-blue-900 rounded-full py-${isOpen ? "4" : "1"} px-${isOpen ? "7" : "3"} bg-white` }>
+              {parsedUserDetails.firstname.charAt(0)}
             </p>
           )}
         </div>
 
-        {isOpen && userDetails && (
+        {isOpen && parsedUserDetails && (
           <div className="flex flex-col items-center justify-center text-white pt-1">
             <p className="font-bold text-lg " style={{ color: "#EFBF04" }}>
-              {`${userDetails.firstname} ${userDetails.lastname}`}
+              {`${parsedUserDetails.firstname} ${parsedUserDetails.lastname}`}
             </p>
             <p className="font-normal text-md" style={{ color: "#EFBF04" }}>
-              {userDetails.email}
+              {parsedUserDetails.email}
             </p>
             <p className="font-light text-sm" style={{ color: "#EFBF04" }}>
-              {userDetails.role}
+              {parsedUserDetails.role}
             </p>
           </div>
         )}

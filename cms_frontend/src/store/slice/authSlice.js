@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { setRole } from './accessControlSlice';
+import Cookies from 'js-cookie';
 
-// Action creators
+// Async Thunks
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (userData, thunkAPI) => {
@@ -20,8 +20,8 @@ export const loginUser = createAsyncThunk(
   async (userData, thunkAPI) => {
     try {
       const response = await axios.post('http://localhost:5500/user/login', userData);
-      const token = response.data.token;
-      localStorage.setItem('token', token);
+      const token = response.data.data.token;
+      Cookies.set('token', token, { expires: 1, sameSite: 'None', secure: true }); // Set token cookie with expiration and proper attributes
       const username = userData.userName;
       return { token, username };
     } catch (error) {
@@ -35,7 +35,7 @@ export const fetchUserDetails = createAsyncThunk(
   async (username, thunkAPI) => {
     try {
       const response = await axios.post('http://localhost:5500/get-user', { userName: username });
-      localStorage.setItem('userDetails', JSON.stringify(response.data));
+      Cookies.set('userDetails', JSON.stringify(response.data), { expires: 1, sameSite: 'None', secure: true }); // Set userDetails cookie with expiration and proper attributes
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -43,21 +43,32 @@ export const fetchUserDetails = createAsyncThunk(
   }
 );
 
-// Slice definition
+// Slice Definition
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: JSON.parse(localStorage.getItem('userDetails')) || null,
-    token: localStorage.getItem('token') || null,
+    user: null,
+    token: Cookies.get('token') || null, // Initialize token from cookie
     status: 'idle',
     error: null,
   },
   reducers: {
-    logout: (state) => {
+    initializeUserFromCookie(state) {
+      const userDetailsCookie = Cookies.get('userDetails');
+      if (userDetailsCookie) {
+        try {
+          state.user = JSON.parse(userDetailsCookie);
+        } catch (error) {
+          console.error('Error parsing user details cookie:', error);
+          state.user = null; // Handle invalid cookie data gracefully
+        }
+      }
+    },
+    logout(state) {
       state.user = null;
       state.token = null;
-      localStorage.removeItem('token');
-      localStorage.removeItem('userDetails');
+      Cookies.remove('token'); // Remove token cookie
+      Cookies.remove('userDetails'); // Remove userDetails cookie
     },
   },
   extraReducers: (builder) => {
@@ -94,9 +105,7 @@ const authSlice = createSlice({
         state.status = 'succeeded';
         state.user = action.payload;
         state.error = null;
-        if (action.payload.role) {
-          //Logic to be added later
-        }
+        // You can add additional logic here if needed
       })
       .addCase(fetchUserDetails.rejected, (state, action) => {
         state.status = 'failed';
@@ -105,6 +114,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { initializeUserFromCookie, logout } = authSlice.actions;
 
 export default authSlice.reducer;

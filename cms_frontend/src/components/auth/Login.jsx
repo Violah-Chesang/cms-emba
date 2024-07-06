@@ -11,11 +11,9 @@ const Login = () => {
 
   useEffect(() => {
     if (status === "succeeded" && username) {
-      console.log(status);
-      dispatch(fetchUserDetails(username));
-      navigate("/dashboard");
+      dispatch(fetchUserDetails(username)); // Fetch user details after successful login
     }
-  }, [status, token, username, dispatch, navigate]);
+  }, [status, username, dispatch]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -31,6 +29,13 @@ const Login = () => {
     dispatch(loginUser(data));
     setUsername(username);
   };
+
+  // Redirect to Dashboard after successful login
+  useEffect(() => {
+    if (token && status === "succeeded") {
+      navigate("/dashboard");
+    }
+  }, [token, status, navigate]);
 
   return (
     <div className="flex flex-col justify-center items-center bg-auth-background h-screen bg-cover bg-opacity-100 shadow-blue-lg">

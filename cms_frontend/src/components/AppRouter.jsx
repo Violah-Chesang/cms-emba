@@ -1,5 +1,6 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Sidenav from "./dashboard/nav/Sidenav";
 import Dashboard from "./dashboard/Dashboard";
 import Calendar from "./dashboard/calendar/Calendar";
@@ -15,33 +16,50 @@ import Login from "./auth/Login";
 import Signup from "./auth/Signup";
 
 const AppRouter = () => {
+  const { token } = useSelector((state) => state.auth);
+
+  const isAuthenticated = () => {
+    return token !== null;
+    };
+
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      <Route
-        path="*"
-        element={
-          <div className="flex flex-row">
-            <Sidenav />
-            <div className="flex-grow">
-              <TopNav />
-              <Routes>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/calendar" element={<Calendar />} />
-                <Route path="/finance" element={<Finance />} />
-                <Route path="/archives" element={<Archives />} />
-                <Route path="/members/all" element={<AllMembers />} />
-                <Route path="/members/men" element={<Men />} />
-                <Route path="/members/women" element={<Women />} />
-                <Route path="/members/youth" element={<Youth />} />
-                <Route path="/members/junior" element={<Jss />} />
-              </Routes>
+
+      {isAuthenticated() ? (
+        <Route
+          path="*"
+          element={
+            <div className="flex flex-row">
+              <Sidenav />
+              <div className="flex-grow">
+                <TopNav />
+                <Routes>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/calendar" element={<Calendar />} />
+                  <Route path="/finance" element={<Finance />} />
+                  <Route path="/archives" element={<Archives />} />
+                  <Route path="/members/all" element={<AllMembers />} />
+                  <Route path="/members/men" element={<Men />} />
+                  <Route path="/members/women" element={<Women />} />
+                  <Route path="/members/youth" element={<Youth />} />
+                  <Route path="/members/junior" element={<Jss />} />
+                </Routes>
+              </div>
             </div>
-          </div>
-        }
-      />
+          }
+        />
+      ) : (
+        <>
+          <Route path="*" element={<Navigate to="/login" />} />
+          <Route
+            path="/login"
+            element={<Login showAlert={true} alertMessage="Login to access protected pages" />}
+          />
+        </>
+      )}
     </Routes>
   );
 };
