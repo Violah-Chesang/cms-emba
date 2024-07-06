@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const AddForm = ({ onSave, onCancel, renderFilterDropdown }) => {
-  const [currentPage, setCurrentPage] = useState(0); // State to track current page
+  const [currentPage, setCurrentPage] = useState(0);
   const [formData, setFormData] = useState({
     _id: "",
     memberId: "",
@@ -31,7 +31,8 @@ const AddForm = ({ onSave, onCancel, renderFilterDropdown }) => {
     notes: "",
   });
 
-  const fieldsPerPage = 12; // Number of fields per
+  const [errors, setErrors] = useState({});
+  const fieldsPerPage = 12;
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -41,9 +42,40 @@ const AddForm = ({ onSave, onCancel, renderFilterDropdown }) => {
     }));
   };
 
+  const validate = () => {
+    const newErrors = {};
+
+    // National ID validation
+    if (!/^\d{8}$/.test(formData.nationalId)) {
+      newErrors.nationalId = "National ID must be exactly 8 digits.";
+    }
+
+    // Phone number validation
+    if (!/^\d{10,13}$/.test(formData.phone)) {
+      newErrors.phone = "Phone number must be between 10 and 13 digits.";
+    }
+
+    // Date of Birth validation (ensures date is valid)
+    if (!formData.dob) {
+      newErrors.dob = "Date of Birth is required.";
+    }
+
+    // Additional required fields validation
+    fields.forEach((field) => {
+      if (field.required && !formData[field.accessor]) {
+        newErrors[field.accessor] = `${field.header} is required.`;
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    onSave(formData);
+    if (validate()) {
+      onSave(formData);
+    }
   };
 
   const nextPage = () => {
@@ -70,45 +102,92 @@ const AddForm = ({ onSave, onCancel, renderFilterDropdown }) => {
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
         <h2 className="text-xl font-semibold mb-4">Add Member</h2>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4">
-            {fields.slice(currentPage * fieldsPerPage, (currentPage + 1) * fieldsPerPage).map((field) => (
-              <div key={field.accessor}>
-                <label className="block mb-2">{field.header}</label>
-                {field.accessor === "fellowship" ||
-                field.accessor === "ministry" ||
-                field.accessor === "cellGroup" ||
-                field.accessor === "status" ||
-                field.accessor === "maritalStatus" ||
-                field.accessor === "gender" ||
-                field.accessor === "marriageType" ||
-                field.accessor === "savedStatus" ||
-                field.accessor === "otherChurchMembership" ||
-                field.accessor === "memberType" ||
-                field.accessor === "baptisedStatus" ? (
-                  renderFilterDropdown(field.accessor, field.header, options[field.accessor], handleInputChange)
-                ) : (
-                  <input
-                    type="text"
-                    name={field.accessor}
-                    value={formData[field.accessor]}
-                    onChange={handleInputChange}
-                    className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-                  />
-                )}
-              </div>
-            ))}
+            {fields
+              .slice(
+                currentPage * fieldsPerPage,
+                (currentPage + 1) * fieldsPerPage
+              )
+              .map((field) => (
+                <div key={field.accessor}>
+                  {shouldRenderDropdown(field.accessor) ? (
+                    <div>
+                      <label className="block mb-2">
+                        {field.header}
+                        <span className="text-red-500">*</span>
+                      </label>
+                      {renderFilterDropdown(
+                        field.accessor,
+                        field.header,
+                        options[field.accessor],
+                        handleInputChange,
+                        true // making the dropdown required
+                      )}
+                      {errors[field.accessor] && (
+                        <span className="text-red-500 text-sm">
+                          {errors[field.accessor]}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <div>
+                      <label className="block mb-2">
+                        {field.header}
+                        {field.required && (
+                          <span className="text-red-500">*</span>
+                        )}
+                      </label>
+                      {field.accessor === "dob" ? (
+                        <input
+                          type="date"
+                          name={field.accessor}
+                          value={formData[field.accessor]}
+                          onChange={handleInputChange}
+                          className="w-full border border-gray-300 px-4 py-2 rounded-lg"
+                          required={field.required}
+                        />
+                      ) : (
+                        <input
+                          type={field.accessor === "nationalId" || field.accessor === "phone" ? "number" : "text"}
+                          name={field.accessor}
+                          value={formData[field.accessor]}
+                          onChange={handleInputChange}
+                          className="w-full border border-gray-300 px-4 py-2 rounded-lg"
+                          required={field.required}
+                          minLength={field.accessor === "phone" ? 10 : undefined}
+                          maxLength={field.accessor === "phone" ? 13 : undefined}
+                          min={field.accessor === "nationalId" ? "10000000" : undefined}
+                          max={field.accessor === "nationalId" ? "99999999" : undefined}
+                        />
+                      )}
+                      {errors[field.accessor] && (
+                        <span className="text-red-500 text-sm">
+                          {errors[field.accessor]}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
           </div>
           <div className="flex justify-between mt-4">
             <button
               type="button"
               onClick={prevPage}
               disabled={currentPage === 0}
-              className={`bg-gray-500 text-white px-4 py-2 rounded-lg ${currentPage === 0 ? 'cursor-not-allowed' : 'hover:bg-gray-600'}`}
+              className={`bg-gray-500 text-white px-4 py-2 rounded-lg ${
+                currentPage === 0 ? "cursor-not-allowed" : "hover:bg-gray-600"
+              }`}
             >
               Previous
             </button>
@@ -119,7 +198,11 @@ const AddForm = ({ onSave, onCancel, renderFilterDropdown }) => {
               type="button"
               onClick={nextPage}
               disabled={currentPage === totalPages - 1}
-              className={`bg-blue-500 text-white px-4 py-2 rounded-lg ${currentPage === totalPages - 1 ? 'cursor-not-allowed' : 'hover:bg-blue-600'}`}
+              className={`bg-blue-500 text-white px-4 py-2 rounded-lg ${
+                currentPage === totalPages - 1
+                  ? "cursor-not-allowed"
+                  : "hover:bg-blue-600"
+              }`}
             >
               Next
             </button>
@@ -146,26 +229,25 @@ const AddForm = ({ onSave, onCancel, renderFilterDropdown }) => {
 };
 
 const fields = [
-  { accessor: "memberId", header: "Member ID" },
-  { accessor: "firstName", header: "First Name" },
-  { accessor: "middleName", header: "Middle Name" },
+  { accessor: "firstName", header: "First Name", required: true },
+  { accessor: "middleName", header: "Middle Name", required: true },
   { accessor: "surName", header: "Surname" },
-  { accessor: "dob", header: "Date of Birth" },
+  { accessor: "dob", header: "Date of Birth", required: true },
   { accessor: "phone", header: "Phone" },
   { accessor: "physicalAddress", header: "Physical Address" },
   { accessor: "nationalId", header: "National ID" },
   { accessor: "motherPhone", header: "Mother's Phone" },
   { accessor: "fatherName", header: "Father's Name" },
   { accessor: "motherName", header: "Mother's Name" },
-  { accessor: "maritalStatus", header: "Marital Status" },
-  { accessor: "marriageType", header: "Marriage Type" },
+  { accessor: "maritalStatus", header: "Marital Status", required: true },
+  { accessor: "marriageType", header: "Marriage Type", required: true },
   { accessor: "spouseName", header: "Spouse Name" },
-  { accessor: "gender", header: "Gender" },
+  { accessor: "gender", header: "Gender", required: true },
   { accessor: "occupation", header: "Occupation" },
-  { accessor: "savedStatus", header: "Saved Status" },
-  { accessor: "baptisedStatus", header: "Baptised Status" },
-  { accessor: "otherChurchMembership", header: "Other Church Membership" },
-  { accessor: "memberType", header: "Member Type" },
+  { accessor: "savedStatus", header: "Saved Status", required: true },
+  { accessor: "baptisedStatus", header: "Baptised Status", required: true },
+  { accessor: "otherChurchMembership", header: "Other Church Membership", required: true },
+  { accessor: "memberType", header: "Member Type", required: true },
   { accessor: "cellGroup", header: "Cell Group" },
   { accessor: "ministry", header: "Ministry" },
   { accessor: "fellowship", header: "Fellowship" },
@@ -174,13 +256,7 @@ const fields = [
 ];
 
 const options = {
-  fellowship: [
-    " ",
-    "Youth",
-    "Women",
-    "Men",
-    "JSS",
-  ],
+  fellowship: [" ", "Youth", "Women", "Men", "JSS"],
   ministry: [
     " ",
     "praise&Worship",
@@ -203,49 +279,30 @@ const options = {
     "Syokimau",
     "Diaspora",
   ],
-  status: [
-    " ",
-    "active",
-    "inactive",
-  ],
-  baptisedStatus: [
-    " ",
-    "baptised",
-    "Not Baptised",
-  ],
-  maritalStatus:[
-    " ",
-    "Married",
-    "Single",
-    "Divorced",
-    "Widowed"
-  ],
-  gender:[
-    " ",
-    "Male",
-    "Female"
-  ],
-  marriageType:[
-    " ",
-    "none",
-    "monogamous",
-    "polygamous"
-  ],
-  savedStatus:[
-    " ",
-    "saved",
-    "not saved"
-  ],
-  otherChurchMembership:[
-    " ",
-    "Yes",
-    "No"
-  ],
-  memberType:[
-    " ",
-    "full member",
-    "associate"
-  ]
+  status: [" ", "active", "inactive"],
+  baptisedStatus: [" ", "baptised", "Not Baptised"],
+  maritalStatus: [" ", "Married", "Single", "Divorced", "Widowed"],
+  gender: [" ", "Male", "Female"],
+  marriageType: [" ", "none", "monogamous", "polygamous"],
+  savedStatus: [" ", "saved", "not saved"],
+  otherChurchMembership: [" ", "Yes", "No"],
+  memberType: [" ", "full member", "associate"],
+};
+
+const shouldRenderDropdown = (accessor) => {
+  return (
+    accessor === "fellowship" ||
+    accessor === "ministry" ||
+    accessor === "cellGroup" ||
+    accessor === "status" ||
+    accessor === "maritalStatus" ||
+    accessor === "gender" ||
+    accessor === "marriageType" ||
+    accessor === "savedStatus" ||
+    accessor === "otherChurchMembership" ||
+    accessor === "memberType" ||
+    accessor === "baptisedStatus"
+  );
 };
 
 export default AddForm;
