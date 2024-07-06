@@ -32,7 +32,7 @@ const AddForm = ({ onSave, onCancel, renderFilterDropdown }) => {
   });
 
   const [errors, setErrors] = useState({});
-  const fieldsPerPage = 12;
+  const fieldsPerPage = 8;
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -45,22 +45,18 @@ const AddForm = ({ onSave, onCancel, renderFilterDropdown }) => {
   const validate = () => {
     const newErrors = {};
 
-    // National ID validation
     if (!/^\d{8}$/.test(formData.nationalId)) {
       newErrors.nationalId = "National ID must be exactly 8 digits.";
     }
 
-    // Phone number validation
     if (!/^\d{10,13}$/.test(formData.phone)) {
       newErrors.phone = "Phone number must be between 10 and 13 digits.";
     }
 
-    // Date of Birth validation (ensures date is valid)
     if (!formData.dob) {
       newErrors.dob = "Date of Birth is required.";
     }
 
-    // Additional required fields validation
     fields.forEach((field) => {
       if (field.required && !formData[field.accessor]) {
         newErrors[field.accessor] = `${field.header} is required.`;
@@ -131,7 +127,7 @@ const AddForm = ({ onSave, onCancel, renderFilterDropdown }) => {
                         field.header,
                         options[field.accessor],
                         handleInputChange,
-                        true // making the dropdown required
+                        true
                       )}
                       {errors[field.accessor] && (
                         <span className="text-red-500 text-sm">

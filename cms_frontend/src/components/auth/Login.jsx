@@ -11,7 +11,7 @@ const Login = () => {
 
   useEffect(() => {
     if (status === "succeeded" && username) {
-      dispatch(fetchUserDetails(username)); // Fetch user details after successful login
+      dispatch(fetchUserDetails(username));
     }
   }, [status, username, dispatch]);
 
@@ -30,7 +30,6 @@ const Login = () => {
     setUsername(username);
   };
 
-  // Redirect to Dashboard after successful login
   useEffect(() => {
     if (token && status === "succeeded") {
       navigate("/dashboard");

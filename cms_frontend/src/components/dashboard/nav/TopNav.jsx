@@ -19,17 +19,15 @@ const TopNav = () => {
           const parsedUserDetails = JSON.parse(userDetailsCookie);
           setUserDetails(parsedUserDetails);
         } else {
-          // If userDetailsCookie is not found, handle as needed (e.g., redirect to login)
           navigate('/login');
         }
       } catch (error) {
         console.error('Error parsing user details from cookie:', error);
-        // Handle error if needed
       }
     };
 
     fetchData();
-  }, [navigate]); // Include navigate in dependencies to prevent missing dependencies warning
+  }, [navigate]);
 
   const handleLogout = () => {
     Cookies.remove('token');
@@ -38,7 +36,6 @@ const TopNav = () => {
     navigate('/login');
   };
 
-  // Conditional rendering based on userDetails
   return (
     <div className="flex flex-row h-16 bg-white items-center border-b-1 border-blue-950 shadow-2xl">
       <div className="flex flex-row w-10/12 justify-between">
