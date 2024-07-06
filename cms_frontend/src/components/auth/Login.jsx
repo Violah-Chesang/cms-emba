@@ -1,20 +1,19 @@
-
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { loginUser, fetchUserDetails } from '../../store/slice/authSlice';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loginUser, fetchUserDetails } from "../../store/slice/authSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token, status, error } = useSelector((state) => state.auth);
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
-    if (status === 'succeeded' && username) {
-      console.log(status)
+    if (status === "succeeded" && username) {
+      console.log(status);
       dispatch(fetchUserDetails(username));
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   }, [status, token, username, dispatch, navigate]);
 
@@ -43,8 +42,21 @@ const Login = () => {
         onSubmit={handleSubmit}
       >
         <img src="../src/assets/mck_logo.png" alt="" width={150} height={150} />
+        <p
+          style={{
+            fontSize: "25px",
+            background: "-webkit-linear-gradient(#ffffff, #0C4A6E)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            margin:"15px"
+          }}
+        >
+          EMBAKASI METHODIST CHURCH
+        </p>
         <div className="flex flex-col mb-1">
-          <label className="text-white" htmlFor="username">Username:</label>
+          <label className="text-white" htmlFor="username">
+            Username:
+          </label>
           <input
             className="w-96 h-9 rounded m-1 p-2 text-gray-700"
             name="username"
@@ -52,7 +64,9 @@ const Login = () => {
           />
         </div>
         <div className="flex flex-col mb-1">
-          <label className="text-white mt-4" htmlFor="password">Password:</label>
+          <label className="text-white mt-4" htmlFor="password">
+            Password:
+          </label>
           <input
             className="w-96 h-9 rounded m-1 p-2 text-gray-700"
             name="password"
@@ -65,10 +79,13 @@ const Login = () => {
           name="submit"
           value="Login"
         />
-        {status === 'loading' && <p>Logging in...</p>}
-        {status === 'failed' && <p className="text-red-900">{error}</p>}
+        {status === "loading" && <p>Logging in...</p>}
+        {status === "failed" && <p className="text-red-900">{error}</p>}
         <p className="relative z-10 text-gray-400 mt-4">
-          Don't have an account? <a href="/signup" className="text-sky-700 hover:text-sky-900">Sign Up</a>
+          Don't have an account?{" "}
+          <a href="/signup" className="text-sky-700 hover:text-sky-900">
+            Sign Up
+          </a>
         </p>
       </form>
     </div>
