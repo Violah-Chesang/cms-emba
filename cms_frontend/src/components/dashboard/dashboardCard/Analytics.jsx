@@ -11,7 +11,7 @@ const fellowshipGroups = [
 
 function AnalyticsCard({ group, number, percentage }) {
   return (
-    <div className="bg-blue-100 p-3 rounded-lg m-1 flex-1">
+    <div className="bg-blue-100 p-3 rounded-lg m-1 flex-1 w-full md:w-1/2 lg:w-1/3">
       <div className="flex flex-row items-center justify-between">
         <div className="w-full">
           <p className="capitalize font-bold text-md">{group} Fellowship</p>
@@ -33,7 +33,6 @@ function AnalyticsCard({ group, number, percentage }) {
     </div>
   );
 }
-
 
 const FellowshipAnalytics = ({ group, totalMembers }) => {
   const url =
@@ -76,7 +75,7 @@ const AnalyticsList = () => {
   return (
     <div>
       <p className="text-xl font-bold pt-2">Member Statistics</p>
-      <div className="flex flex-row flex-wrap mt-4 ">
+      <div className="flex flex-row flex-wrap mt-4">
         {fellowshipGroups.map((group) => (
           <FellowshipAnalytics
             key={group.group}

@@ -12,7 +12,7 @@ const DataTable = ({ data, columns, userRole, onEditClick, onViewClick, onDelete
   const canDelete = ["Minister", "Executive Leader"].includes(userRole);
 
   return (
-    <table className="min-w-full bg-white border-collapse border border-gray-300 mb-12">
+    <table className="bg-white border-collapse border border-gray-300 mb-12">
       <thead>
         <tr>
           {columns.map((col) => (

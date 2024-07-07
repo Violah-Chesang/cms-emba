@@ -20,11 +20,11 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
   const [isViewVisible, setIsViewVisible] = useState(false);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   const [filters, setFilters] = useState({
-    fellowship: "",
-    ministry: "",
-    cellGroup: "",
-    status: "",
-    baptised: "",
+    fellowship: "All",
+    ministry: "All",
+    cellGroup: "All",
+    status: "All",
+    baptised: "All",
   });
 
   if (loading) return <p>Loading...</p>;
@@ -66,11 +66,11 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
 
   const filteredData = data.filter((item) => {
     return (
-      (filters.fellowship ? item.fellowship === filters.fellowship : true) &&
-      (filters.ministry ? item.ministry === filters.ministry : true) &&
-      (filters.status ? item.status === filters.status : true) &&
-      (filters.baptised ? item.baptised === filters.baptised : true) &&
-      (filters.cellGroup ? item.cellGroup === filters.cellGroup : true)
+      (filters.fellowship === "All" || item.fellowship === filters.fellowship) &&
+      (filters.ministry === "All" || item.ministry === filters.ministry) &&
+      (filters.status === "All" || item.status === filters.status) &&
+      (filters.baptised === "All" || item.baptised === filters.baptised) &&
+      (filters.cellGroup === "All" || item.cellGroup === filters.cellGroup)
     );
   });
 
@@ -118,7 +118,7 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
           ], handleFilterChange)}
           {renderFilterDropdown("baptised", "Baptised", [
             "All",
-            "baptised",
+            "Baptised",
             "Not Baptised",
           ], handleFilterChange)}
         </div>

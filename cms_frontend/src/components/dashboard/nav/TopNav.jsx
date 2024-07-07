@@ -37,28 +37,27 @@ const TopNav = () => {
   };
 
   return (
-    <div className="flex flex-row h-16 bg-white items-center border-b-1 border-blue-950 shadow-2xl">
-      <div className="flex flex-row w-10/12 justify-between">
+    <div className="flex flex-col md:flex-row h-16 bg-white items-center border-b-1 border-blue-950 shadow-2xl p-4 md:p-0">
+      <div className="flex flex-col md:flex-row w-full md:w-10/12 justify-between mb-4 md:mb-0">
         <div className="flex flex-col ml-3">
           <p className="text-blue-900 font-bold text-2xl">
             Welcome {userDetails ? userDetails.userName : "Guest"}
           </p>
           <p className="text-gray-600 font-normal text-sm flex">
-            Today is {"  "}
-            <DateToday className="pr-3 ml-2" />
+            Today is <DateToday className="pr-3 ml-2" />
           </p>
         </div>
-        <div>
+        <div className="w-full md:w-auto mt-4 md:mt-0">
           <input
             type="search"
             name=""
             id=""
             placeholder="Search here....."
-            className="border-2 border-blue-950 w-96 h-11 rounded-lg border-spacing-2 border-gray-1 pl-5 bg-blue-950 text-white"
+            className="border-2 border-blue-950 w-full md:w-96 h-11 rounded-lg pl-5 bg-blue-950 text-white"
           />
         </div>
       </div>
-      <div className="w-2/12 flex justify-evenly">
+      <div className="flex w-full md:w-2/12 justify-between md:justify-evenly">
         <a href="#">
           <IoNotifications size={25} />
         </a>

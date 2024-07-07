@@ -12,6 +12,7 @@ const columns = [
   { header: "Baptised", accessor: "baptisedStatus" },
   { header: "Cell Group", accessor: "cellGroup" },
   { header: "Fellowship", accessor: "fellowship" },
+  { header: "Ministry", accessor: "ministry" },
   { header: "Status", accessor: "isActive" },
 ];
 

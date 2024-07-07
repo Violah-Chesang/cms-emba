@@ -20,7 +20,7 @@ const AppRouter = () => {
 
   const isAuthenticated = () => {
     return token !== null;
-    };
+  };
 
   return (
     <Routes>
@@ -28,30 +28,31 @@ const AppRouter = () => {
       <Route path="/login" element={<Login />} />
 
       {isAuthenticated() ? (
-
-        <Route
-          path="*"
-          element={
-            <div className="flex flex-row">
-              <Sidenav />
-              <div className="flex-grow">
-                <TopNav />
-                <Routes>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/calendar" element={<Calendar />} />
-                  <Route path="/finance" element={<Finance />} />
-                  <Route path="/archives" element={<Archives />} />
-                  <Route path="/members/all" element={<AllMembers />} />
-                  <Route path="/members/men" element={<Men />} />
-                  <Route path="/members/women" element={<Women />} />
-                  <Route path="/members/youth" element={<Youth />} />
-                  <Route path="/members/junior" element={<Jss />} />
-                </Routes>
+        <>
+          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="*"
+            element={
+              <div className="flex flex-row">
+                <Sidenav />
+                <div className="flex-grow">
+                  <TopNav />
+                  <Routes>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/calendar" element={<Calendar />} />
+                    <Route path="/finance" element={<Finance />} />
+                    <Route path="/archives" element={<Archives />} />
+                    <Route path="/members/all" element={<AllMembers />} />
+                    <Route path="/members/men" element={<Men />} />
+                    <Route path="/members/women" element={<Women />} />
+                    <Route path="/members/youth" element={<Youth />} />
+                    <Route path="/members/junior" element={<Jss />} />
+                  </Routes>
+                </div>
               </div>
-            </div>
-
-          }
-        />
+            }
+          />
+        </>
       ) : (
         <>
           <Route path="*" element={<Navigate to="/login" />} />

@@ -3,8 +3,8 @@ import '../nav/Sidenav'
 
 function Hero() {
   return (
-    <div className="bg-blue-950 h-60 w-12/12 flex flex-row justify-evenly items-center rounded-lg p-10">
-      <div>
+    <div className="bg-blue-950 h-60 flex flex-col md:flex-row justify-evenly items-center rounded-lg p-10">
+      <div className="text-center md:text-left">
         <p className="text-white font-extrabold text-3xl pb-3">
           Welcome to MCK Embakasi
         </p>
@@ -13,8 +13,8 @@ function Hero() {
           Learn More
         </button>
       </div>
-      <div>
-        <img src="src/assets/hero_image-removebg.png" alt="" />
+      <div className="mt-5 md:mt-0">
+        <img className="w-full max-w-xs md:max-w-md" src="src/assets/hero_image-removebg.png" alt="Hero" />
       </div>
     </div>
   );

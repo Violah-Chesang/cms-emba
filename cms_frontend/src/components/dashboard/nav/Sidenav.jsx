@@ -72,7 +72,7 @@ const Sidenav = () => {
       <div className="flex flex-col items-center justify-center p-1">
         <div className="">
           {isOpen && parsedUserDetails && (
-            <p className={`text-${isOpen ? "6xl" : "3xl"} font-normal text-blue-900 rounded-full py-${isOpen ? "4" : "1"} px-${isOpen ? "7" : "3"} bg-white` }>
+            <p className={`text-${isOpen ? "6xl" : "3xl"} font-normal text-blue-900 rounded-full py-${isOpen ? "4" : "1"} px-${isOpen ? "8" : "3"} bg-white` }>
               {parsedUserDetails.firstname.charAt(0)}
             </p>
           )}
@@ -98,10 +98,11 @@ const Sidenav = () => {
           <li className="flex flex-row p-4 text-lg">
             <NavLink
               to="/dashboard"
-              className="flex flex-row items-center text-sm   hover:text-amber-400 active:text-amber-400"
+              className={({ isActive }) =>
+                `flex flex-row items-center text-sm hover:text-amber-400 ${isActive ? 'text-amber-400' : ''}`
+              }
             >
               <MdDashboard size={isOpen ? 25 : 35} className="pr-2" />
-
               {isOpen && <span className="text-only">Dashboard</span>}
             </NavLink>
           </li>
@@ -118,7 +119,9 @@ const Sidenav = () => {
                 <li className="flex flex-row p-2 text-lg ml-2">
                   <NavLink
                     to="/members/all"
-                    className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
+                    className={({ isActive }) =>
+                      `flex flex-row items-center text-sm hover:text-amber-400 ${isActive ? 'text-amber-400' : ''}`
+                    }
                   >
                     <BiSolidRightArrow size={24} className="pr-2" />
                     <span className="text-only">All Fellowships</span>
@@ -127,7 +130,9 @@ const Sidenav = () => {
                 <li className="flex flex-row p-2 text-lg ml-2">
                   <NavLink
                     to="/members/men"
-                    className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
+                    className={({ isActive }) =>
+                      `flex flex-row items-center text-sm hover:text-amber-400 ${isActive ? 'text-amber-400' : ''}`
+                    }
                   >
                     <BiSolidRightArrow size={24} className="pr-2" />
                     <span className="text-only">Men Fellowship</span>
@@ -136,7 +141,9 @@ const Sidenav = () => {
                 <li className="flex flex-row p-2 text-lg ml-2">
                   <NavLink
                     to="/members/women"
-                    className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
+                    className={({ isActive }) =>
+                      `flex flex-row items-center text-sm hover:text-amber-400 ${isActive ? 'text-amber-400' : ''}`
+                    }
                   >
                     <BiSolidRightArrow size={24} className="pr-2" />
                     <span className="text-only">Women Fellowship</span>
@@ -145,7 +152,9 @@ const Sidenav = () => {
                 <li className="flex flex-row p-2 text-lg ml-2">
                   <NavLink
                     to="/members/youth"
-                    className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
+                    className={({ isActive }) =>
+                      `flex flex-row items-center text-sm hover:text-amber-400 ${isActive ? 'text-amber-400' : ''}`
+                    }
                   >
                     <BiSolidRightArrow size={24} className="pr-2" />
                     <span className="text-only">Youth Fellowship</span>
@@ -154,7 +163,9 @@ const Sidenav = () => {
                 <li className="flex flex-row p-2 text-lg ml-2">
                   <NavLink
                     to="/members/junior"
-                    className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
+                    className={({ isActive }) =>
+                      `flex flex-row items-center text-sm hover:text-amber-400 ${isActive ? 'text-amber-400' : ''}`
+                    }
                   >
                     <BiSolidRightArrow size={24} className="pr-2" />
                     <span className="text-only">Junior Sunday School</span>
@@ -166,7 +177,9 @@ const Sidenav = () => {
           <li className="flex flex-row p-4 text-lg">
             <NavLink
               to="/calendar"
-              className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
+              className={({ isActive }) =>
+                `flex flex-row items-center text-sm hover:text-amber-400 ${isActive ? 'text-amber-400' : ''}`
+              }
             >
               <FaCalendarDays size={isOpen ? 25 : 35} className="pr-2" />
               {isOpen && <span className="text-only">Calendar of events</span>}
@@ -175,7 +188,9 @@ const Sidenav = () => {
           <li className="flex flex-row p-4 text-lg">
             <NavLink
               to="/finance"
-              className="flex flex-row items-center text-sm  hover:text-amber-400 active:text-amber-400"
+              className={({ isActive }) =>
+                `flex flex-row items-center text-sm hover:text-amber-400 ${isActive ? 'text-amber-400' : ''}`
+              }
             >
               <FaMoneyBillWave size={isOpen ? 25 : 35} className="pr-2" />
               {isOpen && <span className="text-only">Finance</span>}
@@ -184,7 +199,9 @@ const Sidenav = () => {
           <li className="flex flex-row p-4 text-lg">
             <NavLink
               to="/archives"
-              className="flex flex-row items-center text-sm hover:text-amber-400 active:text-amber-400"
+              className={({ isActive }) =>
+                `flex flex-row items-center text-sm hover:text-amber-400 ${isActive ? 'text-amber-400' : ''}`
+              }
             >
               <IoDocumentAttach size={isOpen ? 25 : 35} className="pr-2" />
               {isOpen && <span className="text-only">Archives</span>}
