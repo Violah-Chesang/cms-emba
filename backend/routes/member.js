@@ -261,10 +261,10 @@ router.get("/member/find/all", async (req, res) => {
 });
 
 //Search a member record
-router.post("/member/find", async (req, res) => {
+router.get("/member/:_id", async (req, res) => {
   try {
-    const memberID = req.body.memberId
-    const member = await Member.find({ memberId: memberID });
+    const id = req.params.id
+    const member = await Member.find({ id });
     
     if(member.deleted === true){
       res.json("Member record nolonger exists")
@@ -385,7 +385,7 @@ router.post("/member/delete", async (req, res) => {
 // Find All MMF
 router.get("/reports/men-fellowship", async (req, res) => {
   try{
-    const mmf = await Member.aggregate([{ $match: { fellowship: "mmf" } }]);
+    const mmf = await Member.aggregate([{ $match: { fellowship: "Men" } }]);
     if (mmf.length === 0) {
       res.json("Men Fellowship report not found");
     }
@@ -400,7 +400,7 @@ router.get("/reports/men-fellowship", async (req, res) => {
 
 // Find All MWF
 router.get("/reports/women-fellowship", async (req, res) => {
-  const mwf = await Member.aggregate([{ $match: { fellowship: "mwf" } }]);
+  const mwf = await Member.aggregate([{ $match: { fellowship: "Women" } }]);
   if (mwf.length === 0) {
     res.json("Women fellowship report not found");
   }
@@ -409,7 +409,7 @@ router.get("/reports/women-fellowship", async (req, res) => {
 
 // Find the youth
 router.get("/reports/youth-fellowship", async (req, res) => {
-  const myf = await Member.aggregate([{ $match: { fellowship: "youth" } }]);
+  const myf = await Member.aggregate([{ $match: { fellowship: "Youth" } }]);
   if (myf.length === 0) {
     res.json("Youth report not found");
   }
@@ -419,7 +419,7 @@ router.get("/reports/youth-fellowship", async (req, res) => {
 // Find JSS
 router.get("/reports/jss", async (req, res) => {
   try {
-    const jss = await Member.aggregate([{ $match: { fellowship: "jss" } }]);
+    const jss = await Member.aggregate([{ $match: { fellowship: "JSS" } }]);
     if (jss.length === 0) {
       res.json("JSS report not found");
     }
@@ -465,14 +465,6 @@ router.get("/reports/active", async (req, res) => {
 
   res.json(activeMembers);
 });
-// Find All dormant members
-router.get("/reports/dormant-members", async (req, res) => {
-  const dormantMembers = await Member.aggregate([
-    { $match: { isActive: false } },
-  ]);
-
-  res.json(dormantMembers);
-});
 
 // Find All full members
 router.get("/reports/full-members", async (req, res) => {
@@ -484,7 +476,7 @@ router.get("/reports/full-members", async (req, res) => {
   if(fullMembers.length === 0){
     res.json("No full members");
   }
-  res.json({fullMembers: fullMembers, fullCount: fullMembersCount});
+  res.json(fullMembers);
 });
 
 // Find All associate members
@@ -492,11 +484,167 @@ router.get("/reports/associate-members", async (req, res) => {
   const associateMembers = await Member.aggregate([
     { $match: { memberType: "associate" } },
   ]);
-  const associateCount = associateMembers.length;
 
-  res.json({assoMembers: associateMembers, assoCount : associateCount});
+  res.json(associateMembers);
 });
 
+/////////////////////////////////////////////////////////////////////////////
+// ministries
+// choir
+router.get('/ministry/choir', async (req, res) => {
+  const choir = await Member.aggregate([
+    { $match: { ministry: "choir" } },
+  ]);
+  res.json(choir);
+});
+
+// praise&Worship
+router.get('/ministry/praise&Worship', async (req, res) => {
+  const praisenWorship = await Member.aggregate([
+    { $match: { ministry: "praise&Worship" } },
+  ]);
+  res.json(praisenWorship);
+});
+
+// AwesomeMelodies
+router.get('/ministry/AwesomeMelodies', async (req, res) => {
+  const AwesomeMelodies = await Member.aggregate([
+    { $match: { ministry: "AwesomeMelodies" } },
+  ]);
+  res.json(AwesomeMelodies);
+});
+
+// Hospitality
+router.get('/ministry/Hospitality', async (req, res) => {
+  const Hospitality = await Member.aggregate([
+    { $match: { ministry: "Hospitality" } },
+  ]);
+  res.json(Hospitality);
+});
+
+// ushering
+router.get('/ministry/ushering', async (req, res) => {
+  const ushering = await Member.aggregate([
+    { $match: { ministry: "ushering" } },
+  ]);
+  res.json(ushering);
+});
+
+// SacramentStewards
+router.get('/ministry/SacramentStewards', async (req, res) => {
+  const SacramentStewards = await Member.aggregate([
+    { $match: { ministry: "SacramentStewards" } },
+  ]);
+  res.json(SacramentStewards);
+});
+
+// Csr
+router.get('/ministry/Csr', async (req, res) => {
+  const Csr = await Member.aggregate([
+    { $match: { ministry: "Csr" } },
+  ]);
+  res.json(Csr);
+});
+
+// missions&Evangelism
+router.get('/ministry/missions&Evangelism', async (req, res) => {
+  const missionsnEvangelism = await Member.aggregate([
+    { $match: { ministry: "missions&Evangelism" } },
+  ]);
+  res.json(missionsnEvangelism);
+});
+
+// Leader
+router.get('/ministry/Leader', async (req, res) => {
+  const Leader = await Member.aggregate([
+    { $match: { ministry: "Leader" } },
+  ]);
+  res.json(Leader);
+});
+
+/////////////////////////////////////////////////////////
+// Baptism
+router.get('/baptism/baptised', async (req, res) => {
+  const baptised = await Member.aggregate([
+    { $match: { baptisedStatus: "baptised" } },
+  ]);
+res.json(baptised);
+});
+
+// Not Baptised
+router.get('/baptism/not-baptised', async (req, res) => {
+  const notBaptised = await Member.aggregate([
+    { $match: { baptisedStatus: "notBaptised" } },
+  ]);
+res.json(notBaptised);
+});
+////////////////////////////
+// active status
+// active
+router.get('/activity/active', async (req, res) => {
+  const active = await Member.aggregate([
+    { $match: { isActive: "true" } },
+  ]);
+res.json(active);
+});
+
+// Find All dormant members
+router.get("/reports/dormant-members", async (req, res) => {
+  const dormant = await Member.aggregate([
+    { $match: { isActive: false } },
+  ]);
+
+  res.json(dormant);
+});
+
+
+/////////////////////////////////////////////
+// Cell Groups
+// week2
+router.get('/cell-group/week2', async (req, res) => {
+  const weekTwo = await Member.aggregate([
+    { $match: { cellGroup: "week2" } },
+  ]);
+res.json(weekTwo);
+});
+
+// week3
+router.get('/cell-group/week3', async (req, res) => {
+  const weekThree= await Member.aggregate([
+    { $match: { cellGroup: "week3" } },
+  ]);
+res.json(weekThree);
+});
+
+// week4
+router.get('/cell-group/week4', async (req, res) => {
+  const weekFour= await Member.aggregate([
+    { $match: { cellGroup: "week4" } },
+  ]);
+res.json(weekFour);
+});
+
+// diaspora
+router.get('/cell-group/diaspora', async (req, res) => {
+  const diaspora= await Member.aggregate([
+    { $match: { cellGroup: "diaspora" } },
+  ]);
+res.json(diaspora);
+});
+
+/////////////////
+// Youth
+// diaspora
+router.get('/Youth', async (req, res) => {
+  const Youth= await Member.aggregate([
+    { $match: { fellowship: "Youth" } },
+  ]);
+res.json(Youth);
+});
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 // create fellowship
 router.post('/fellowships', async (req,res) => {
   const {id, title} = req.body;
