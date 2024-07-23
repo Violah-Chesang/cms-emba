@@ -72,9 +72,17 @@ const Sidenav = () => {
       <div className="flex flex-col items-center justify-center p-1">
         <div className="">
           {isOpen && parsedUserDetails && (
-            <p className={`text-${isOpen ? "6xl" : "3xl"} font-normal text-blue-900 rounded-full py-${isOpen ? "4" : "1"} px-${isOpen ? "8" : "3"} bg-white` }>
-              {parsedUserDetails.firstname.charAt(0)}
-            </p>
+            <p
+            style={{
+              fontSize: isOpen ? '50px' : '30px',
+              padding: `${isOpen ? '0px 24px 0px 24px' : '0px 6px 0px 6px'}`,
+              color: '#1e3a8a',
+              borderRadius: '9999px',
+              backgroundColor: '#ffffff',
+            }}
+          >
+            {parsedUserDetails.firstname.charAt(0)}
+          </p>
           )}
         </div>
 

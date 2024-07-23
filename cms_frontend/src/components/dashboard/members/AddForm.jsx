@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import option from '../../../assets/dropdown'
 
 const AddForm = ({ onSave, onCancel, renderFilterDropdown }) => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -251,39 +252,7 @@ const fields = [
   { accessor: "notes", header: "Notes" },
 ];
 
-const options = {
-  fellowship: [" ", "Youth", "Women", "Men", "JSS"],
-  ministry: [
-    " ",
-    "praise&Worship",
-    "Intercessory",
-    "AwesomeMelodies",
-    "Hospitality",
-    "ushering",
-    "SacramentStewards",
-    "Choir",
-    "Csr",
-    "missions&Evangelism",
-    "Leader",
-  ],
-  cellGroup: [
-    " ",
-    "Nyayo Embakasi",
-    "Embakasi Village",
-    "Utawala/Joska",
-    "Fedha/Mradi",
-    "Syokimau",
-    "Diaspora",
-  ],
-  status: [" ", "active", "inactive"],
-  baptisedStatus: [" ", "baptised", "Not Baptised"],
-  maritalStatus: [" ", "Married", "Single", "Divorced", "Widowed"],
-  gender: [" ", "Male", "Female"],
-  marriageType: [" ", "none", "monogamous", "polygamous"],
-  savedStatus: [" ", "saved", "not saved"],
-  otherChurchMembership: [" ", "Yes", "No"],
-  memberType: [" ", "full member", "associate"],
-};
+const options = option;
 
 const shouldRenderDropdown = (accessor) => {
   return (

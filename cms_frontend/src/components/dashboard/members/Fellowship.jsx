@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IoMdAdd } from "react-icons/io";
 import {
@@ -10,10 +10,14 @@ import DataTable from "./DataTable";
 import ParentEditForm from "./ParentEditForm";
 import ViewForm from "./ViewForm";
 import AddForm from "./AddForm";
+import { refreshPermissions } from "../../../store/slice/accessControlSlice";
+import Loader from "../../Loader";
 
 const Fellowship = ({ title, data, columns, loading, error }) => {
   const dispatch = useDispatch();
-  const userRole = useSelector((state) => state.auth.user?.role);
+  const { role, canEdit, canDelete, canView } = useSelector(
+    (state) => state.accessControl
+  );
   const [editData, setEditData] = useState(null);
   const [viewData, setViewData] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -23,112 +27,73 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
     fellowship: "All",
     ministry: "All",
     cellGroup: "All",
-    status: "All",
-    baptised: "All",
+    isActive: "All",
+    baptisedStatus: "All",
   });
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  useEffect(() => {
+    dispatch(refreshPermissions());
+  }, [dispatch]);
 
-  const handleEditClick = (rowData) => {
-    setEditData(rowData);
-    setIsFormVisible(true);
-  };
+  const uniqueValues = useMemo(() => {
+    const unique = (key) => [...new Set(data.map((item) => item[key]))].sort();
+    return {
+      fellowship: ["All", ...unique("fellowship")],
+      ministry: ["All", ...unique("ministry")],
+      cellGroup: ["All", ...unique("cellGroup")],
+      isActive: ["All", ...unique("isActive")],
+      baptisedStatus: ["All", ...unique("baptisedStatus")],
+    };
+  }, [data]);
 
-  const handleViewClick = (rowData) => {
-    setViewData(rowData);
-    setIsViewVisible(true);
-  };
+  const filteredData = data.filter((item) => {
+    return Object.keys(filters).every((key) => {
+      return filters[key] === "All" || item[key] === filters[key];
+    });
+  });
 
-  const handleAddClick = () => {
-    setIsAddFormVisible(true);
-  };
-
-  const handleDeleteClick = (rowData) => {
-    dispatch(deleteMember(rowData._id))
+  const handleAction = (action, data, callback) => {
+    dispatch(action(data))
       .unwrap()
       .then(() => {
-        alert("Member deleted successfully");
+        callback();
+        alert("Action completed successfully");
       })
       .catch((error) => {
-        console.error("Error deleting member:", error);
-        alert("Failed to delete member");
+        console.error("Error performing action:", error);
+        alert("Failed to complete action");
       });
   };
 
   const handleFilterChange = (event) => {
     const { name, value } = event.target;
-    setFilters({
-      ...filters,
-      [name]: value,
-    });
+    setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
   };
 
-  const filteredData = data.filter((item) => {
-    return (
-      (filters.fellowship === "All" || item.fellowship === filters.fellowship) &&
-      (filters.ministry === "All" || item.ministry === filters.ministry) &&
-      (filters.status === "All" || item.status === filters.status) &&
-      (filters.baptised === "All" || item.baptised === filters.baptised) &&
-      (filters.cellGroup === "All" || item.cellGroup === filters.cellGroup)
-    );
-  });
-
-  const canAdd = ["Minister", "Executive Leader"].includes(userRole);
+  if (loading) return <p>Loading....</p>
+  if (error) return <p>Error: {error}</p>;
+  if (!canView) return <p>You do not have permission to view this content.</p>;
 
   return (
     <div className="mt-1">
       <p className="text-xl font-bold text-blue-950">{title}</p>
 
-      <div className="flex px-5 my-2 justify-end">
-        <div className="flex items-center flex-wrap my-3">
-          {renderFilterDropdown("fellowship", "Fellowship", [
-            "All",
-            "Youth",
-            "Women",
-            "Men",
-            "JSS",
-          ], handleFilterChange)}
-          {renderFilterDropdown("ministry", "Ministry", [
-            "All",
-            "praise&Worship",
-            "Intercessory",
-            "AwesomeMelodies",
-            "Hospitality",
-            "ushering",
-            "SacramentStewards",
-            "Choir",
-            "Csr",
-            "missions&Evangelism",
-            "Leader",
-          ], handleFilterChange)}
-          {renderFilterDropdown("cellGroup", "Cell Group", [
-            "All",
-            "Nyayo Embakasi",
-            "Embakasi Village",
-            "Utawala/Joska",
-            "Fedha/Mradi",
-            "Syokimau",
-            "Diaspora",
-          ], handleFilterChange)}
-          {renderFilterDropdown("status", "Status", [
-            "All",
-            "active",
-            "inactive",
-          ], handleFilterChange)}
-          {renderFilterDropdown("baptised", "Baptised", [
-            "All",
-            "Baptised",
-            "Not Baptised",
-          ], handleFilterChange)}
+      <div className="flex px-5 my-2 justify-end items-end">
+        <div className="flex items-center flex-wrap">
+          {Object.keys(filters).map((key) =>
+            renderFilterDropdown(
+              key,
+              key.replace(/([A-Z])/g, " $1"),
+              uniqueValues[key],
+              handleFilterChange
+            )
+          )}
         </div>
-      </div>
 
-      <div className="flex flex-wrap justify-end px-5 my-2">
-        {canAdd && (
+        {canEdit && (
           <button
             className="flex justify-center items-center py-2 px-5 text-sm font-medium text-white bg-blue-950 rounded-lg hover:bg-blue-600"
-            onClick={handleAddClick}
+            onClick={() => setIsAddFormVisible(true)}
           >
             <IoMdAdd size={20} />
             Add New Member
@@ -139,48 +104,47 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
       <DataTable
         columns={columns}
         data={filteredData}
-        userRole={userRole}
-        onEditClick={handleEditClick}
-        onViewClick={handleViewClick}
-        onDeleteClick={handleDeleteClick}
+        userRole={role}
+        onEditClick={(rowData) => {
+          if (canEdit) {
+            setEditData(rowData);
+            setIsFormVisible(true);
+          }
+        }}
+        onViewClick={(rowData) => {
+          if (canView) {
+            setViewData(rowData);
+            setIsViewVisible(true);
+          }
+        }}
+        onDeleteClick={(rowData) => {
+          if (canDelete) {
+            handleAction(deleteMember, rowData._id, () => {});
+          }
+        }}
       />
 
       {isFormVisible && (
         <ParentEditForm
           editData={editData}
-          onSave={(newData) => {
-            dispatch(updateMember({ _id: editData._id, updatedMember: newData }))
-              .unwrap()
-              .then(() => {
-                setIsFormVisible(false);
-                alert("Member updated successfully");
-              })
-              .catch((error) => {
-                console.error("Error updating member:", error);
-                alert("Failed to update member");
-              });
-          }}
+          onSave={(newData) =>
+            handleAction(
+              updateMember,
+              { _id: editData._id, updatedMember: newData },
+              () => setIsFormVisible(false)
+            )
+          }
           onCancel={() => setIsFormVisible(false)}
         />
       )}
 
       {isAddFormVisible && (
         <AddForm
-          onSave={(newData) => {
-            console.log(newData)
-            dispatch(addMember(newData))
-              .unwrap()
-              .then(() => {
-                setIsAddFormVisible(false);
-                alert("Member added successfully");
-              })
-              .catch((error) => {
-                console.error("Error adding member:", error);
-                alert("Failed to add member");
-              });
-          }}
+          onSave={(newData) =>
+            handleAction(addMember, newData, () => setIsAddFormVisible(false))
+          }
           onCancel={() => setIsAddFormVisible(false)}
-          renderFilterDropdown={renderFilterDropdown} // Ensure renderFilterDropdown is passed here if needed
+          renderFilterDropdown={renderFilterDropdown}
         />
       )}
 
@@ -192,11 +156,11 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
 };
 
 const renderFilterDropdown = (name, label, options, handleChange) => (
-  <div className="flex flex-col px-1 mr-1">
+  <div key={name} className="flex flex-col px-1 mr-1">
     <label className="text-xs font-medium text-blue-950">{label}</label>
     <select
       name={name}
-      className="w-full p-2 mt-1 text-sm border border-gray-300 rounded-lg"
+      className="w-full p-2 mt-1 text-sm border border-gray-300 rounded-lg capitalize"
       onChange={handleChange}
     >
       {options.map((option) => (

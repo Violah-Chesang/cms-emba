@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 
 function ViewForm({ viewData, onClose }) {
-  const [currentPage, setCurrentPage] = useState(0); // Define currentPage state
+  const [currentPage, setCurrentPage] = useState(0);
 
-  // Initialize formData state and setFormData function
   const [formData, setFormData] = useState({});
 
   const columns = useMemo(

@@ -1,16 +1,19 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { refreshPermissions } from '../../store/slice/accessControlSlice'; // Update this path as necessary
 
 const EventsTable = ({ events, onAdd, onEdit, onDelete }) => {
-  const userRole = useSelector((state) => state.auth.user?.role);
+  const dispatch = useDispatch();
+  const { canEdit, canDelete, canView } = useSelector((state) => state.accessControl);
 
-  const canEditDelete = ['Minister', 'Executive Leader', 'Fellowship Leader'].includes(userRole);
-  const canAdd = ['Minister', 'Executive Leader'].includes(userRole);
+  useEffect(() => {
+    dispatch(refreshPermissions());
+  }, [dispatch]);
 
   return (
     <div className="overflow-x-auto mt-8">
       <div className="flex justify-end mb-4">
-        {canAdd && (
+        {canEdit && (
           <button
             className="bg-blue-950 text-white py-2 px-4 rounded hover:bg-blue-600"
             onClick={onAdd}
@@ -37,7 +40,7 @@ const EventsTable = ({ events, onAdd, onEdit, onDelete }) => {
               <td className="py-2 px-4 border border-gray-300">{new Date(event.end).toLocaleString()}</td>
               <td className="py-2 px-4 border border-gray-300">{event.leaderInCharge}</td>
               <td className="py-2 px-4 border border-gray-300">
-                {canEditDelete && (
+                {canEdit && (
                   <button
                     className="bg-blue-500 text-white py-1 px-2 mr-2 rounded text-sm"
                     onClick={() => onEdit(event)}
@@ -45,7 +48,7 @@ const EventsTable = ({ events, onAdd, onEdit, onDelete }) => {
                     Edit
                   </button>
                 )}
-                {canEditDelete && (
+                {canDelete && (
                   <button
                     className="bg-red-500 text-white py-1 px-2 rounded text-sm"
                     onClick={() => onDelete(event)}

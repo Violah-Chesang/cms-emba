@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MyCalendar from "./MyCalendar";
 import EventsList from "../../calendarOfEvents/EventsList";
 import { IoIosAdd } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { refreshPermissions } from "../../../store/slice/accessControlSlice"; // Update this path as necessary
 
 const SideCalendar = () => {
   const initialFormData = {
@@ -16,7 +17,14 @@ const SideCalendar = () => {
 
   const [formData, setFormData] = useState(initialFormData);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const userRole = useSelector((state) => state.auth.user?.role);
+  const dispatch = useDispatch();
+  const { canAddEvent } = useSelector((state) => ({
+    canAddEvent: ['Minister', 'Executive Leader'].includes(state.accessControl.role),
+  }));
+
+  useEffect(() => {
+    dispatch(refreshPermissions());
+  }, [dispatch]);
 
   const handleChange = (e) => {
     setFormData({
@@ -48,9 +56,6 @@ const SideCalendar = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  // Determine if user can add event based on role
-  const canAddEvent = ['Minister', 'Executive Leader'].includes(userRole);
 
   return (
     <div>
