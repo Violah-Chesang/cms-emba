@@ -7,12 +7,12 @@ import SideCalendar from "./calendar/SideCalendar";
 const Dashboard = () => {
   return (
     <div className="m-2 flex flex-row">
-      <div className="pr-2 border-r-2 " style={{width:"79%"}}>
+      <div className="pr-2 border-r-2"  style={{width:"80%"}}>
         <Hero />
         <AnalyticsList />
         <Leaders />
       </div>
-      <div className="flex justify-centershadow-2xl" style={{width:"21%"}}>
+      <div className="flex justify-centershadow-2xl" style={{width:"20%"}}>
         <SideCalendar />
       </div>
     </div>
