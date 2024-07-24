@@ -1,3 +1,5 @@
+// src/store/slice/accessControlSlice.js
+
 import { createSlice } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
 

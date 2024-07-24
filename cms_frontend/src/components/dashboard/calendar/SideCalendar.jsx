@@ -1,12 +1,13 @@
+// src/components/dashboard/calendar/SideCalendar.jsx
+
 import React, { useState, useEffect } from "react";
 import MyCalendar from "./MyCalendar";
 import EventsList from "../../calendarOfEvents/EventsList";
-import { IoIosAdd } from "react-icons/io";
-import { IoIosArrowForward } from "react-icons/io";
+import { IoIosAdd, IoIosArrowForward } from "react-icons/io";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { refreshPermissions } from "../../../store/slice/accessControlSlice"; // Update this path as necessary
-
+import { selectCanAddEvent } from "../../../store/selector/accessControlSelector"
 const SideCalendar = () => {
   const initialFormData = {
     title: "",
@@ -18,9 +19,7 @@ const SideCalendar = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
-  const { canAddEvent } = useSelector((state) => ({
-    canAddEvent: ['Minister', 'Executive Leader'].includes(state.accessControl.role),
-  }));
+  const { canAddEvent } = useSelector(selectCanAddEvent);
 
   useEffect(() => {
     dispatch(refreshPermissions());
