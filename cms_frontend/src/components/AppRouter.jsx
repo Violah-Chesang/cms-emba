@@ -33,9 +33,9 @@ const AppRouter = () => {
           <Route
             path="*"
             element={
-              <div className="flex flex-row">
-                <Sidenav />
-                <div className="flex-grow">
+              <div className="flex flex-row ">
+                <Sidenav  style={{width:"12%"}} />
+                <div className="flex-grow" style={{width:"88%"}}>
                   <TopNav />
                   <Routes>
                     <Route path="/dashboard" element={<Dashboard />} />

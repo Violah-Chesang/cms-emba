@@ -4,16 +4,16 @@
   .sidenav {
     top: 0;
     left: 0;
-    width: 250px;
+    width: 20%;
     transition: width 0.3s; 
   }
   
   .sidenav-closed {
-    width: 65px;
+    width: 3%;
   }
   
   .sidenav-open {
-    width: 240px; 
+    width: 12%; 
   }
   
   

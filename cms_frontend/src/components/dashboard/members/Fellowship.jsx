@@ -11,7 +11,6 @@ import ParentEditForm from "./ParentEditForm";
 import ViewForm from "./ViewForm";
 import AddForm from "./AddForm";
 import { refreshPermissions } from "../../../store/slice/accessControlSlice";
-import Loader from "../../Loader";
 
 const Fellowship = ({ title, data, columns, loading, error }) => {
   const dispatch = useDispatch();
@@ -70,7 +69,7 @@ const Fellowship = ({ title, data, columns, loading, error }) => {
     setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
   };
 
-  if (loading) return <p>Loading....</p>
+  if (loading) return <p>Loading....</p>;
   if (error) return <p>Error: {error}</p>;
   if (!canView) return <p>You do not have permission to view this content.</p>;
 
