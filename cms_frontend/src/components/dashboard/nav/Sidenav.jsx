@@ -91,9 +91,10 @@ const Sidenav = () => {
             <p className="font-bold text-lg " style={{ color: "#EFBF04" }}>
               {`${parsedUserDetails.firstname} ${parsedUserDetails.lastname}`}
             </p>
-            <p className="font-normal text-md" style={{ color: "#EFBF04" }}>
-              {parsedUserDetails.email}
-            </p>
+            <p className="font-normal text-md text-[#EFBF04] truncate w-[160PX]">
+  {parsedUserDetails.email}
+</p>
+
             <p className="font-light text-sm" style={{ color: "#EFBF04" }}>
               {parsedUserDetails.role}
             </p>

@@ -7,6 +7,8 @@ const columns = [
   { header: "MemberID", accessor: "memberId" },
   { header: "Name", accessor: "name" },
   { header: "Phone Number", accessor: "phone" },
+  { header: "National ID", accessor: "nationalId" },
+
   { header: "Physical Address", accessor: "physicalAddress" },
   { header: "Marital Status", accessor: "maritalStatus" },
   { header: "Baptised", accessor: "baptisedStatus" },
