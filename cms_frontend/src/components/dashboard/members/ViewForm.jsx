@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from "react";
 
 function ViewForm({ viewData, onClose }) {
   const [currentPage, setCurrentPage] = useState(0);
-
   const [formData, setFormData] = useState({});
 
   const columns = useMemo(
@@ -36,7 +35,7 @@ function ViewForm({ viewData, onClose }) {
     []
   );
 
-  const pageCount = 25;
+  const pageCount = 13; 
   const pageColumns = useMemo(() => {
     const pages = [];
     for (let i = 0; i < columns.length; i += pageCount) {
@@ -46,7 +45,6 @@ function ViewForm({ viewData, onClose }) {
   }, [columns]);
 
   useEffect(() => {
-    // Initialize form data when viewData changes
     if (viewData) {
       const initialFormData = {};
       columns.forEach((column) => {
@@ -57,7 +55,15 @@ function ViewForm({ viewData, onClose }) {
   }, [viewData, columns]);
 
   const handleClose = () => {
-    onClose(); // Ensure that onClose is correctly called to close the modal
+    onClose();
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, pageColumns.length - 1));
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
   };
 
   return (
@@ -91,6 +97,26 @@ function ViewForm({ viewData, onClose }) {
               />
             </div>
           ))}
+        </div>
+        <div className="flex justify-between mt-4">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 0}
+            className={`px-4 py-2 rounded-lg ${
+              currentPage === 0 ? "bg-gray-300" : "bg-blue-500 text-white hover:bg-blue-700"
+            }`}
+          >
+            Previous
+          </button>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === pageColumns.length - 1}
+            className={`px-4 py-2 rounded-lg ${
+              currentPage === pageColumns.length - 1 ? "bg-gray-300" : "bg-blue-500 text-white hover:bg-blue-700"
+            }`}
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
