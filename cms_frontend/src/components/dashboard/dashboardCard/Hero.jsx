@@ -14,7 +14,7 @@ function Hero() {
         </button>
       </div>
       <div className="mt-5 md:mt-0">
-        <img className="w-full max-w-xs md:max-w-md" src="src/assets/hero_image-removebg.png" alt="Hero" />
+        <img className="w-full max-w-xs md:max-w-md" src="../../../assets/hero_image-removebg.png" alt="Hero" />
       </div>
     </div>
   );

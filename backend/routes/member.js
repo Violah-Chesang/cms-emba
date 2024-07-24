@@ -46,6 +46,9 @@ router.post("/member/test", async (req, res) => {
   // }
 });
 
+router.get('/', (req, res) => {
+  res.send('Welcome To The Church Members Management System!')
+})
 // Spouse details
 router.post('/member/spouse', async (req, res) => {
   try{
