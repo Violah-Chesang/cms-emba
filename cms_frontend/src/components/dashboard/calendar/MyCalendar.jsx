@@ -10,10 +10,12 @@ const MyCalendar = () => {
   };
 
   return (
-    <div className=''>
-      <Calendar className="border-transparent"
+    <div className='' style={{ width: '300px', height: '300px' }}>
+      <Calendar
+        className="border-transparent"
         onChange={onChange}
         value={date}
+        style={{ width: '100%', height: '100%' }}
       />
     </div>
   );
