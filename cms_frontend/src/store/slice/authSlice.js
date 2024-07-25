@@ -6,7 +6,7 @@ export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (userData, thunkAPI) => {
     try {
-      const response = await axios.post('http://localhost:5500/user/register', userData);
+      const response = await axios.post('https://cms-emba-api.vercel.app/user/register', userData);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -18,7 +18,7 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (userData, thunkAPI) => {
     try {
-      const response = await axios.post('http://localhost:5500/user/login', userData);
+      const response = await axios.post('https://cms-emba-api.vercel.app/user/login', userData);
       const token = response.data.data.token;
       Cookies.set('token', token, { expires: 1, sameSite: 'None', secure: true });
       const username = userData.userName;
@@ -33,7 +33,7 @@ export const fetchUserDetails = createAsyncThunk(
   'auth/fetchUserDetails',
   async (username, thunkAPI) => {
     try {
-      const response = await axios.post('http://localhost:5500/get-user', { userName: username });
+      const response = await axios.post('https://cms-emba-api.vercel.app/get-user', { userName: username });
       Cookies.set('userDetails', JSON.stringify(response.data), { expires: 1, sameSite: 'None', secure: true });
       return response.data;
     } catch (error) {

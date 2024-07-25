@@ -37,8 +37,8 @@ function AnalyticsCard({ group, number, percentage }) {
 const FellowshipAnalytics = ({ group, totalMembers }) => {
   const url =
     group.group === "all"
-      ? "http://localhost:5500/member/find/all"
-      : `http://localhost:5500/reports/${group.group}`;
+      ? "https://cms-emba-api.vercel.app/member/find/all"
+      : `https://cms-emba-api.vercel.app/reports/${group.group}`;
 
   const { data, loading, error } = useFetchData(url);
 
@@ -60,7 +60,7 @@ const FellowshipAnalytics = ({ group, totalMembers }) => {
 const AnalyticsList = () => {
   const [totalMembers, setTotalMembers] = useState(0);
   const { data, loading, error } = useFetchData(
-    "http://localhost:5500/member/find/all"
+    "https://cms-emba-api.vercel.app/member/find/all"
   );
 
   useEffect(() => {

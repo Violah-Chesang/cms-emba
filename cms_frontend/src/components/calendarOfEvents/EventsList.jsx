@@ -8,7 +8,7 @@ const EventsList = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("http://localhost:5500/all-events");
+        const response = await axios.get("https://cms-emba-api.vercel.app/all-events");
         setEvents(response.data);
       } catch (error) {
         console.error("Error fetching events:", error);
