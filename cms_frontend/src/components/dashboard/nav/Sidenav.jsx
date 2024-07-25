@@ -10,14 +10,11 @@ import { NavLink } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
 
-const Sidenav = () => {
-  const [isOpen, setIsOpen] = useState(true);
+const Sidenav = ({ isOpen, toggleSidenav }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const userDetails = useSelector((state) => state.auth.user);
   const [parsedUserDetails, setParsedUserDetails] = useState(null);
-  const navigate = useNavigate();
   
   useEffect(() => {
     const userDetailsCookie = Cookies.get('userDetails');
@@ -37,24 +34,16 @@ const Sidenav = () => {
     }
   }, [userDetails]);
   
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
-
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
     <div
-      className={`sidenav ${
-        isOpen ? "sidenav-open" : "sidenav-closed"
-      } bg-blue-950 pb-96`}
+      className={`sidenav ${isOpen ? "sidenav-open" : "sidenav-closed"} bg-blue-950 pb-96`}
     >
       <div
-        className={`flex ${
-          isOpen ? "flex-row" : "flex-col-reverse gap-5"
-        } items-center justify-between p-4 w-full`}
+        className={`flex ${isOpen ? "flex-row" : "flex-col-reverse gap-5"} items-center justify-between p-4 w-full`}
       >
         <img
           src="../../src/assets/mck_logo.png"
@@ -64,7 +53,7 @@ const Sidenav = () => {
         {isOpen && (
           <p className="text-white pl-3 font-bold text-xl">MCK Embakasi</p>
         )}
-        <button onClick={toggleSidebar} className="text-white">
+        <button onClick={toggleSidenav} className="text-white">
           {isOpen ? <GrClose size={30} /> : <FaBars size={24}/>}
         </button>
       </div>
@@ -73,16 +62,16 @@ const Sidenav = () => {
         <div className="">
           {isOpen && parsedUserDetails && (
             <p
-            style={{
-              fontSize: isOpen ? '50px' : '30px',
-              padding: `${isOpen ? '0px 24px 0px 24px' : '0px 6px 0px 6px'}`,
-              color: '#1e3a8a',
-              borderRadius: '9999px',
-              backgroundColor: '#ffffff',
-            }}
-          >
-            {parsedUserDetails.firstname.charAt(0)}
-          </p>
+              style={{
+                fontSize: isOpen ? '50px' : '30px',
+                padding: `${isOpen ? '0px 24px 0px 24px' : '0px 6px 0px 6px'}`,
+                color: '#1e3a8a',
+                borderRadius: '9999px',
+                backgroundColor: '#ffffff',
+              }}
+            >
+              {parsedUserDetails.firstname.charAt(0)}
+            </p>
           )}
         </div>
 
@@ -91,9 +80,9 @@ const Sidenav = () => {
             <p className="font-bold text-lg " style={{ color: "#EFBF04" }}>
               {`${parsedUserDetails.firstname} ${parsedUserDetails.lastname}`}
             </p>
-            <p className="font-normal text-md text-[#EFBF04] truncate w-[160PX]">
-  {parsedUserDetails.email}
-</p>
+            <p className="font-normal text-md text-[#EFBF04] truncate w-[160px]">
+              {parsedUserDetails.email}
+            </p>
 
             <p className="font-light text-sm" style={{ color: "#EFBF04" }}>
               {parsedUserDetails.role}
@@ -177,7 +166,7 @@ const Sidenav = () => {
                     }
                   >
                     <BiSolidRightArrow size={24} className="pr-2" />
-                    <span className="text-only">Junior Sunday School</span>
+                    <span className="text-only">JSS Fellowship</span>
                   </NavLink>
                 </li>
               </ul>
@@ -191,7 +180,7 @@ const Sidenav = () => {
               }
             >
               <FaCalendarDays size={isOpen ? 25 : 35} className="pr-2" />
-              {isOpen && <span className="text-only">Calendar of events</span>}
+              {isOpen && <span className="text-only">Calendar</span>}
             </NavLink>
           </li>
           <li className="flex flex-row p-4 text-lg">

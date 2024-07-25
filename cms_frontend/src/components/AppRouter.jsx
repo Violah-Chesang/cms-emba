@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Sidenav from "./dashboard/nav/Sidenav";
@@ -17,9 +17,14 @@ import Signup from "./auth/Signup";
 
 const AppRouter = () => {
   const { token } = useSelector((state) => state.auth);
+  const [isSidenavOpen, setIsSidenavOpen] = useState(true);
 
   const isAuthenticated = () => {
     return token !== null;
+  };
+
+  const toggleSidenav = () => {
+    setIsSidenavOpen(!isSidenavOpen);
   };
 
   return (
@@ -33,9 +38,9 @@ const AppRouter = () => {
           <Route
             path="*"
             element={
-              <div className="flex flex-row ">
-                <Sidenav  style={{width:"13%"}} />
-                <div style={{width:"76%"}}>
+              <div className="flex flex-row">
+                <Sidenav isOpen={isSidenavOpen} toggleSidenav={toggleSidenav} />
+                <div style={{ width: isSidenavOpen ? "86.2%" : "96.2%" }}>
                   <TopNav />
                   <Routes>
                     <Route path="/dashboard" element={<Dashboard />} />

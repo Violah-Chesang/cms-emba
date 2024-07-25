@@ -58,7 +58,7 @@ const SideCalendar = () => {
 
   return (
     <div>
-      <div className="flex justify-center items-center flex-col">
+      <div className="flex justify-center items-center flex-col w-full">
         <p className="text-2xl font-semibold text-center">Calendar of events</p>
         <MyCalendar />
         <div className="flex items-center gap-36 mt-5 justify-evenly">
