@@ -15,7 +15,6 @@ const MyCalendar = () => {
         className="border-transparent"
         onChange={onChange}
         value={date}
-        style={{ width: '100%', height: '100%' }}
       />
     </div>
   );
