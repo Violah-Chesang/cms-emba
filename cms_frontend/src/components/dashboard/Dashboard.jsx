@@ -12,7 +12,7 @@ const Dashboard = () => {
         <AnalyticsList />
         <Leaders />
       </div>
-      <div className="flex justify-centershadow-2xl" style={{width:"20%"}}>
+      <div className="flex justify-center shadow-2xl" style={{width:"20%"}}>
         <SideCalendar />
       </div>
     </div>
