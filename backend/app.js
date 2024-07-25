@@ -10,7 +10,11 @@ dotenv.config()
 const app = express();
 
 //body parser
-app.use(cors());
+app.use(cors({
+    origin: ['https://cms-embakasi-church.vercel.app'],
+    methods: ['POST', 'GET'],
+    credentials: true
+}))
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
