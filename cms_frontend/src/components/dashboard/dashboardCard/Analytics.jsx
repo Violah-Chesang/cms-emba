@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useFetchData from "../../../hooks/fetchData";
+import lineChart from '../../../assets/line-chart-removebg-preview.png';
 
 const fellowshipGroups = [
   { group: "men-fellowship", label: "Men" },
@@ -19,7 +20,7 @@ function AnalyticsCard({ group, number, percentage }) {
         </div>
         <div>
           <img
-            src="src/assets/line-chart-removebg-preview.png"
+            src={lineChart}
             alt="Line Chart"
             width={80}
             height={80}
