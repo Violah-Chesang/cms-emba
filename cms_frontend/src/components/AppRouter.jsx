@@ -38,12 +38,12 @@ const AppRouter = () => {
           <Route
             path="*"
             element={
-              <div className="flex flex-row"style={{width:"100vw"}}>
+              <div className="flex flex-row"style={{width:"100%"}}>
                 <Sidenav isOpen={isSidenavOpen} toggleSidenav={toggleSidenav} />
-                <div >
+                <div style={{ width: isSidenavOpen ? "82.2%" : "92.2%" }}>
                   <TopNav />
                   <Routes>
-                    <Route path="/dashboard" element={<Dashboard  style={{ width: isSidenavOpen ? "76.2%" : "79.2%" }}/>} />
+                    <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/calendar" element={<Calendar />} />
                     <Route path="/finance" element={<Finance />} />
                     <Route path="/archives" element={<Archives />} />
