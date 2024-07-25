@@ -10,7 +10,7 @@ const MyCalendar = () => {
   };
 
   return (
-    <div className='' style={{ width: '300px', height: '300px' }}>
+    <div className='' style={{ width: '230px' }}>
       <Calendar
         className="border-transparent"
         onChange={onChange}
