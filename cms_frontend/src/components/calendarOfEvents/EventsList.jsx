@@ -21,6 +21,7 @@ const EventsList = () => {
   const handleUpdateEvent = async (_id, updatedData) => {
     try {
       await axios.put(`https://cms-emba-api.vercel.app/update-event/${_id}`, updatedData);
+      // Optionally, fetch events again after update
       fetchEvents();
     } catch (error) {
       console.error("Error updating event:", error);
