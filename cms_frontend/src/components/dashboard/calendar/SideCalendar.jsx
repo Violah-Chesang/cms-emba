@@ -36,7 +36,7 @@ const SideCalendar = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5500/add-event",
+        "https://cms-emba-api.vercel.app/add-event",
         formData
       );
       console.log("Event created successfully:", response.data);

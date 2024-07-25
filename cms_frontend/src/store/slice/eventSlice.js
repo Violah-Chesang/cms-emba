@@ -9,13 +9,13 @@ const initialState = {
 
 // Async thunk to fetch all events from the server
 export const fetchEvents = createAsyncThunk('events/fetchEvents', async () => {
-  const response = await axios.get('http://localhost:5500/all-events');
+  const response = await axios.get('https://cms-emba-api.vercel.app/all-events');
   return response.data;
 });
 
 // Async thunk to add a new event
 export const addEvent = createAsyncThunk('events/addEvent', async (eventData) => {
-  const response = await axios.post('http://localhost:5500/add-event', eventData);
+  const response = await axios.post('https://cms-emba-api.vercel.app/add-event', eventData);
   return response.data;
 });
 

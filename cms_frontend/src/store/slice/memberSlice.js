@@ -4,7 +4,7 @@ import axios from "axios";
 export const fetchMembers = createAsyncThunk(
   "members/fetchMembers",
   async () => {
-    const response = await axios.get("http://localhost:5500/member/find/all");
+    const response = await axios.get("https://cms-emba-api.vercel.app/member/find/all");
     return response.data;
   }
 );
@@ -15,16 +15,16 @@ export const fetchMembersByFellowship = createAsyncThunk(
     let url = "";
     switch (fellowshipType) {
       case "Men Fellowship":
-        url = "http://localhost:5500/reports/men-fellowship";
+        url = "https://cms-emba-api.vercel.app/reports/men-fellowship";
         break;
       case "Women Fellowship":
-        url = "http://localhost:5500/reports/women-fellowship";
+        url = "https://cms-emba-api.vercel.app/reports/women-fellowship";
         break;
       case "Youth Fellowship":
-        url = "http://localhost:5500/reports/youth-fellowship";
+        url = "https://cms-emba-api.vercel.app/reports/youth-fellowship";
         break;
       case "Jss Fellowship":
-        url = "http://localhost:5500/reports/jss";
+        url = "https://cms-emba-api.vercel.app/reports/jss";
         break;
       default:
         throw new Error(`Unsupported fellowship type: ${fellowshipType}`);
@@ -39,7 +39,7 @@ export const addMember = createAsyncThunk(
   async (newMember) => {
     try {
       const response = await axios.post(
-        "http://localhost:5500/member/add",
+        "https://cms-emba-api.vercel.app/member/add",
         newMember
       );
       return response.data;
@@ -55,7 +55,7 @@ export const updateMember = createAsyncThunk(
   async ({ _id, updatedMember }) => {
     try {
       const response = await axios.post(
-        `http://localhost:5500/member/update/${_id}`,
+        `https://cms-emba-api.vercel.app/member/update/${_id}`,
         updatedMember
       );
       return response.data;
@@ -70,7 +70,7 @@ export const deleteMember = createAsyncThunk(
   "members/deleteMember",
   async (_id) => {
     try {
-      await axios.delete(`http://localhost:5500/member/delete/${_id}`);
+      await axios.delete(`https://cms-emba-api.vercel.app/member/delete/${_id}`);
       return _id;
     } catch (error) {
       console.error(`Error deleting member with ID ${_id}:`, error);
