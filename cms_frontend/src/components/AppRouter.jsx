@@ -19,7 +19,9 @@ const AppRouter = () => {
   const { token } = useSelector((state) => state.auth);
   const [isSidenavOpen, setIsSidenavOpen] = useState(true);
 
-  const isAuthenticated = () => token !== null;
+  const isAuthenticated = () => {
+    return token !== null;
+  };
 
   const toggleSidenav = () => {
     setIsSidenavOpen(!isSidenavOpen);
@@ -28,18 +30,15 @@ const AppRouter = () => {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/login" />} />
-      {!isAuthenticated() ? (
-        <>
-          <Route path="/login" element={<Login showAlert={true} alertMessage="Login to access protected pages" />} />
-          <Route path="*" element={<Navigate to="/login" />} />
-        </>
-      ) : (
+      <Route path="/login" element={<Login />} />
+
+      {isAuthenticated() ? (
         <>
           <Route path="/signup" element={<Signup />} />
           <Route
             path="*"
             element={
-              <div className="flex flex-row" style={{ width: "100%" }}>
+              <div className="flex flex-row"style={{width:"100%"}}>
                 <Sidenav isOpen={isSidenavOpen} toggleSidenav={toggleSidenav} />
                 <div style={{ width: isSidenavOpen ? "85.2%" : "95.2%" }}>
                   <TopNav />
@@ -57,6 +56,14 @@ const AppRouter = () => {
                 </div>
               </div>
             }
+          />
+        </>
+      ) : (
+        <>
+          <Route path="*" element={<Navigate to="/login" />} />
+          <Route
+            path="/login"
+            element={<Login showAlert={true} alertMessage="Login to access protected pages" />}
           />
         </>
       )}
