@@ -43,9 +43,9 @@ const AppRouter = () => {
                 <div style={{margin:"2px"}}>
                   <TopNav />
                   <Routes>
-                    <Route path="/dashboard" element={<Dashboard style={{ width: isSidenavOpen ? "76.2%" : "86.2%" }} />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/calendar" element={<Calendar />} />
-                    <Route path="/finance" element={<Finance />} />
+                    <Route path="/finance" element={<Finance />} /> 
                     <Route path="/archives" element={<Archives />} />
                     <Route path="/members/all" element={<AllMembers />} />
                     <Route path="/members/men" element={<Men />} />
