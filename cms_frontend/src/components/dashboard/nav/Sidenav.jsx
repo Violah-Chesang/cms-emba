@@ -41,6 +41,7 @@ const Sidenav = ({ isOpen, toggleSidenav }) => {
   return (
     <div
       className={`sidenav ${isOpen ? "sidenav-open" : "sidenav-closed"} bg-blue-950 pb-96`}
+      style={{ width: isOpen ? '13vw' : '3vw' }}
     >
       <div
         className={`flex ${isOpen ? "flex-row" : "flex-col-reverse gap-5"} items-center justify-between p-4 w-full`}

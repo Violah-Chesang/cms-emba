@@ -17,7 +17,6 @@ const EventsCard = ({ eventDate, endOfEventDate, title, daysTo, leaderInCharge, 
 
   const handleCancelEdit = () => {
     setIsEditing(false);
-    // Reset formData to current values if needed
     setFormData({
       title: title,
       eventDate: eventDate,

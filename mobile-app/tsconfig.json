@@ -1,0 +1,29 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "target": "esnext",
+    "jsx": "react",
+    "lib": ["esnext"],
+    "module": "commonjs",
+    "allowJs": true,
+    "checkJs": false,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "types": ["react", "react-native"]
+  },
+  "include": [
+    "src",
+    "App.tsx",
+    "js-cookie.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ]
+}

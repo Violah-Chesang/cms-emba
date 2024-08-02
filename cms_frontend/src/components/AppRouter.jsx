@@ -31,6 +31,8 @@ const AppRouter = () => {
     <Routes>
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+
 
       {isAuthenticated() ? (
         <>
@@ -40,8 +42,8 @@ const AppRouter = () => {
             element={
               <div className="flex flex-row"style={{width:"100vw"}}>
                 <Sidenav isOpen={isSidenavOpen} toggleSidenav={toggleSidenav} />
-                <div style={{margin:"2px", justifyContent:"center"}}>
-                  <TopNav />
+                <div style={{margin:"", justifyContent:"center"}}>
+                  <TopNav isOpen={isSidenavOpen}/>
                   <Routes>
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/calendar" element={<Calendar />} />

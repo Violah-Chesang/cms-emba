@@ -119,7 +119,7 @@ const membersSlice = createSlice({
         state.data.push(action.payload);
       })
       .addCase(addMember.rejected, (state, action) => {
-        state.error = action.error.message; // Handle add member error
+        state.error = action.error.message;
       })
       .addCase(updateMember.fulfilled, (state, action) => {
         const index = state.data.findIndex(
@@ -130,13 +130,13 @@ const membersSlice = createSlice({
         }
       })
       .addCase(updateMember.rejected, (state, action) => {
-        state.error = action.error.message; // Handle update member error
+        state.error = action.error.message; 
       })
       .addCase(deleteMember.fulfilled, (state, action) => {
         state.data = state.data.filter((member) => member._id !== action.payload);
       })
       .addCase(deleteMember.rejected, (state, action) => {
-        state.error = action.error.message; // Handle delete member error
+        state.error = action.error.message; 
       });
   },
 });

@@ -10,7 +10,7 @@ const MyCalendar = () => {
   };
 
   return (
-    <div className='' style={{ width: '85%' }}>
+    <div className='' style={{ width: '100%' }}>
       <Calendar
         className="border-transparent"
         onChange={onChange}

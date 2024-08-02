@@ -4,16 +4,18 @@
   .sidenav {
     top: 0;
     left: 0;
-    width: 20%;
-    transition: width 0.3s; 
+    transition: width 0.5s; 
   }
   
   .sidenav-closed {
     width: 3%;
+    height:100vh;
   }
   
   .sidenav-open {
     width: 13%; 
+    height:100vh;
+
   }
   
   

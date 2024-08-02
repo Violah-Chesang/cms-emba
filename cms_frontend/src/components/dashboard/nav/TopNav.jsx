@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../../../store/slice/authSlice";
 import Cookies from 'js-cookie';
 
-const TopNav = () => {
+const TopNav = ({isOpen}) => {
   const [userDetails, setUserDetails] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ const TopNav = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-16 bg-white items-center border-b-1 border-blue-950 shadow-2xl p-4 md:p-0">
+    <div className="flex flex-col md:flex-row h-16 bg-white items-center border-b-1 border-blue-950 shadow-2xl p-4 md:p-0" style={{ width: isOpen ? '87vw' : '97vw' }}>
       <div className="flex flex-col md:flex-row w-full md:w-10/12 justify-between mb-4 md:mb-0">
         <div className="flex flex-col ml-3">
           <p className="text-blue-900 font-bold text-2xl">

@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "mobile-app",
+    "slug": "mobile-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/mck_logo.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/mck_logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/mck_logo.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/mck_logo.png"
+    },
+    "plugins": [
+      "expo-font"
+    ]
+  }
+}

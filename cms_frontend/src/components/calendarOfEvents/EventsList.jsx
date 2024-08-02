@@ -20,18 +20,15 @@ const EventsList = () => {
 
   const handleUpdateEvent = async (_id, updatedData) => {
     try {
-      await axios.put(`http://localhost:5500/update-event/${_id}`, updatedData);
-      // Optionally, fetch events again after update
+      await axios.put(`https://cms-emba-api.vercel.app/update-event/${_id}`, updatedData);
       fetchEvents();
     } catch (error) {
       console.error("Error updating event:", error);
     }
   };
 
-  // Get current date
   const currentDate = new Date();
 
-  // Filter events for current month and future dates
   const filteredEvents = events.filter((event) => {
     const eventDate = new Date(event.eventDate);
     return (
@@ -41,7 +38,6 @@ const EventsList = () => {
     );
   });
 
-  // Sorting filtered events by eventDate (closest to farthest)
   filteredEvents.sort((a, b) => {
     const dateA = new Date(a.eventDate);
     const dateB = new Date(b.eventDate);

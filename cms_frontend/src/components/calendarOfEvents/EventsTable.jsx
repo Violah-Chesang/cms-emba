@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { refreshPermissions } from '../../store/slice/accessControlSlice'; // Update this path as necessary
+import { refreshPermissions } from '../../store/slice/accessControlSlice';
 
 const EventsTable = ({ events, onAdd, onEdit, onDelete }) => {
   const dispatch = useDispatch();

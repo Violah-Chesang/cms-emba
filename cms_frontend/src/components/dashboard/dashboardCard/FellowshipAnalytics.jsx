@@ -20,7 +20,7 @@ const FellowshipAnalytics = ({ totalMembers }) => {
         <AnalyticsCard
           key={groupData.group}
           group={groupData.label}
-          number={groupData.members ? groupData.members.length : 0} // Check if members exists
+          number={groupData.members ? groupData.members.length : 0}
           percentage={
             groupData.members
               ? (groupData.members.length / totalMembers) * 100
