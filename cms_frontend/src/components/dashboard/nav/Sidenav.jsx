@@ -10,6 +10,7 @@ import { NavLink } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
+import logo from '../../../assets/mck_logo.png'
 
 const Sidenav = ({ isOpen, toggleSidenav }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -47,7 +48,7 @@ const Sidenav = ({ isOpen, toggleSidenav }) => {
         className={`flex ${isOpen ? "flex-row" : "flex-col-reverse gap-5"} items-center justify-between p-4 w-full`}
       >
         <img
-          src="../../src/assets/mck_logo.png"
+          src={logo}
           alt="Logo"
           className="size-10"
         />
