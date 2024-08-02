@@ -11,8 +11,8 @@ const app = express();
 
 //body parser
 app.use(cors({
-    origin: ['http://localhost:5173'],
-    methods: ['POST', 'GET', 'PUT'],
+    origin: ['https://cms-embakasi-church.vercel.app'],
+    methods: ['POST', 'GET'],
     credentials: true
 }))
 app.use(express.json());
