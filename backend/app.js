@@ -11,7 +11,7 @@ const app = express();
 
 //body parser
 app.use(cors({
-    origin: ['https://cms-embakasi-church.vercel.app'],
+    origin: ['http://cms-embakasi-church.vercel.app'],
     methods: ['POST', 'GET'],
     credentials: true
 }))
