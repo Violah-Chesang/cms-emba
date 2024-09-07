@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import option from '../../assets/dropdown';
 
 interface FormData {
-  _id: string;
   memberId: string;
   firstName: string;
   middleName: string;
   surName: string;
-  email: string;
   dob: string;
   phone: string;
   physicalAddress: string;
@@ -27,11 +25,12 @@ interface FormData {
   cellGroup: string;
   ministry: string;
   fellowship: string;
-  age: string;
-  notes: string;
+  age: number;
+  deleted: boolean;
+  isActive: string;
   regDate: string;
+  notes: string;
   __v: number;
-  
 }
 
 interface Field {
@@ -55,13 +54,11 @@ interface AddFormProps {
 const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdown }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [formData, setFormData] = useState<FormData>({
-    _id: "",
     memberId: "",
     firstName: "",
     middleName: "",
     surName: "",
     dob: "",
-    email:"",
     phone: "",
     physicalAddress: "",
     nationalId: "",
@@ -80,11 +77,14 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
     cellGroup: "",
     ministry: "",
     fellowship: "",
-    age: "",
+    age: 0,
     notes: "",
-    regDate:"",
-    __v:0
+    regDate: "",
+    deleted: false,
+    isActive: "true",
+    __v: 0,
   });
+
 
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const fieldsPerPage = 8;
@@ -209,9 +209,9 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
                         />
                       ) : (
                         <input
-                          type={field.accessor === "nationalId" || field.accessor === "phone" ? "number" : "text"}
+                          type={field.accessor === "nationalId" || field.accessor === "phone" ? "tel" : "text"}
                           name={field.accessor}
-                          value={formData[field.accessor]}
+                          value={formData[field.accessor] as string}
                           onChange={handleInputChange}
                           className="w-full border border-gray-300 px-4 py-2 rounded-lg"
                           required={field.required}
@@ -226,17 +226,6 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
                           {errors[field.accessor]}
                         </span>
                       )}
-
-                        {field.accessor === "email" ? (
-                          <input
-                            type="email"
-                            name={field.accessor}
-                            value={formData[field.accessor]}
-                            onChange={handleInputChange}
-                            className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-                            required={field.required}
-                          />
-                        ):""}
                     </div>
                   )}
                 </div>

@@ -28,7 +28,7 @@ const EventList: React.FC = () => {
 
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize] = useState(10);
 
     useEffect(() => {
         dispatch(fetchEvents());

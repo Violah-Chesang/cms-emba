@@ -3,12 +3,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
 
-const initialState = {
-    canEdit: false,
-    canDelete: false,
-    canView: true,
-    role: null,
-};
 
 const initializeFromCookies = () => {
     const userDetailsCookie = Cookies.get('userDetails');
