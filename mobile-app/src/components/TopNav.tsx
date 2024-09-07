@@ -43,7 +43,7 @@ export default TopNav;
 const styles = StyleSheet.create({
     container: {
         overflow: "hidden",
-        height:'8%'        
+        height: '12%'
     },
     subContainer: {
         flexDirection: 'row',
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 15,
         paddingHorizontal: 10,
-        paddingVertical:5,
+        paddingVertical: 5,
     },
     welcomeText: {
         color: 'rgb(30 58 138)',

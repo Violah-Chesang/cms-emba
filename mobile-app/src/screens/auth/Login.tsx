@@ -20,12 +20,12 @@ const Login: React.FC = () => {
   const { status, error } = useSelector((state: RootState) => state.auth);
 
   const handleSubmit = async () => {
-    console.log('Username:', username);
-    console.log('Password:', password);
+    //console.log('Username:', username);
+    //console.log('Password:', password);
     try {
-      console.log('Dispatching loginUser...');
+     // console.log('Dispatching loginUser...');
       const result = await dispatch(loginUser({ userName: username, password })).unwrap();
-      console.log('Dispatch result:', result);
+     // console.log('Dispatch result:', result);
      
       if (result) {
         Alert.alert('Login successful!');

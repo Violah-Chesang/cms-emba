@@ -3,14 +3,13 @@ const express = require('express');
 
 const router = express.Router();
 
-
 // Create a calendar event
 router.post('/add-event', async (req, res) => {
-    try{
+    try {
         // extract req.body info
-        const {title, eventDate, endOfEventDate, leaderInCharge, deleted} = req.body;
-        if(!title || !eventDate || !endOfEventDate || !leaderInCharge ||deleted){
-            res.status(400).json({message : "Please enter all the required information"})
+        const {title, eventDate, endOfEventDate, leaderInCharge, targetAudience, deleted} = req.body;
+        if(!title || !eventDate || !endOfEventDate || !leaderInCharge || !targetAudience){
+            return res.status(400).json({message : "Please enter all the required information"});
         }
 
         let eventDateObj = new Date(eventDate);
@@ -19,132 +18,131 @@ router.post('/add-event', async (req, res) => {
         let timeDifference = eventDateObj - currentDateObj; // Difference in milliseconds
         let dayDifference = timeDifference / (1000 * 60 * 60 * 24); // Convert milliseconds to days
 
-        const daysTo = Math.floor(dayDifference)
+        const daysTo = Math.floor(dayDifference);
 
         let newEvent = new Event({
             title, 
             eventDate, 
             endOfEventDate,
             leaderInCharge, 
+            targetAudience,
             daysTo,
-            deleted
+            deleted: deleted || false
         });
 
-        newEvent.save();
+        await newEvent.save();
         res.status(201).json({message: "New event calendar created!", data: newEvent});
 
-    }catch(err){
+    } catch(err) {
         console.error(err);
-        res.status(500).json({message: "Error creating an event!"})
+        res.status(500).json({message: "Error creating an event!"});
     }
 });
 
-// View all calendar of event
+// View all calendar of events
 router.get("/all-events", async (req, res) => {
     try {
-      const allEvents = await Event.find({ deleted: false });
-      res
-        .status(200)
-        .json(allEvents);
+        const allEvents = await Event.find({ deleted: false });
+        res.status(200).json(allEvents);
     } catch (err) {
-      const errorMessage = err.message || "Error getting members";
-      res
-        .status(500)
-        .json({ message: "Could not restrieve calendar of events.", error: errorMessage });
+        const errorMessage = err.message || "Error getting events";
+        res.status(500).json({ message: "Could not retrieve calendar of events.", error: errorMessage });
     }
-  });
+});
 
-  //retrieve an event
+// Retrieve a single event
 router.get("/single-event/:id", async (req, res) => {
     try {
-      const id = req.params.id;
-      const event = await Event.find({_id : id});
-      
-      if(event.deleted === true){
-        res.json("The event no longer exists")
-      }
-      res
-      .status(200)
-      .json(event);
-    } catch (err) {
-      const errorMessage = err.message || "Error getting the member";
-      res.status(500).json({
-        message: "Could not restrieve the event.",
-        error: errorMessage,
-      });
-    }
-  });
+        const id = req.params.id;
+        const event = await Event.findById(id);
+        
+        if (!event) {
+            return res.status(404).json({ message: "Event not found" });
+        }
 
-  //Update an event 
+        if (event.deleted) {
+            return res.status(410).json({ message: "The event no longer exists" });
+        }
+
+        res.status(200).json(event);
+    } catch (err) {
+        const errorMessage = err.message || "Error getting the event";
+        res.status(500).json({
+            message: "Could not retrieve the event.",
+            error: errorMessage,
+        });
+    }
+});
+
+// Update an event 
 router.post("/update-event/:id", async (req, res) => {
     try {
-      //filter(search by id)
-      const id = req.params.id;
-      if(!id){
-        res.json({message: "Could not find the ID"})
-      }
-      const {
-        title, 
-        eventDate, 
-        leaderInCharge, 
-        timeline,
-        deleted
-      } = req.body;
-  
-      //options
-      const options = { new: true, upsert : true };
-  
-  
-      // the update
-      const newUpdate = await Event.findByIdAndUpdate(
-        id,
-        {
+        const id = req.params.id;
+        if (!id) {
+            return res.status(400).json({ message: "Event ID is required" });
+        }
+
+        const {
             title, 
             eventDate, 
+            endOfEventDate,
             leaderInCharge, 
-            timeline,
+            targetAudience,
             deleted
-        },
-        options
-      );
-      res.status(200).json(newUpdate);
-    } catch (err) {
-      const errorMessage = err.message || "Error updating the record";
-      res.status(500).json({
-        message: "Could not update the event!",
-        error: errorMessage,
-      });
-    }
-  });
+        } = req.body;
 
-  //delete an event record
+        const options = { new: true, runValidators: true };
+
+        const updatedEvent = await Event.findByIdAndUpdate(
+            id,
+            {
+                title, 
+                eventDate, 
+                endOfEventDate,
+                leaderInCharge, 
+                targetAudience,
+                deleted
+            },
+            options
+        );
+
+        if (!updatedEvent) {
+            return res.status(404).json({ message: "Event not found" });
+        }
+
+        res.status(200).json(updatedEvent);
+    } catch (err) {
+        const errorMessage = err.message || "Error updating the event";
+        res.status(500).json({
+            message: "Could not update the event!",
+            error: errorMessage,
+        });
+    }
+});
+
+// Delete an event record (soft delete)
 router.post("/delete-event/:id", async (req, res) => {
     try {
-      const id = req.params.id;
-      
-      const record = await Event.findOne( {_id: id});
+        const id = req.params.id;
+        
+        const updatedEvent = await Event.findByIdAndUpdate(
+            id, 
+            { $set: { deleted: true } },
+            { new: true }
+        );
 
-      const deletedStatus = record.deleted;
+        if (!updatedEvent) {
+            return res.status(404).json({ message: "Event not found" });
+        }
 
-      //the update to be implemented on the filter
-      const deleted = { $set: { deleted : true } };
-      //options
-      const options = { new: true };
-  
-      // //perform the delete
-      const deletedEvent = await Event.findByIdAndUpdate(id, deleted, options);
-      res
-        .status(200)
-        .json(deletedEvent);
-  
+        res.status(200).json({ message: "Event deleted successfully", data: updatedEvent });
     } catch (err) {
-      const errorMessage = err.message || "Error deleting the record";
-      res.status(500).json({
-        message: "Could not delete the event.",
-        error: errorMessage,
-      });
+        const errorMessage = err.message || "Error deleting the event";
+        res.status(500).json({
+            message: "Could not delete the event.",
+            error: errorMessage,
+        });
     }
-  });
-
+});
 
 module.exports = router;

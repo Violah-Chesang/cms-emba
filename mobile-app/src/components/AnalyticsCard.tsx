@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
-import { useFonts, Inter_100Thin, Inter_200ExtraLight, Inter_300Light, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold, Inter_900Black } from '@expo-google-fonts/inter';
+import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 
 interface AnalyticsCardProps {
   title: string;
@@ -10,19 +10,12 @@ interface AnalyticsCardProps {
 
 const AnalyticsCard: React.FC<AnalyticsCardProps> = ({ title, count, percentage }) => {
   let [fontsLoaded] = useFonts({
-    Inter_100Thin,
-    Inter_200ExtraLight,
-    Inter_300Light,
     Inter_400Regular,
-    Inter_500Medium,
-    Inter_600SemiBold,
     Inter_700Bold,
-    Inter_800ExtraBold,
-    Inter_900Black,
   });
 
   if (!fontsLoaded) {
-    return <Text>Loading....</Text>;
+    return <Text>Loading fonts...</Text>;
   }
 
   return (
@@ -53,36 +46,37 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 4,
     paddingHorizontal: 7,
-    minWidth: '47.5%',
-    margin: 4
+    minWidth: '31.5%',
+    margin: 2,
   },
   groupStats: {},
   count: {
     flexDirection: 'row',
-    gap: 4,
+    justifyContent:'space-between',
   },
   titleText: {
-    fontFamily: 'Inter_700Bold'
+    fontFamily: 'Inter_700Bold',
+    fontSize:15,
   },
   number: {
     fontFamily: 'Inter_700Bold',
     fontSize: 30,
-    margin: 4
+    margin: 4,
   },
   imageView: {
-    alignItems: "center"
+    alignItems: 'center',
   },
   image: {
-    width: 25,
-    height: 20
+    width: 50,
+    height: 25,
   },
   percentage: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   percentageText: {
     fontSize: 12,
-    fontFamily: 'Inter_500Medium'
+    fontFamily: 'Inter_400Regular',
   },
   percentageNumber: {
     fontSize: 14,

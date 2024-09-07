@@ -5,6 +5,7 @@ const eventSchema = new mongoose.Schema({
     eventDate : {type: Date, required: true},
     endOfEventDate: {type: Date, required: false},
     leaderInCharge : {type: String, required: false, unique: false},
+    targetAudience:{type:String, required:false, unique:false},
     daysTo : {type: Number, required: true, unique: false},
     deleted: {type: Boolean, default: false}
 },

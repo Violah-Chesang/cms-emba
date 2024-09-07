@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import AnalyticsCard from './AnalyticsCard'
 import { useFonts,  Inter_700Bold,} from '@expo-google-fonts/inter';
 import FellowshipAnalytics from './FellowshipAnalytics';
 
@@ -19,9 +18,6 @@ const MemberStats: React.FC = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Member Statistics</Text>
       <FellowshipAnalytics/>
-
-      <View style={styles.subContainer}>
-      </View>
     </View>
   )
 }
@@ -35,7 +31,7 @@ const styles = StyleSheet.create({
   subContainer: {
     flexWrap: 'wrap',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: "center",
   },
   title: {
     fontFamily: 'Inter_700Bold',

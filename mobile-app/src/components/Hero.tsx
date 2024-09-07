@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     justifyContent:'space-between',
     alignItems:'center',
     padding:10,
-    height:'28%'
+    height:'37%'
   },
   leftView:{
     width:'49%',

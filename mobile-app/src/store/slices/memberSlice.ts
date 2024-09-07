@@ -60,22 +60,23 @@ export const fetchMembersByFellowship = createAsyncThunk<Member[], string>(
     async (fellowshipType) => {
         let url = '';
         switch (fellowshipType) {
-            case 'Men Fellowship':
-                url = 'http://172.17.0.1:5500/member/men-fellowship';
+            case 'Men':
+                url = 'http://172.17.0.1:5500/reports/men-fellowship';
                 break;
-            case 'Women Fellowship':
-                url = 'http://172.17.0.1:5500/member/women-fellowship';
+            case 'Women':
+                url = 'http://172.17.0.1:5500/reports/women-fellowship';
                 break;
-            case 'Youth Fellowship':
-                url = 'http://172.17.0.1:5500/member/youth-fellowship';
+            case 'Youth':
+                url = 'http://172.17.0.1:5500/reports/youth-fellowship';
                 break;
-            case 'Jss Fellowship':
-                url = 'http://172.17.0.1:5500/member/reports/jss';
+            case 'JSS':
+                url = 'http://172.17.0.1:5500/reports/jss';
                 break;
             default:
                 throw new Error(`Unsupported fellowship type: ${fellowshipType}`);
         }
         const response = await axios.get(url);
+      //  console.log(response)
         return response.data;
     }
 );

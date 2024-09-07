@@ -3,8 +3,8 @@ import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TopNav from '../components/TopNav'
 import Hero from '../components/Hero'
-import MemberStats from '../components/MemberStats'
 import Leaders from '../components/Leaders'
+import FellowshipAnalytics from '../components/FellowshipAnalytics'
 
 const Dashboard = () => {
   return (
@@ -12,7 +12,7 @@ const Dashboard = () => {
       <SafeAreaView>
         <TopNav />
           <Hero />
-          <MemberStats />
+          <FellowshipAnalytics/>
           <Leaders />
       </SafeAreaView>
     </View>

@@ -248,191 +248,147 @@ router.post("/member/add", async (req, res) => {
   }
 });
 
-//Search all members
 router.get("/member/find/all", async (req, res) => {
   try {
     const allMembers = await Member.find({ deleted: false });
-    res
-      .status(200)
-      .json(allMembers);
+    res.status(200).json(allMembers);
   } catch (err) {
-    const errorMessage = err.message || "Error getting members";
+    console.error("Error in /member/find/all:", err);
     res
       .status(500)
-      .json({ message: "Could not restrieve members.", error: errorMessage });
+      .json({ message: "Could not retrieve members.", error: err.message });
   }
 });
 
-//Search a member record
-router.get("/member/:_id", async (req, res) => {
+// Search a member record by ID
+router.get("/member/:id", async (req, res) => {
   try {
-    const id = req.params.id
-    const member = await Member.find({ id });
-    
-    if(member.deleted === true){
-      res.json("Member record nolonger exists")
+    const id = req.params.id;
+    const member = await Member.findById(id);
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
     }
-    res
-    .status(200)
-    .json(member);
+    if (member.deleted) {
+      return res.json("Member record no longer exists");
+    }
+    res.status(200).json(member);
   } catch (err) {
-    const errorMessage = err.message || "Error getting the member";
-    res.status(500).json({
-      message: "Could not restrieve the member.",
-      error: errorMessage,
-    });
+    console.error("Error in /member/:id:", err);
+    res
+      .status(500)
+      .json({ message: "Error retrieving member.", error: err.message });
   }
 });
 
-//Update a member record
+// Update a member record
 router.post("/member/update/:id", async (req, res) => {
   try {
-    //filter(search by id)
     const id = req.params.id;
-    if(!id){
-      res.json({message: "Could not find the ID"})
+    if (!id) {
+      return res.json({ message: "Could not find the ID" });
     }
-    const {
-      firstName,
-      lastName,
-      surName,
-      email,
-      phone,
-      physicalAddress,
-      dob,
-      nationalId,
-      maritalStatus,
-      spouseId,
-      gender,
-      marriageType,
-      occupation,
-      savedStatus,
-      baptisedStatus,
-      otherChurchMembership,
-      cellGroup,
-      ministry,
-      deleted,
-      notes,
-    } = req.body;
-
-    //options
-    const options = { new: true, upsert : true };
-
-
-    // the update
-    const newUpdate = await Member.findByIdAndUpdate(
-      id,
-      { firstName,
-        lastName,
-        surName,
-        email,
-        phone,
-        physicalAddress,
-        dob,
-        nationalId,
-        maritalStatus,
-        spouseId,
-        gender,
-        marriageType,
-        occupation,
-        savedStatus,
-        baptisedStatus,
-        otherChurchMembership,
-        cellGroup,
-        ministry,
-        deleted,
-        notes
-      },
-      options
-    );
+    const options = { new: true, upsert: true };
+    const newUpdate = await Member.findByIdAndUpdate(id, req.body, options);
     res.status(200).json(newUpdate);
   } catch (err) {
-    const errorMessage = err.message || "Error updating the record";
-    res.status(500).json({
-      message: "Could not update the member's record.",
-      error: errorMessage,
-    });
+    console.error("Error in /member/update/:id:", err);
+    res
+      .status(500)
+      .json({
+        message: "Could not update the member's record.",
+        error: err.message,
+      });
   }
 });
 
-//delete a member record
+// Delete a member record
 router.post("/member/delete", async (req, res) => {
   try {
     const memberId = req.body.memberId;
-    
-    const record = await Member.findOne( { memberId});
-    let id = record._id;
-    //the update to be implemented on the filter
-    const deleted = { $set: {deleted : true } };
-    //options
+    const record = await Member.findOne({ memberId });
+    if (!record) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+    const id = record._id;
+    const deleted = { $set: { deleted: true } };
     const options = { new: true };
-
-    // //perform the delete
     const deletedMember = await Member.findByIdAndUpdate(id, deleted, options);
-
-    res
-      .status(200)
-      .json(deletedMember);
-
+    res.status(200).json(deletedMember);
   } catch (err) {
-    const errorMessage = err.message || "Error deleting the record";
-    res.status(500).json({
-      message: "Could not delete the member's record.",
-      error: errorMessage,
-    });
+    console.error("Error in /member/delete:", err);
+    res
+      .status(500)
+      .json({
+        message: "Could not delete the member's record.",
+        error: err.message,
+      });
   }
 });
 
-////////////////////////////////////////////////////////////////////////////////////////////////
-// Reports
-// Find All MMF
+// Reports - Men Fellowship
 router.get("/reports/men-fellowship", async (req, res) => {
-  try{
+  try {
     const mmf = await Member.aggregate([{ $match: { fellowship: "Men" } }]);
     if (mmf.length === 0) {
-      res.json("Men Fellowship report not found");
+      return res.json("Men Fellowship report not found");
     }
     res.json(mmf);
-  }catch(err){
-    console.error({message: "No MMF report found", error: err});
+  } catch (err) {
+    console.error("Error in /reports/men-fellowship:", err);
     res
-    .status(404)
-    .json({message: "No MMF report found", error: err})
+      .status(500)
+      .json({ message: "Error generating MMF report.", error: err.message });
   }
 });
 
-// Find All MWF
+// Reports - Women Fellowship
 router.get("/reports/women-fellowship", async (req, res) => {
-  const mwf = await Member.aggregate([{ $match: { fellowship: "Women" } }]);
-  if (mwf.length === 0) {
-    res.json("Women fellowship report not found");
+  try {
+    const wmf = await Member.aggregate([{ $match: { fellowship: "Women" } }]);
+    if (wmf.length === 0) {
+      return res.json("Women Fellowship report not found");
+    }
+    res.json(wmf);
+  } catch (err) {
+    console.error("Error in /reports/women-fellowship:", err);
+    res
+      .status(500)
+      .json({ message: "Error generating WMF report.", error: err.message });
   }
-  res.json(mwf);
 });
 
-// Find the youth
+// Reports - Youth Fellowship
 router.get("/reports/youth-fellowship", async (req, res) => {
-  const myf = await Member.aggregate([{ $match: { fellowship: "Youth" } }]);
-  if (myf.length === 0) {
-    res.json("Youth report not found");
+  try {
+    const ymf = await Member.aggregate([{ $match: { fellowship: "Youth" } }]);
+    if (ymf.length === 0) {
+      return res.json("Youth Fellowship report not found");
+    }
+    res.json(ymf);
+  } catch (err) {
+    console.error("Error in /reports/youth-fellowship:", err);
+    res
+      .status(500)
+      .json({ message: "Error generating YMF report.", error: err.message });
   }
-  res.json(myf);
 });
 
-// Find JSS
+// Reports - JSS Fellowship
 router.get("/reports/jss", async (req, res) => {
   try {
     const jss = await Member.aggregate([{ $match: { fellowship: "JSS" } }]);
     if (jss.length === 0) {
-      res.json("JSS report not found");
+      return res.json("JSS Fellowship report not found");
     }
     res.json(jss);
   } catch (err) {
+    console.error("Error in /reports/jss-fellowship:", err);
     res
-      .status(400)
-      .json({ message: "Error generating the report!", error: err.message });
+      .status(500)
+      .json({ message: "Error generating JSS report.", error: err.message });
   }
 });
+
 
 // Find All those under age 18
 router.get("/reports/under-18", async (req, res) => {
