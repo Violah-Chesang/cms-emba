@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginUser, fetchUserDetails } from "../../store/slice/authSlice";
-import logo from '../../assets/mck_logo.png;'
+import logo from '../../assets/mck_logo.png';
 
 const Login = () => {
   const dispatch = useDispatch();
