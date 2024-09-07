@@ -330,14 +330,14 @@ router.get("/reports/men-fellowship", async (req, res) => {
   try {
     const mmf = await Member.aggregate([{ $match: { fellowship: "Men" } }]);
     if (mmf.length === 0) {
-      return res.json("Men Fellowship report not found");
+      return res.json({ message: "No members found for Men Fellowship. Please add members." });
     }
     res.json(mmf);
   } catch (err) {
     console.error("Error in /reports/men-fellowship:", err);
     res
       .status(500)
-      .json({ message: "Error generating MMF report.", error: err.message });
+      .json({ message: "Error generating Men Fellowship report.", error: err.message });
   }
 });
 
@@ -346,14 +346,14 @@ router.get("/reports/women-fellowship", async (req, res) => {
   try {
     const wmf = await Member.aggregate([{ $match: { fellowship: "Women" } }]);
     if (wmf.length === 0) {
-      return res.json("Women Fellowship report not found");
+      return res.json({ message: "No members found for Women Fellowship. Please add members." });
     }
     res.json(wmf);
   } catch (err) {
     console.error("Error in /reports/women-fellowship:", err);
     res
       .status(500)
-      .json({ message: "Error generating WMF report.", error: err.message });
+      .json({ message: "Error generating Women Fellowship report.", error: err.message });
   }
 });
 
@@ -362,14 +362,14 @@ router.get("/reports/youth-fellowship", async (req, res) => {
   try {
     const ymf = await Member.aggregate([{ $match: { fellowship: "Youth" } }]);
     if (ymf.length === 0) {
-      return res.json("Youth Fellowship report not found");
+      return res.json({ message: "No members found for Youth Fellowship. Please add members." });
     }
     res.json(ymf);
   } catch (err) {
     console.error("Error in /reports/youth-fellowship:", err);
     res
       .status(500)
-      .json({ message: "Error generating YMF report.", error: err.message });
+      .json({ message: "Error generating Youth Fellowship report.", error: err.message });
   }
 });
 
@@ -378,16 +378,17 @@ router.get("/reports/jss", async (req, res) => {
   try {
     const jss = await Member.aggregate([{ $match: { fellowship: "JSS" } }]);
     if (jss.length === 0) {
-      return res.json("JSS Fellowship report not found");
+      return res.json({ message: "No members found for JSS Fellowship. Please add members." });
     }
     res.json(jss);
   } catch (err) {
     console.error("Error in /reports/jss-fellowship:", err);
     res
       .status(500)
-      .json({ message: "Error generating JSS report.", error: err.message });
+      .json({ message: "Error generating JSS Fellowship report.", error: err.message });
   }
 });
+
 
 
 // Find All those under age 18

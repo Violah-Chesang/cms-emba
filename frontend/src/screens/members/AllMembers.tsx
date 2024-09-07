@@ -124,6 +124,7 @@ const AllMembers: React.FC = () => {
         loading={loading}
         error={error}
       />
+      {members.length === 0 && <p className="text-center text-red-500 justify-center items-center font-bold text-2xl mt-20">No data available. Please add to manage members</p>}
     </div>
   );
 };
