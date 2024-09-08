@@ -2,7 +2,6 @@ import React from "react";
 import '../nav/Sidenav';
 import heroImage from '../../../assets/hero_image-removebg.png';
 
-
 function Hero() {
   return (
     <div className="bg-blue-950 h-60 flex flex-col md:flex-row justify-evenly items-center rounded-lg p-10">

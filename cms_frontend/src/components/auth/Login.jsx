@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { loginUser, fetchUserDetails } from "../../store/slice/authSlice";
 import logo from '../../assets/mck_logo.png';
 
-
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -47,7 +46,8 @@ const Login = () => {
         autoComplete="off"
         onSubmit={handleSubmit}
       >
-        <img src={logo} alt="logo" width={150} height={150} />
+        <img src={logo} alt="" width={150} height={150} />
+        {/* "../src/assets/mck_logo.png" */}
         <p
           style={{
             fontSize: "25px",
