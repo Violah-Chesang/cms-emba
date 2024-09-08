@@ -55,9 +55,12 @@ const Topnav = () => {
         <p className="text-blue-900 font-bold text-xl">
           Welcome {userDetails ? userDetails.userName : "Guest"}
         </p>
-        <p className="text-gray-600 font-normal text-sm flex">
-          Today is<DateToday />
-        </p>
+        <div className="flex flex-row text-gray-600 font-normal text-sm ">
+          <p className="text-gray-600 font-normal text-sm flex">
+            Today is
+          </p>
+          <DateToday />
+        </div>
       </div>
       <div className='flex flex-row gap-4 items-center pr-3'>
        

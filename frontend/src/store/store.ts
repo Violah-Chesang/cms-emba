@@ -3,6 +3,7 @@ import authReducer from './slices/authSlice';
 import memberReducer from './slices/memberSlice';
 import accessControlReducer from './slices/accessControlSlice';
 import eventReducer from './slices/eventSlice';
+import inventoryReducer from './slices/inventorySlice';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
 const store = configureStore({
@@ -11,6 +12,7 @@ const store = configureStore({
     members: memberReducer,
     accessControl: accessControlReducer,
     events: eventReducer,
+    inventory: inventoryReducer,
   },
 });
 

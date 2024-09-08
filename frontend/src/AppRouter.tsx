@@ -14,6 +14,7 @@ import AllMembers from "./screens/members/AllMembers";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 import Topnav from "./components/nav/Topnav";
+import Inventory from "./screens/Inventory";
 import { RootState } from "./store/store";
 
 const AppRouter: React.FC = () => {
@@ -45,7 +46,7 @@ const AppRouter: React.FC = () => {
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/calendar" element={<Calendar />} />
                   <Route path="/finance" element={<Finance />} />
-                  <Route path="/inventory" element={<Archives />} />
+                  <Route path="/inventory" element={<Inventory />} />
                   <Route path="/archives" element={<Archives />} />
                   <Route path="/members/all" element={<AllMembers />} />
                   <Route path="/members/men" element={<Men />} />
