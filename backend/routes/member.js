@@ -134,52 +134,16 @@ router.post('/member/mother-details',async (req,res) => {
 //create a member record
 router.post("/member/add", async (req, res) => {
   try {
-    // memberID
-      //user Counter model to increase sequence(seq) number
-      const counterData = await Counter.findOneAndUpdate(
-        { name: "counter name" },
-        //$inc increases seq by 1
-        { $inc: { seq: 1 } },
-        //return a new document
-        { new: true, upsert: true }
-      );
-  
-      let seqId;
-      //give it a name if it's empty
-      if (counterData.name === null) {
-        name: "counter name";
-      }
-      //assign 1 if it's empty and save it
-      if (counterData.seq === null) {
-        const newCounterSeq = new Counter({ name: "counter name", seq: 1 });
-  
-        await newCounterSeq.save();
-        seqId = 1;
-      } else {
-        //extract seq no from the aboved saved document and mmake it 4 digits
-        seqId = counterData.seq;
-        paddedSeqId = seqId.toString().padStart(4, "0");
-      }
-      //the member id to have YYYY concatenated with seqId
-      //Get the current full year
-      const year = new Date().getFullYear();
-  
-      // concatenate year and padded seqId
-      let memberId = `${year}${paddedSeqId}`;
-    ////////////////////////////////////////////////////////////
-    const regDate = Date.now().toLocaleString();
-
     const {
-      // memberId
       firstName,
       middleName,
       surName,
       email,
-      phone,//for spouse
+      phone,
       phoneNumber,
       physicalAddress,
       dob,
-      age : age,
+      age,
       fatherName,
       motherName,
       fatherPhone,
@@ -202,9 +166,47 @@ router.post("/member/add", async (req, res) => {
       notes,
     } = req.body;
 
-    ///////////////////////////////////////////////////////
+    if (!nationalId) {
+      return res.status(400).json({ message: "National ID is required." });
+    }
+
+    const query = { nationalId };
+    if (phone) query.phone = phone;
+    if (email) query.email = email;
+
+    // Check if a member with the same nationalId or phone/email already exists
+    const existingMember = await Member.findOne(query);
+    if (existingMember) {
+      return res
+        .status(400)
+        .json({
+          message:
+            "A member with the same National ID or phone/email already exists.",
+        });
+    }
+
+    const counterData = await Counter.findOneAndUpdate(
+      { name: "counter name" },
+      { $inc: { seq: 1 } },
+      { new: true, upsert: true }
+    );
+
+    let seqId;
+    if (counterData.seq === null) {
+      const newCounterSeq = new Counter({ name: "counter name", seq: 1 });
+      await newCounterSeq.save();
+      seqId = 1;
+    } else {
+      seqId = counterData.seq;
+    }
+    const paddedSeqId = seqId.toString().padStart(4, "0");
+    const year = new Date().getFullYear();
+    const memberId = `${year}${paddedSeqId}`;
+
+    const regDate = new Date().toLocaleString();
+
     const newMember = new Member({
-      memberId : memberId,
+      memberId,
       firstName,
       middleName,
       surName,
@@ -234,29 +236,17 @@ router.post("/member/add", async (req, res) => {
       fellowship,
       deleted,
       notes,
+      regDate,
     });
 
     const newRecord = await newMember.save();
-    res
-      .status(201)
-      .json(newRecord);
+    res.status(201).json(newRecord);
   } catch (err) {
-    const errorMessage = err.message || "An error while registering the member";
+    const errorMessage =
+      err.message || "An error occurred while registering the member";
     res
       .status(500)
       .json({ message: "Error registering member", error: errorMessage });
-  }
-});
-
-router.get("/member/find/all", async (req, res) => {
-  try {
-    const allMembers = await Member.find({ deleted: false });
-    res.status(200).json(allMembers);
-  } catch (err) {
-    console.error("Error in /member/find/all:", err);
-    res
-      .status(500)
-      .json({ message: "Could not retrieve members.", error: err.message });
   }
 });
 
