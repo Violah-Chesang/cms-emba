@@ -32,6 +32,7 @@ interface Member {
   ministry: string;
   fellowship: string;
   age: number;
+  leadershipRole: string;
   deleted: boolean;
   isActive: string;
   regDate: string;

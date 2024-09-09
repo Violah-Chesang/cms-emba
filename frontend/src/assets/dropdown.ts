@@ -22,6 +22,7 @@ const options = {
   savedStatus: ["--NONE--", "saved", "not saved"],
   otherChurchMembership: ["--NONE--", "Yes", "No"],
   memberType: ["--NONE--", "full member", "associate"],
+  leadershipRole:["--NONE--", "Minister", "Chair", "Treasurer","Secretary", "Usher", "Hospitality", "Organising secretary", "Sunday School Leader", "Intercessory",  ]
 };
 
 export default options;

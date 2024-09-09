@@ -162,6 +162,7 @@ router.post("/member/add", async (req, res) => {
       cellGroup,
       ministry,
       fellowship,
+      leadershipRole,
       deleted,
       notes,
     } = req.body;
@@ -235,6 +236,7 @@ router.post("/member/add", async (req, res) => {
       ministry,
       fellowship,
       deleted,
+      leadershipRole,
       notes,
       regDate,
     });
@@ -247,6 +249,18 @@ router.post("/member/add", async (req, res) => {
     res
       .status(500)
       .json({ message: "Error registering member", error: errorMessage });
+  }
+});
+
+router.get("/member/find/all", async (req, res) => {
+  try {
+    const allMembers = await Member.find({ deleted: false });
+    res.status(200).json(allMembers);
+  } catch (err) {
+    console.error("Error in /member/find/all:", err);
+    res
+      .status(500)
+      .json({ message: "Could not retrieve members.", error: err.message });
   }
 });
 

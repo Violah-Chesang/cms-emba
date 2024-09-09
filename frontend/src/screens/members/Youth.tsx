@@ -31,6 +31,7 @@ interface Member {
   cellGroup: string;
   ministry: string;
   fellowship: string;
+  leadershipRole: string;
   age: number;
   deleted: boolean;
   isActive: string;

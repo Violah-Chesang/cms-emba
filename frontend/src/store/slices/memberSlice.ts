@@ -31,6 +31,7 @@ interface Member {
     fellowship: string;
     age: number;
     deleted: boolean;
+    leadershipRole: string,
     isActive: string;
     regDate: string;
     notes: string;
@@ -98,6 +99,8 @@ export const fetchMembersByFellowship = createAsyncThunk<Member[], string, { sta
         } catch (error) {
             if (error instanceof Error) {
                 return rejectWithValue(error.message);
+                console.log(error)
+
             } else if (axios.isAxiosError(error) && error.response) {
                 return rejectWithValue(error.response.data);
             } else {

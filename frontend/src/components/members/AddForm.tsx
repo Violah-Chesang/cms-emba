@@ -23,6 +23,7 @@ const fields: Field[] = [
   { accessor: "otherChurchMembership", header: "Other Church Membership", required: false },
   { accessor: "memberType", header: "Member Type", required: true },
   { accessor: "cellGroup", header: "Cell Group", required: false },
+  { accessor: "leadershipRole", header: "Leadership Role", required: false },
   { accessor: "ministry", header: "Ministry", required: true },
   { accessor: "fellowship", header: "Fellowship", required: true },
   { accessor: "notes", header: "Notes", required: false },
@@ -55,6 +56,7 @@ interface FormData {
   fellowship: string;
   age: number;
   deleted: boolean;
+  leadershipRole: string;
   isActive: string;
   regDate: string;
   notes: string;
@@ -109,6 +111,7 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
     age: 0,
     notes: "",
     regDate: "",
+    leadershipRole: "",
     deleted: false,
     isActive: "true",
     __v: 0,
@@ -195,7 +198,7 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
           .map((field) => renderField(field));
       case "Church Info":
         return fields
-          .filter((field) => ["savedStatus", "baptisedStatus", "otherChurchMembership", "memberType", "fellowship", "ministry", "cellGroup", "notes"].includes(field.accessor))
+          .filter((field) => ["savedStatus", "baptisedStatus", "otherChurchMembership", "memberType", "fellowship", "ministry", "cellGroup", "notes", "leadershipRole"].includes(field.accessor))
           .map((field) => renderField(field));
 
       default:
@@ -204,7 +207,7 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
   };
 
   const shouldRenderDropdown = (accessor: keyof FormData): boolean => {
-    const dropdownFields: (keyof FormData)[] = ["gender", "savedStatus", "baptisedStatus", "memberType", "fellowship", "ministry", "cellGroup", "otherChurchMembership", "marriageType", "maritalStatus"];
+    const dropdownFields: (keyof FormData)[] = ["gender", "savedStatus", "baptisedStatus", "memberType", "fellowship", "ministry", "cellGroup", "otherChurchMembership", "marriageType", "maritalStatus", "leadershipRole"];
     return dropdownFields.includes(accessor);
   };
 

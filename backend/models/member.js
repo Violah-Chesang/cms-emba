@@ -32,6 +32,7 @@ const memberSchema = new mongoose.Schema({
     ministry : {type: String, required : false},
     fellowship : {type: String, required : false},
     age: {type: Number, required: false},
+    leadershipRole:{type: String, required:false},
     deleted : {type : Boolean, default : false},
     isActive : {type : String, default: true},
     regDate : {type: Date, required : true, default: Date.now()},
