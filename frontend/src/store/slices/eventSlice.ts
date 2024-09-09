@@ -6,6 +6,9 @@ interface Event {
     eventDate: string;
     endOfEventDate?: string;
     leaderInCharge?: string;
+    targetAudience?: string;
+    eventLevel?:string;
+    location?:string;
     daysTo: number;
 }
 

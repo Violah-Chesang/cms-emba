@@ -1,44 +1,55 @@
-// src/components/EventTable.tsx
 import React, { useState, useMemo } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
+import { FaPlus, FaTrash, FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 
 interface Event {
-    _id?: string; // Optional if it can be undefined
+    _id?: string;
     title: string;
     eventDate: string;
     endOfEventDate?: string;
     leaderInCharge?: string;
-    daysTo: number;
-    targetAudience?: string; // Add any additional properties
+    targetAudience?: string;
+    eventLevel?: string;
+    location?: string;
 }
+
 interface EventTableProps {
     events: Event[];
     onAdd: () => void;
-    onUpdate: (event: Event) => void;
     onDelete: (eventId: string) => void;
-    onView: (eventId: string) => void;
 }
 
-const EventTable: React.FC<EventTableProps> = ({ events, onAdd, onUpdate, onDelete }) => {
-    const [sortColumn, setSortColumn] = useState<keyof Event>('eventDate');
+const EventTable: React.FC<EventTableProps> = ({ events, onAdd, onDelete }) => {
+    const [sortColumn, setSortColumn] = useState<'eventDate' | 'daysTo'>('daysTo');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
+    const calculateDaysTo = (eventDate: string): number => {
+        const today = new Date();
+        const eventDay = new Date(eventDate);
+        const diffTime = eventDay.getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+    };
+
     const sortedEvents = useMemo(() => {
-        return [...events].sort((a, b) => {
-            const aValue = a[sortColumn];
-            const bValue = b[sortColumn];
+        return [...events].map(event => ({
+            ...event,
+            daysTo: calculateDaysTo(event.eventDate)
+        })).sort((a, b) => {
+            const aDaysTo = a.daysTo;
+            const bDaysTo = b.daysTo;
 
-            if (aValue === undefined && bValue === undefined) return 0;
-            if (aValue === undefined) return sortDirection === 'asc' ? 1 : -1;
-            if (bValue === undefined) return sortDirection === 'asc' ? -1 : 1;
+            if (aDaysTo === bDaysTo) return 0;
 
-            if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-            if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-            return 0;
+            // Sort future events (daysTo >= 0) first
+            if (aDaysTo >= 0 && bDaysTo < 0) return sortDirection === 'asc' ? -1 : 1;
+            if (aDaysTo < 0 && bDaysTo >= 0) return sortDirection === 'asc' ? 1 : -1;
+
+            // Sort both future and past events in ascending order of daysTo
+            return sortDirection === 'asc' ? aDaysTo - bDaysTo : bDaysTo - aDaysTo;
         });
     }, [events, sortColumn, sortDirection]);
 
-    const handleSort = (column: keyof Event) => {
+    const handleSort = (column: 'eventDate' | 'daysTo') => {
         if (column === sortColumn) {
             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         } else {
@@ -57,7 +68,7 @@ const EventTable: React.FC<EventTableProps> = ({ events, onAdd, onUpdate, onDele
         }
     };
 
-    const SortIcon = ({ column }: { column: keyof Event }) => {
+    const SortIcon = ({ column }: { column: 'eventDate' | 'daysTo' }) => {
         if (column !== sortColumn) return <FaSort className="ml-1" />;
         return sortDirection === 'asc' ? <FaSortUp className="ml-1" /> : <FaSortDown className="ml-1" />;
     };
@@ -77,14 +88,14 @@ const EventTable: React.FC<EventTableProps> = ({ events, onAdd, onUpdate, onDele
                 <table className="min-w-full bg-white">
                     <thead className="bg-gray-100">
                         <tr>
-                            {['Title', 'Start Date', 'End Date', 'Leader', 'Audience', 'Days To'].map((header, index) => (
+                            {['Title', 'Start Date', 'Location', 'Leader', 'Audience', 'Days To'].map((header, index) => (
                                 <th
                                     key={index}
                                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                    onClick={() => handleSort(header.toLowerCase().replace(' ', '') as keyof Event)}
+                                    onClick={() => handleSort(header.toLowerCase().replace(' ', '') as 'eventDate' | 'daysTo')}
                                 >
                                     {header}
-                                    <SortIcon column={header.toLowerCase().replace(' ', '') as keyof Event} />
+                                    <SortIcon column={header.toLowerCase().replace(' ', '') as 'eventDate' | 'daysTo'} />
                                 </th>
                             ))}
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -92,10 +103,13 @@ const EventTable: React.FC<EventTableProps> = ({ events, onAdd, onUpdate, onDele
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {sortedEvents.map((event) => (
-                            <tr key={event._id}>
+                            <tr
+                                key={event._id}
+                                className={event.daysTo < 0 ? 'bg-red-100' : ''}
+                            >
                                 <td className="px-6 py-4 whitespace-nowrap">{event.title}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{new Date(event.eventDate).toLocaleDateString()}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">{event.endOfEventDate ? new Date(event.endOfEventDate).toLocaleDateString() : '-'}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{event.location}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{event.leaderInCharge}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getAudienceBadgeColor(event.targetAudience)} text-white`}>
@@ -104,12 +118,6 @@ const EventTable: React.FC<EventTableProps> = ({ events, onAdd, onUpdate, onDele
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">{event.daysTo}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button
-                                        onClick={() => onUpdate(event)}
-                                        className="text-blue-600 hover:text-blue-900 mr-4"
-                                    >
-                                        <FaEdit />
-                                    </button>
                                     <button
                                         onClick={() => onDelete(event._id!)}
                                         className="text-red-600 hover:text-red-900"
