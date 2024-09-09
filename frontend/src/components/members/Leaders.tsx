@@ -31,6 +31,7 @@ interface Member {
   ministry: string;
   fellowship: string;
   age: number;
+  leadershipRole: string;
   deleted: boolean;
   isActive: string;
   regDate: string;
@@ -47,13 +48,11 @@ const columns: Column[] = [
   { header: "Member ID", accessor: "memberId" },
   { header: "Name", accessor: "name" }, 
   { header: "Phone Number", accessor: "phone" },
-  { header: "Gender", accessor: "gender" },
-  { header: "Cell Group", accessor: "cellGroup" },
+  { header: "Position", accessor: "leadershipRole" },
   { header: "Fellowship", accessor: "fellowship" },
   { header: "Status", accessor: "isActive" },
 ];
 
-// Define a set of colors to pick from
 const colors = [
   "#C8D0FE",
   "#FFB6C1",
@@ -83,7 +82,7 @@ const Leaders: React.FC = () => {
 
   // Filter and concatenate name
   const leaders: Member[] = members
-    .filter(member => member.ministry === "Leader")
+    .filter(member => member.leadershipRole !== "--NONE--" && member.leadershipRole !== null)
     .map(member => ({
       ...member,
       name: (
@@ -97,6 +96,7 @@ const Leaders: React.FC = () => {
           <span>{`${member.firstName} ${member.middleName ? member.middleName + ' ' : ''}${member.surName}`}</span>
         </div>
       )
+      
     }));
 
   return (

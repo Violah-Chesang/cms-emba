@@ -25,6 +25,7 @@ interface Member {
   cellGroup: string;
   ministry: string;
   fellowship: string;
+  leadershipRole:string;
   age: number;
   deleted: boolean;
   isActive: string;
@@ -76,6 +77,8 @@ const ViewForm: React.FC<ViewFormProps> = ({ viewData, onClose }) => {
       { accessor: "ministry", header: "Ministry" },
       { accessor: "fellowship", header: "Fellowship" },
       { accessor: "notes", header: "Notes" },
+      { accessor: "leadershipRole", header: "Leadership Role", required: true },
+
     ],
   }), []);
 

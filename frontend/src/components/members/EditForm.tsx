@@ -30,6 +30,7 @@ interface Member {
   ministry: string;
   fellowship: string;
   age: number;
+  leadershipRole:string;
   deleted: boolean;
   isActive: string;
   regDate: string;
@@ -109,6 +110,8 @@ const EditForm: React.FC<EditFormProps> = ({ editData, onSave, onCancel }) => {
       { accessor: "ministry", header: "Ministry", required: false },
       { accessor: "fellowship", header: "Fellowship", required: false },
       { accessor: "notes", header: "Notes", required: false },
+      { accessor: "leadershipRole", header: "Leadership Role", required: true },
+
     ],
   };
 
@@ -206,7 +209,7 @@ const EditForm: React.FC<EditFormProps> = ({ editData, onSave, onCancel }) => {
             {columns[currentTab].map((column) => (
               <div key={column.accessor}>
                 <label className="block mb-2 font-bold">{column.header}</label>
-                {["fellowship", "ministry", "cellGroup", "status", "baptisedStatus", "maritalStatus", "gender", "marriageType", "savedStatus", "otherChurchMembership", "memberType"].includes(column.accessor) ? (
+                {["fellowship", "ministry", "cellGroup", "status", "baptisedStatus", "maritalStatus", "gender", "marriageType", "savedStatus", "otherChurchMembership", "memberType", "leadershipRole"].includes(column.accessor) ? (
                   renderDropdown(
                     column.accessor,
                     column.header,
