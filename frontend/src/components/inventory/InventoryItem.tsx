@@ -1,65 +1,50 @@
-import React from 'react';
-import InventoryItemTable from './InventoryItemTable'; // Ensure path is correct for your structure
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
+import { fetchItems, addItem } from '../../store/slices/inventorySlice';
+import InventoryItemTable from './InventoryItemTable';
+import AddItemFormModal from './AddItemModal'; 
+
+interface InventoryItem {
+    _id: string;
+    name: string;
+    type: string;
+    subtype: string;
+    status: string;
+    condition: string;
+}
 
 const InventoryItem: React.FC = () => {
-    // Dummy data for inventory items
-    const dummyItems = [
-        {
-            _id: '1',
-            type: { _id: '101', name: 'Electronics' },
-            subtype: { _id: '201', name: 'Laptop' },
-            serialNumber: 'SN123456',
-            description: 'Dell XPS 15',
-            quantity: 10,
-            location: 'Warehouse 1',
-            purchaseDate: new Date('2021-08-15'),
-            status: 'In Use',
-            condition: 'Good',
-        },
-        {
-            _id: '2',
-            type: { _id: '102', name: 'Furniture' },
-            subtype: { _id: '202', name: 'Chair' },
-            serialNumber: 'SN987654',
-            description: 'Office Chair',
-            quantity: 50,
-            location: 'Main Office',
-            purchaseDate: new Date('2022-01-10'),
-            status: 'In Stock',
-            condition: 'New',
-        },
-        {
-            _id: '3',
-            type: { _id: '103', name: 'Appliances' },
-            subtype: { _id: '203', name: 'Air Conditioner' },
-            serialNumber: 'SN654321',
-            description: 'LG Split AC',
-            quantity: 5,
-            location: 'Server Room',
-            purchaseDate: new Date('2020-06-25'),
-            status: 'Under Maintenance',
-            condition: 'Needs Repair',
-        },
-        {
-            _id: '4',
-            type: { _id: '104', name: 'IT Equipment' },
-            subtype: { _id: '204', name: 'Router' },
-            serialNumber: 'SN112233',
-            description: 'Cisco Router',
-            quantity: 20,
-            location: 'Data Center',
-            purchaseDate: new Date('2019-11-05'),
-            status: 'In Use',
-            condition: 'Excellent',
-        },
-    ];
+    const dispatch: AppDispatch = useDispatch();
+
+    // Access state from Redux
+    const items = useSelector((state: RootState) => state.inventory.items);
+    const loadingItems = useSelector((state: RootState) => state.inventory.loadingItems);
+    const error = useSelector((state: RootState) => state.inventory.error);
+    const [showAddModal, setShowAddModal] = useState(false);
+
+    // Fetch items on component mount
+    useEffect(() => {
+        dispatch(fetchItems());
+    }, [dispatch]);
 
     // Event handlers
     const handleAdd = () => {
-        alert('Add new item');
+        setShowAddModal(true);
     };
 
-    const handleEdit = (item: any) => {
+    const handleAddItem = (itemData: Omit<InventoryItem, '_id'>) => {
+        dispatch(addItem(itemData))
+            .unwrap()
+            .then(() => {
+                setShowAddModal(false);
+            })
+            .catch((err) => {
+                console.error('Failed to add item:', err);
+            });
+    };
+
+    const handleEdit = (item: InventoryItem) => {
         alert(`Edit item: ${item._id}`);
     };
 
@@ -69,12 +54,36 @@ const InventoryItem: React.FC = () => {
 
     return (
         <div className="p-6">
-            <InventoryItemTable
-                items={dummyItems}
-                onAdd={handleAdd}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-            />
+            <div className="flex justify-between mb-4">
+                <h2 className="text-2xl font-bold">Inventory Items</h2>
+                <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                    onClick={handleAdd}
+                >
+                    Add Item
+                </button>
+            </div>
+
+            {/* Display loading indicator */}
+            {loadingItems ? (
+                <p>Loading items...</p>
+            ) : error ? (
+                <p className="text-red-500">Error: {error}</p>
+            ) : (
+                <InventoryItemTable
+                    items={Object.values(items)}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                />
+            )}
+
+            {/* Add Item Modal */}
+            {showAddModal && (
+                <AddItemFormModal
+                    onClose={() => setShowAddModal(false)}
+                    onSubmit={handleAddItem}
+                />
+            )}
         </div>
     );
 };

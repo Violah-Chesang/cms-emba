@@ -1,5 +1,32 @@
 import React, { useState } from "react";
-import option from '../../assets/dropdown';
+import options from "../../assets/dropdown";
+
+const fields: Field[] = [
+  { accessor: "firstName", header: "First Name", required: true },
+  { accessor: "middleName", header: "Middle Name", required: false },
+  { accessor: "surName", header: "Surname", required: true },
+  { accessor: "dob", header: "Date of Birth", required: true },
+  { accessor: "gender", header: "Gender", required: true },
+  { accessor: "age", header: "Age", required: true },
+  { accessor: "nationalId", header: "National ID", required: true },
+  { accessor: "phone", header: "Phone", required: true },
+  { accessor: "email", header: "Email", required: true },
+  { accessor: "maritalStatus", header: "Marital Status", required: true },
+  { accessor: "marriageType", header: "Marriage Type", required: true },
+  { accessor: "spouseName", header: "Spouse Name", required: false },
+  { accessor: "physicalAddress", header: "Physical Address", required: true },
+  { accessor: "motherPhone", header: "Mother's Phone", required: false },
+  { accessor: "fatherName", header: "Father's Name", required: false },
+  { accessor: "motherName", header: "Mother's Name", required: false },
+  { accessor: "savedStatus", header: "Saved Status", required: true },
+  { accessor: "baptisedStatus", header: "Baptized Status", required: true },
+  { accessor: "otherChurchMembership", header: "Other Church Membership", required: false },
+  { accessor: "memberType", header: "Member Type", required: true },
+  { accessor: "cellGroup", header: "Cell Group", required: false },
+  { accessor: "ministry", header: "Ministry", required: true },
+  { accessor: "fellowship", header: "Fellowship", required: true },
+  { accessor: "notes", header: "Notes", required: false },
+];
 
 interface FormData {
   memberId: string;
@@ -7,6 +34,7 @@ interface FormData {
   middleName: string;
   surName: string;
   dob: string;
+  email: string;
   phone: string;
   physicalAddress: string;
   nationalId: string;
@@ -52,13 +80,14 @@ interface AddFormProps {
 }
 
 const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdown }) => {
-  const [currentPage, setCurrentPage] = useState(0);
+  const [activeTab, setActiveTab] = useState("General");
   const [formData, setFormData] = useState<FormData>({
     memberId: "",
     firstName: "",
     middleName: "",
     surName: "",
     dob: "",
+    email: "",
     phone: "",
     physicalAddress: "",
     nationalId: "",
@@ -85,20 +114,41 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
     __v: 0,
   });
 
-
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
-  const fieldsPerPage = 8;
+
+  // Function to calculate age from dob
+  const calculateAge = (dob: string): number => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
+
+    setFormData((prevFormData) => {
+      const updatedFormData = { ...prevFormData, [name]: value };
+
+      if (name === "dob") {
+        updatedFormData.age = calculateAge(value);
+      }
+
+      return updatedFormData;
+    });
   };
 
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof FormData, string>> = {};
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Invalid email format.";
+    }
 
     if (!/^\d{8}$/.test(formData.nationalId)) {
       newErrors.nationalId = "National ID must be exactly 8 digits.";
@@ -129,197 +179,142 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
     }
   };
 
-  const nextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+  const switchTab = (tab: string) => {
+    setActiveTab(tab);
   };
 
-  const prevPage = () => {
-    setCurrentPage((prevPage) => prevPage - 1);
+  const tabContent = () => {
+    switch (activeTab) {
+      case "General":
+        return fields
+          .filter((field) => ["firstName", "middleName", "surName", "dob", "gender", "nationalId", "maritalStatus", "marriageType","spouseName"].includes(field.accessor))
+          .map((field) => renderField(field));
+      case "Contact Info":
+        return fields
+          .filter((field) => ["phone", "email", "physicalAddress", "motherPhone", "fatherName", "motherName"].includes(field.accessor))
+          .map((field) => renderField(field));
+      case "Church Info":
+        return fields
+          .filter((field) => ["savedStatus", "baptisedStatus", "otherChurchMembership", "memberType", "fellowship", "ministry", "cellGroup", "notes"].includes(field.accessor))
+          .map((field) => renderField(field));
+
+      default:
+        return null;
+    }
   };
 
-  const totalPages = Math.ceil(fields.length / fieldsPerPage);
+  const shouldRenderDropdown = (accessor: keyof FormData): boolean => {
+    const dropdownFields: (keyof FormData)[] = ["gender", "savedStatus", "baptisedStatus", "memberType", "fellowship", "ministry", "cellGroup", "otherChurchMembership", "marriageType", "maritalStatus"];
+    return dropdownFields.includes(accessor);
+  };
+
+  const renderField = (field: Field) => (
+    <div key={field.accessor}>
+      {shouldRenderDropdown(field.accessor) ? (
+        <div>
+          <label className="block mb-2 font-bold">
+            {field.header}
+            <span className="text-red-500">*</span>
+          </label>
+          {field.accessor in options ? (
+            renderFilterDropdown(
+              field.accessor,
+              "",
+              options[field.accessor as keyof typeof options],
+              handleInputChange,
+              true
+            )
+          ) : (
+            <span>No options available</span>
+          )}
+          {errors[field.accessor] && (
+            <span className="text-red-500 text-sm">
+              {errors[field.accessor]}
+            </span>
+          )}
+        </div>
+      ) : (
+        <div>
+          <label className="block mb-2 font-bold">
+            {field.header}
+            {field.required && <span className="text-red-500">*</span>}
+          </label>
+          <input
+            type={field.accessor === "dob" ? "date" : "text"}
+            name={field.accessor}
+            value={formData[field.accessor] as string}
+            onChange={handleInputChange}
+            className="w-full border border-gray-300 px-4 py-2 rounded-md"
+            required={field.required}
+          />
+          {errors[field.accessor] && (
+            <span className="text-red-500 text-sm">
+              {errors[field.accessor]}
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-5 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 relative">
-        <button
-          className="absolute top-0 right-0 m-4 text-gray-600 hover:text-gray-800"
-          onClick={onCancel}
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-        <h2 className="text-xl font-semibold mb-4">Add Member</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-2 gap-4">
-            {fields
-              .slice(
-                currentPage * fieldsPerPage,
-                (currentPage + 1) * fieldsPerPage
-              )
-              .map((field) => (
-                <div key={field.accessor}>
-                  {shouldRenderDropdown(field.accessor) ? (
-                    <div>
-                      <label className="block mb-2">
-                        {field.header}
-                        <span className="text-red-500">*</span>
-                      </label>
-                      {renderFilterDropdown(
-                        field.accessor,
-                        field.header,
-                        options[field.accessor],
-                        handleInputChange,
-                        true
-                      )}
-                      {errors[field.accessor] && (
-                        <span className="text-red-500 text-sm">
-                          {errors[field.accessor]}
-                        </span>
-                      )}
-                    </div>
-                  ) : (
-                    <div>
-                      <label className="block mb-2">
-                        {field.header}
-                        {field.required && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </label>
-                      {field.accessor === "dob" ? (
-                        <input
-                          type="date"
-                          name={field.accessor}
-                          value={formData[field.accessor]}
-                          onChange={handleInputChange}
-                          className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-                          required={field.required}
-                        />
-                      ) : (
-                        <input
-                          type={field.accessor === "nationalId" || field.accessor === "phone" ? "tel" : "text"}
-                          name={field.accessor}
-                          value={formData[field.accessor] as string}
-                          onChange={handleInputChange}
-                          className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-                          required={field.required}
-                          minLength={field.accessor === "phone" ? 10 : undefined}
-                          maxLength={field.accessor === "phone" ? 13 : undefined}
-                          min={field.accessor === "nationalId" ? "10000000" : undefined}
-                          max={field.accessor === "nationalId" ? "99999999" : undefined}
-                        />
-                      )}
-                      {errors[field.accessor] && (
-                        <span className="text-red-500 text-sm">
-                          {errors[field.accessor]}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-          </div>
-          <div className="flex justify-between mt-4">
-            <button
-              type="button"
-              onClick={prevPage}
-              disabled={currentPage === 0}
-              className={`bg-gray-500 text-white px-4 py-2 rounded-lg ${currentPage === 0 ? "cursor-not-allowed" : "hover:bg-gray-600"
-                }`}
+      <div className="bg-white rounded-lg w-11/12 md:w-2/3 lg:w-1/2 h-2/3">
+        <div className="flex justify-between items-center bg-blue-950 text-white p-3 uppercase rounded">
+          <h2 className="text-md font-semibold">Add New Member</h2>
+          <button className="text-gray-400 hover:text-gray-600" onClick={onCancel}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="white"
+              strokeWidth={2}
             >
-              Previous
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div className="p-6">
+          <div className="border-b border-gray-300 mb-4">
+            <button
+              onClick={() => switchTab("General")}
+              className={`mr-8 py-2 px-4 rounded-lg ${activeTab === "General" ? "text-blue-600 border-b-2 border-blue-600 font-bold text-md" : "text-gray-500"}`}
+            >
+              General
             </button>
-            <div>
-              Page {currentPage + 1} of {totalPages}
+            <button
+              onClick={() => switchTab("Contact Info")}
+              className={`mr-8 py-2 px-4 rounded-lg ${activeTab === "Contact Info" ? "text-blue-600 border-b-2 border-blue-600 font-bold text-md" : "text-gray-500"}`}
+            >
+              Contact Info
+            </button>
+            <button
+              onClick={() => switchTab("Church Info")}
+              className={`py-2 px-4 rounded-lg ${activeTab === "Church Info" ? "text-blue-600 border-b-2 border-blue-600 font-bold text-md" : "text-gray-500"}`}
+            >
+              Church Info
+            </button>
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-2 gap-4">{tabContent()}</div>
+            <div className="mt-4 flex justify-end">
+              <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                Save
+              </button>
+              <button
+                type="button"
+                className="ml-2 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400"
+                onClick={onCancel}
+              >
+                Cancel
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={nextPage}
-              disabled={currentPage === totalPages - 1}
-              className={`bg-blue-500 text-white px-4 py-2 rounded-lg ${currentPage === totalPages - 1
-                  ? "cursor-not-allowed"
-                  : "hover:bg-blue-600"
-                }`}
-            >
-              Next
-            </button>
-          </div>
-          <div className="flex justify-end mt-4">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-            >
-              Save
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
-};
-
-const fields: Field[] = [
-  { accessor: "firstName", header: "First Name", required: true },
-  { accessor: "middleName", header: "Middle Name", required: true },
-  { accessor: "surName", header: "Surname", required: false },
-  { accessor: "dob", header: "Date of Birth", required: true },
-  { accessor: "phone", header: "Phone", required: false },
-  { accessor: "physicalAddress", header: "Physical Address", required: false },
-  { accessor: "nationalId", header: "National ID", required: false },
-  { accessor: "motherPhone", header: "Mother's Phone", required: false },
-  { accessor: "fatherName", header: "Father's Name", required: false },
-  { accessor: "motherName", header: "Mother's Name", required: false },
-  { accessor: "maritalStatus", header: "Marital Status", required: true },
-  { accessor: "marriageType", header: "Marriage Type", required: true },
-  { accessor: "spouseName", header: "Spouse Name", required: false },
-  { accessor: "gender", header: "Gender", required: true },
-  { accessor: "occupation", header: "Occupation", required: false },
-  { accessor: "savedStatus", header: "Saved Status", required: true },
-  { accessor: "baptisedStatus", header: "Baptised Status", required: true },
-  { accessor: "otherChurchMembership", header: "Other Church Membership", required: true },
-  { accessor: "memberType", header: "Member Type", required: true },
-  { accessor: "cellGroup", header: "Cell Group", required: false },
-  { accessor: "ministry", header: "Ministry", required: false },
-  { accessor: "fellowship", header: "Fellowship", required: false },
-  { accessor: "age", header: "Age", required: false },
-  { accessor: "notes", header: "Notes", required: false },
-];
-
-const options: Record<string, string[]> = option;
-
-const shouldRenderDropdown = (accessor: keyof FormData): boolean => {
-  return [
-    "fellowship",
-    "ministry",
-    "cellGroup",
-    "status",
-    "maritalStatus",
-    "gender",
-    "marriageType",
-    "savedStatus",
-    "otherChurchMembership",
-    "memberType",
-    "baptisedStatus"
-  ].includes(accessor);
 };
 
 export default AddForm;

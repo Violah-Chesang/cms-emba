@@ -183,6 +183,27 @@ export const deleteSubtype = createAsyncThunk('inventory/deleteSubtype', async (
     }
 });
 
+// Add item
+export const addItem = createAsyncThunk(
+    'inventory/addItem',
+    async (item: Omit<InventoryItem, '_id'>, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${apiUrl}/items`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(item),
+            });
+            const data = await handleFetchError(response);
+            return data;
+        } catch (error: any) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+
 // Create slice
 const inventorySlice = createSlice({
     name: 'inventory',
@@ -293,6 +314,19 @@ const inventorySlice = createSlice({
             delete state.subtypes[action.payload];
         });
         builder.addCase(deleteSubtype.rejected, (state, action: PayloadAction<any>) => {
+            state.error = action.payload;
+        });
+
+
+        // Add item
+        builder.addCase(addItem.pending, (state) => {
+            state.loadingItems = true;
+            state.error = null;
+        });
+        builder.addCase(addItem.fulfilled, (state, action: PayloadAction<InventoryItem>) => {
+            state.items[action.payload._id] = action.payload;
+        });
+        builder.addCase(addItem.rejected, (state, action: PayloadAction<any>) => {
             state.error = action.payload;
         });
     },

@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 
 interface Member {
@@ -45,26 +44,30 @@ interface Column {
 }
 
 const ViewForm: React.FC<ViewFormProps> = ({ viewData, onClose }) => {
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentTab, setCurrentTab] = useState<'general' | 'contact' | 'church'>('general');
 
-  const columns: Column[] = useMemo(
-    () => [
+  const columns: { [key: string]: Column[] } = useMemo(() => ({
+    general: [
       { accessor: "memberId", header: "Member ID" },
       { accessor: "firstName", header: "First Name" },
       { accessor: "middleName", header: "Middle Name" },
       { accessor: "surName", header: "Surname" },
       { accessor: "dob", header: "Date of Birth" },
-      { accessor: "phone", header: "Phone" },
-      { accessor: "physicalAddress", header: "Physical Address" },
-      { accessor: "nationalId", header: "National ID" },
-      { accessor: "motherPhone", header: "Mother's Phone" },
-      { accessor: "fatherName", header: "Father's Name" },
-      { accessor: "motherName", header: "Mother's Name" },
+      { accessor: "gender", header: "Gender" },
       { accessor: "maritalStatus", header: "Marital Status" },
       { accessor: "marriageType", header: "Marriage Type" },
       { accessor: "spouseName", header: "Spouse Name" },
-      { accessor: "gender", header: "Gender" },
-      { accessor: "occupation", header: "Occupation" },
+      { accessor: "nationalId", header: "National ID" },
+      { accessor: "age", header: "Age" },
+    ],
+    contact: [
+      { accessor: "phone", header: "Phone" },
+      { accessor: "physicalAddress", header: "Physical Address" },
+      { accessor: "motherPhone", header: "Mother's Phone" },
+      { accessor: "fatherName", header: "Father's Name" },
+      { accessor: "motherName", header: "Mother's Name" },
+    ],
+    church: [
       { accessor: "savedStatus", header: "Saved Status" },
       { accessor: "baptisedStatus", header: "Baptised Status" },
       { accessor: "otherChurchMembership", header: "Other Church Membership" },
@@ -72,36 +75,17 @@ const ViewForm: React.FC<ViewFormProps> = ({ viewData, onClose }) => {
       { accessor: "cellGroup", header: "Cell Group" },
       { accessor: "ministry", header: "Ministry" },
       { accessor: "fellowship", header: "Fellowship" },
-      { accessor: "age", header: "Age" },
       { accessor: "notes", header: "Notes" },
     ],
-    []
-  );
-
-  const pageCount = 13; 
-  const pageColumns = useMemo(() => {
-    const pages = [];
-    for (let i = 0; i < columns.length; i += pageCount) {
-      pages.push(columns.slice(i, i + pageCount));
-    }
-    return pages;
-  }, [columns]);
+  }), []);
 
   const handleClose = () => {
     onClose();
   };
 
-  const handleNextPage = () => {
-    setCurrentPage((prevPage) => Math.min(prevPage + 1, pageColumns.length - 1));
-  };
-
-  const handlePreviousPage = () => {
-    setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
-  };
-
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-5 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 relative">
+      <div className="bg-white rounded-lg w-11/12 md:w-3/4 lg:w-1/2 relative h-2/3">
         <button
           className="absolute top-0 right-0 m-4 text-gray-600 hover:text-gray-800"
           onClick={handleClose}
@@ -109,18 +93,38 @@ const ViewForm: React.FC<ViewFormProps> = ({ viewData, onClose }) => {
           <svg
             className="w-6 h-6"
             fill="none"
-            stroke="currentColor"
+            stroke="white"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <h2 className="text-xl font-semibold mb-4">View Member</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {pageColumns[currentPage].map((column) => (
+        <h2 className="text-xl font-semibold mb-4 bg-blue-950 rounded text-white p-3">View Member</h2>
+        <div className="border-b border-gray-300 mb-4 m-5">
+          <button
+            className={`mr-4 py-2 px-4 rounded-lg ${currentTab === 'general' ? "text-blue-600 border-b-2 border-blue-600 font-bold" : 'text-gray-600'}`}
+            onClick={() => setCurrentTab('general')}
+          >
+            General
+          </button>
+          <button
+            className={`mr-4 py-2 px-4 rounded-lg ${currentTab === 'contact' ? "text-blue-600 border-b-2 border-blue-600 font-bold" : 'text-gray-600'}`}
+            onClick={() => setCurrentTab('contact')}
+          >
+            Contact Info
+          </button>
+          <button
+            className={`py-2 px-4 rounded-lg ${currentTab === 'church' ? "text-blue-600 border-b-2 border-blue-600 font-bold" : 'text-gray-600'}`}
+            onClick={() => setCurrentTab('church')}
+          >
+            Church Info
+          </button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5">
+          {columns[currentTab].map((column) => (
             <div key={column.accessor}>
-              <label className="block mb-2">{column.header}</label>
+              <label className="block mb-2 font-bold">{column.header}</label>
               <input
                 type="text"
                 name={column.accessor}
@@ -131,30 +135,9 @@ const ViewForm: React.FC<ViewFormProps> = ({ viewData, onClose }) => {
             </div>
           ))}
         </div>
-        <div className="flex justify-between mt-4">
-          <button
-            onClick={handlePreviousPage}
-            disabled={currentPage === 0}
-            className={`px-4 py-2 rounded-lg ${
-              currentPage === 0 ? "bg-gray-300" : "bg-blue-500 text-white hover:bg-blue-700"
-            }`}
-          >
-            Previous
-          </button>
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === pageColumns.length - 1}
-            className={`px-4 py-2 rounded-lg ${
-              currentPage === pageColumns.length - 1 ? "bg-gray-300" : "bg-blue-500 text-white hover:bg-blue-700"
-            }`}
-          >
-            Next
-          </button>
-        </div>
       </div>
     </div>
   );
 };
 
 export default ViewForm;
-

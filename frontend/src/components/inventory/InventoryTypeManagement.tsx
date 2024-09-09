@@ -52,7 +52,7 @@ const InventoryTypeManagement: React.FC = () => {
   };
 
   const handleOpenSubtypeModal = (typeId: string) => {
-    setSelectedTypeId(typeId); 
+    setSelectedTypeId(typeId);
     setIsSubtypeModalOpen(true);
   };
 
@@ -79,7 +79,7 @@ const InventoryTypeManagement: React.FC = () => {
           >
             <FaPlus className="mr-2" /> Add Type
           </button>
-         
+
         </div>
       </div>
 
@@ -98,7 +98,7 @@ const InventoryTypeManagement: React.FC = () => {
               </>
             )}
             <span className="text-lg font-normal capitalize">{type.name}</span>
-            <button onClick={() => handleOpenSubtypeModal(type._id??"")} className="ml-auto">
+            <button onClick={() => handleOpenSubtypeModal(type._id ?? "")} className="ml-auto">
               <FaPlus className="text-blue-500 hover:text-blue-700" />
             </button>
           </div>

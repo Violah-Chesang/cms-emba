@@ -7,11 +7,11 @@ import {
   deleteMember,
 } from "../../store/slices/memberSlice";
 import DataTable from "./DataTable";
-import ParentEditForm from "./ParentEditForm";
 import ViewForm from "./ViewForm";
 import AddForm from "./AddForm";
 import { refreshPermissions } from "../../store/slices/accessControlSlice";
 import { AppDispatch, RootState } from "../../store/store";
+import EditForm from "./EditForm";
 
 interface Member {
   _id: string;
@@ -186,7 +186,7 @@ const Fellowship: React.FC<FellowshipProps> = ({
       />
 
       {isFormVisible && editData && (
-        <ParentEditForm
+        <EditForm
           editData={editData}
           onSave={(newData: Partial<Member>) =>
             handleAction(

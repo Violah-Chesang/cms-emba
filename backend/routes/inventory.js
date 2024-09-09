@@ -9,7 +9,7 @@ const {
 // Type Routes
 router.post("/inventory/types", async (req, res) => {
   try {
-    const { name } = req.body; // Only expect 'name'
+    const { name } = req.body;
     const type = new inventoryType({ name });
     await type.save();
     res.status(201).json(type);
@@ -20,7 +20,7 @@ router.post("/inventory/types", async (req, res) => {
 
 router.put("/inventory/types/:id", async (req, res) => {
   try {
-    const { name } = req.body; // Only expect 'name'
+    const { name } = req.body;
     const type = await inventoryType.findByIdAndUpdate(
       req.params.id,
       { name },
