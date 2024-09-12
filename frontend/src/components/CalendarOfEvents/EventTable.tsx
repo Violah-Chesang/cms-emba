@@ -1,14 +1,14 @@
-import React, { useState, useMemo } from 'react';
-import { FaPlus, FaTrash, FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaPlus, FaTrash, FaEdit, FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
+import EditEventModal from './EditEventForm';
 
 interface Event {
-    _id?: string;
+    _id: string;
     title: string;
     eventDate: string;
     endOfEventDate?: string;
     leaderInCharge?: string;
     targetAudience?: string;
-    eventLevel?: string;
     location?: string;
 }
 
@@ -16,38 +16,31 @@ interface EventTableProps {
     events: Event[];
     onAdd: () => void;
     onDelete: (eventId: string) => void;
+    onEdit: (event: Event) => void;
+    onUpdate: (updatedEvent: Event) => void;
 }
 
-const EventTable: React.FC<EventTableProps> = ({ events, onAdd, onDelete }) => {
+const EventTable: React.FC<EventTableProps> = ({ events, onAdd, onDelete, onUpdate }) => {
     const [sortColumn, setSortColumn] = useState<'eventDate' | 'daysTo'>('daysTo');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+    const [isEditModalOpen, setEditModalOpen] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
     const calculateDaysTo = (eventDate: string): number => {
         const today = new Date();
         const eventDay = new Date(eventDate);
         const diffTime = eventDay.getTime() - today.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays;
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     };
 
-    const sortedEvents = useMemo(() => {
-        return [...events].map(event => ({
-            ...event,
-            daysTo: calculateDaysTo(event.eventDate)
-        })).sort((a, b) => {
-            const aDaysTo = a.daysTo;
-            const bDaysTo = b.daysTo;
+    const sortedEvents = [...events]
+        .map(event => ({ ...event, daysTo: calculateDaysTo(event.eventDate) }))
+        .sort((a, b) => {
+            const aValue = sortColumn === 'eventDate' ? new Date(a.eventDate).getTime() : a.daysTo;
+            const bValue = sortColumn === 'eventDate' ? new Date(b.eventDate).getTime() : b.daysTo;
 
-            if (aDaysTo === bDaysTo) return 0;
-
-            // Sort future events (daysTo >= 0) first
-            if (aDaysTo >= 0 && bDaysTo < 0) return sortDirection === 'asc' ? -1 : 1;
-            if (aDaysTo < 0 && bDaysTo >= 0) return sortDirection === 'asc' ? 1 : -1;
-
-            // Sort both future and past events in ascending order of daysTo
-            return sortDirection === 'asc' ? aDaysTo - bDaysTo : bDaysTo - aDaysTo;
+            return sortDirection === 'desc' ? aValue - bValue : bValue - aValue;
         });
-    }, [events, sortColumn, sortDirection]);
 
     const handleSort = (column: 'eventDate' | 'daysTo') => {
         if (column === sortColumn) {
@@ -56,6 +49,16 @@ const EventTable: React.FC<EventTableProps> = ({ events, onAdd, onDelete }) => {
             setSortColumn(column);
             setSortDirection('asc');
         }
+    };
+
+    const openEditModal = (event: Event) => {
+        setSelectedEvent(event);
+        setEditModalOpen(true);
+    };
+
+    const closeEditModal = () => {
+        setEditModalOpen(false);
+        setSelectedEvent(null);
     };
 
     const getAudienceBadgeColor = (audience?: string) => {
@@ -88,40 +91,45 @@ const EventTable: React.FC<EventTableProps> = ({ events, onAdd, onDelete }) => {
                 <table className="min-w-full bg-white">
                     <thead className="bg-gray-100">
                         <tr>
-                            {['Title', 'Start Date', 'Location', 'Leader', 'Audience', 'Days To'].map((header, index) => (
-                                <th
-                                    key={index}
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                    onClick={() => handleSort(header.toLowerCase().replace(' ', '') as 'eventDate' | 'daysTo')}
-                                >
-                                    {header}
-                                    <SortIcon column={header.toLowerCase().replace(' ', '') as 'eventDate' | 'daysTo'} />
-                                </th>
-                            ))}
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                            <th
+                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => handleSort('eventDate')}
+                            >
+                                Start Date
+                                <SortIcon column="eventDate" />
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Leader</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Audience</th>
+                            <th
+                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => handleSort('daysTo')}
+                            >
+                                Days To
+                                <SortIcon column="daysTo" />
+                            </th>
+                            <th className="px-6 py-3">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-200">
                         {sortedEvents.map((event) => (
-                            <tr
-                                key={event._id}
-                                className={event.daysTo < 0 ? 'bg-red-100' : ''}
-                            >
+                            <tr key={event._id}>
                                 <td className="px-6 py-4 whitespace-nowrap">{event.title}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">{new Date(event.eventDate).toLocaleDateString()}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{event.eventDate}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{event.location}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{event.leaderInCharge}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getAudienceBadgeColor(event.targetAudience)} text-white`}>
-                                        {event.targetAudience || 'N/A'}
+                                    <span className={`px-2 py-1 text-xs font-bold ${getAudienceBadgeColor(event.targetAudience)} text-white rounded`}>
+                                        {event.targetAudience || 'All'}
                                     </span>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">{event.daysTo}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button
-                                        onClick={() => onDelete(event._id!)}
-                                        className="text-red-600 hover:text-red-900"
-                                    >
+                                <td className="px-6 py-4 whitespace-nowrap">{calculateDaysTo(event.eventDate)} days</td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <button className="text-blue-600 hover:text-blue-900" onClick={() => openEditModal(event)}>
+                                        <FaEdit />
+                                    </button>
+                                    <button className="text-red-600 hover:text-red-900 ml-2" onClick={() => onDelete(event._id)}>
                                         <FaTrash />
                                     </button>
                                 </td>
@@ -130,6 +138,15 @@ const EventTable: React.FC<EventTableProps> = ({ events, onAdd, onDelete }) => {
                     </tbody>
                 </table>
             </div>
+
+            {isEditModalOpen && selectedEvent && (
+                <EditEventModal
+                    event={selectedEvent}
+                    isOpen={isEditModalOpen}
+                    onClose={closeEditModal}
+                    onSave={onUpdate}
+                />
+            )}
         </div>
     );
 };

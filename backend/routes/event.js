@@ -7,8 +7,8 @@ const router = express.Router();
 router.post('/add-event', async (req, res) => {
     try {
         // extract req.body info
-        const {title, eventDate, endOfEventDate, leaderInCharge, targetAudience, deleted} = req.body;
-        if(!title || !eventDate || !endOfEventDate || !leaderInCharge || !targetAudience){
+        const {title, eventDate, endOfEventDate, leaderInCharge, targetAudience, location, eventLevel, deleted} = req.body;
+        if(!title || !eventDate  || !leaderInCharge || !targetAudience){
             return res.status(400).json({message : "Please enter all the required information"});
         }
 
@@ -25,6 +25,8 @@ router.post('/add-event', async (req, res) => {
             eventDate, 
             endOfEventDate,
             leaderInCharge, 
+            eventLevel,
+            location,
             targetAudience,
             daysTo,
             deleted: deleted || false
@@ -86,7 +88,9 @@ router.post("/update-event/:id", async (req, res) => {
             title, 
             eventDate, 
             endOfEventDate,
-            leaderInCharge, 
+            leaderInCharge,
+            eventLevel,
+            location, 
             targetAudience,
             deleted
         } = req.body;
@@ -99,7 +103,9 @@ router.post("/update-event/:id", async (req, res) => {
                 title, 
                 eventDate, 
                 endOfEventDate,
-                leaderInCharge, 
+                leaderInCharge,
+                eventLevel,
+                location, 
                 targetAudience,
                 deleted
             },

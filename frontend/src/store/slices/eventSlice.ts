@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 interface Event {
-    _id?: string;
+    _id: string;
     title: string;
     eventDate: string;
     endOfEventDate?: string;
