@@ -201,8 +201,7 @@ router.post("/member/add", async (req, res) => {
       seqId = counterData.seq;
     }
     const paddedSeqId = seqId.toString().padStart(4, "0");
-    const year = new Date().getFullYear();
-    const memberId = `${year}${paddedSeqId}`;
+    const memberId = `MCKE${paddedSeqId}`;
 
     const regDate = new Date().toLocaleString();
 
