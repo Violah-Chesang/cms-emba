@@ -168,7 +168,7 @@ const EditForm: React.FC<EditFormProps> = ({ editData, onSave, onCancel }) => {
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg w-11/12 md:w-3/4 lg:w-1/2 relative h-2/3">
+      <div className="bg-white rounded-lg w-11/12 md:w-3/4 lg:w-1/2 relative">
         <button
           className="absolute top-0 right-0 m-4 text-gray-600 hover:text-gray-800"
           onClick={onCancel}

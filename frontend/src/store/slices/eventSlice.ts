@@ -12,6 +12,10 @@ interface Event {
     daysTo: number;
 }
 
+interface NewEvent extends Omit<Event, '_id'> {
+    _id?: string; // Optional when creating a new event
+}
+
 interface EventState {
     events: Event[];
     loading: boolean;
@@ -32,7 +36,7 @@ export const fetchEvents = createAsyncThunk('events/fetchEvents', async () => {
 });
 
 // Async thunk for adding an event
-export const addEvent = createAsyncThunk('events/addEvent', async (newEvent: Event) => {
+export const addEvent = createAsyncThunk('events/addEvent', async (newEvent: NewEvent) => {
     const response = await fetch('http://172.17.0.1:5500/add-event', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

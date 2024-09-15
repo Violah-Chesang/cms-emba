@@ -262,7 +262,7 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg w-11/12 md:w-2/3 lg:w-1/2 h-2/3">
+      <div className="bg-white rounded-lg w-11/12 md:w-2/3 lg:w-1/2">
         <div className="flex justify-between items-center bg-blue-950 text-white p-3 uppercase rounded">
           <h2 className="text-md font-semibold">Add New Member</h2>
           <button className="text-gray-400 hover:text-gray-600" onClick={onCancel}>

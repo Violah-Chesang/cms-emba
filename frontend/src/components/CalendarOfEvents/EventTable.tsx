@@ -12,6 +12,8 @@ interface Event {
     location?: string;
 }
 
+
+
 interface EventTableProps {
     events: Event[];
     onAdd: () => void;

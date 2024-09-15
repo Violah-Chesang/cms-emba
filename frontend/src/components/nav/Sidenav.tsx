@@ -124,7 +124,7 @@ const Sidenav = () => {
         </ul>
       </div>
       <div className='pl-3' style={{ position: 'absolute', bottom: '0', marginBottom: '25px' }}>
-        <img src={churchFamily} alt="Church Family" className="w-3/5" />
+        <img src={churchFamily} alt="Church Family" className="" style={{width:"100px"}} />
       </div>
     </div>
   )
