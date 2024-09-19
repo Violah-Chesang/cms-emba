@@ -2,7 +2,7 @@ import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../store/slices/authSlice';
-import { RootState } from '../store/store';
+import { AppDispatch, RootState } from '../store/store';
 import AuthInput from '../components/auth/AuthInput'; // Import AuthInput component
 
 // Define type for form data
@@ -17,7 +17,7 @@ interface FormData {
 }
 
 const Signup: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { status, error } = useSelector((state: RootState) => state.auth);
 
