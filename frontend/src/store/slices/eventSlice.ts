@@ -27,17 +27,18 @@ const initialState: EventState = {
     loading: false,
     error: null,
 };
+const apiUrl = 'http://localhost:5500';
 
 // Async thunk for fetching events
 export const fetchEvents = createAsyncThunk('events/fetchEvents', async () => {
-    const response = await fetch('http://172.17.0.1:5500/all-events');
+    const response = await fetch(`${apiUrl}/all-events`);
     if (!response.ok) throw new Error('Failed to fetch events');
     return (await response.json()) as Event[];
 });
 
 // Async thunk for adding an event
 export const addEvent = createAsyncThunk('events/addEvent', async (newEvent: NewEvent) => {
-    const response = await fetch('http://172.17.0.1:5500/add-event', {
+    const response = await fetch(`${apiUrl}/add-event`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEvent),
@@ -48,7 +49,7 @@ export const addEvent = createAsyncThunk('events/addEvent', async (newEvent: New
 
 // Async thunk for editing an event
 export const editEvent = createAsyncThunk('events/editEvent', async (updatedEvent: Event) => {
-    const response = await fetch(`http://172.17.0.1:5500/update-event/${updatedEvent._id}`, {
+    const response = await fetch(`${apiUrl}/update-event/${updatedEvent._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedEvent),
@@ -59,7 +60,7 @@ export const editEvent = createAsyncThunk('events/editEvent', async (updatedEven
 
 // Async thunk for deleting an event
 export const deleteEvent = createAsyncThunk('events/deleteEvent', async (eventId: string) => {
-    const response = await fetch(`http://172.17.0.1:5500/delete-event/${eventId}`, {
+    const response = await fetch(`${apiUrl}/delete-event/${eventId}`, {
         method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete event');

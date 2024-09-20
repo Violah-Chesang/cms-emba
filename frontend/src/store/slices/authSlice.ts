@@ -20,12 +20,14 @@ const initialState: AuthState = {
   status: 'idle',
   error: null,
 };
+const apiUrl = 'http://localhost:5500';
+
 
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (userData: { userName: string; password: string }, thunkAPI) => {
     try {
-      const response = await axios.post('http://localhost:5500/user/register', userData);
+      const response = await axios.post(`${apiUrl}/user/register`, userData);
       return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -39,7 +41,7 @@ export const loginUser = createAsyncThunk(
     try {
      // console.log('Sending login request with:', userData);
 
-      const response = await axios.post('http://172.17.0.1:5500/user/login', userData);
+      const response = await axios.post(`${apiUrl}/user/login`, userData);
     //  console.log('Response from server:', response.data);
 
      // console.log(userData)
@@ -60,7 +62,7 @@ export const fetchUserDetails = createAsyncThunk(
   'auth/fetchUserDetails',
   async (username: string, thunkAPI) => {
     try {
-      const response = await axios.post('http://172.17.0.1:5500/get-user', { userName: username });
+      const response = await axios.post(`${apiUrl}/get-user`, { userName: username });
       Cookies.set('userDetails', JSON.stringify(response.data), { expires: 1, sameSite: 'none', secure: true });
       return response.data;
     } catch (error: any) {

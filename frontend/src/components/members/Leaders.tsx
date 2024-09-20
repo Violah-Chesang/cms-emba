@@ -82,7 +82,7 @@ const Leaders: React.FC = () => {
 
   // Filter and concatenate name
   const leaders: Member[] = members
-    .filter(member => member.leadershipRole !== "--NONE--" && member.leadershipRole !== null)
+    .filter(member => member.leadershipRole !== "Member" && member.leadershipRole !=="--NONE--" && member.leadershipRole !== null)
     .map(member => ({
       ...member,
       name: (
@@ -91,9 +91,11 @@ const Leaders: React.FC = () => {
             className="px-2 py-2 rounded-3xl text-lg font-bold mr-4"
             style={{ backgroundColor: getRandomColor() }}
           >
-            {member.firstName.charAt(0)}{member.middleName ? member.middleName.charAt(0) : ""}
+            { member.firstName ? member.firstName.charAt(0) : ""}{member.middleName ? member.middleName.charAt(0) : ""}
           </button>
-          <span>{`${member.firstName} ${member.middleName ? member.middleName + ' ' : ''}${member.surName}`}</span>
+          <span>
+            {`${member?.firstName || ''}${member?.middleName ? ' ' + member.middleName : ''}${member?.surName ? ' ' + member.surName : ''}`}
+          </span>
         </div>
       )
       

@@ -10,7 +10,7 @@ interface FormData {
   firstname: string;
   lastname: string;
   userName: string;
-  role: 'Minister' | 'Executive Leader' | 'Fellowship Leader' | 'Other';
+  role: "Member" | "Minister" | "Chair" | "Treasurer" | "Secretary" | "Usher" | "Hospitality" | "Organising secretary" | "Sunday School Leader";
   email: string;
   password: string;
   confirmPassword: string;
@@ -26,7 +26,7 @@ const Signup: React.FC = () => {
     firstname: '',
     lastname: '',
     userName: '',
-    role: 'Other',
+    role: 'Member',
     email: '',
     password: '',
     confirmPassword: '',
@@ -108,10 +108,15 @@ const Signup: React.FC = () => {
               value={formData.role}
               onChange={handleInputChange}
             >
+              <option value="Member">Member</option>
               <option value="Minister">Minister</option>
-              <option value="Executive Leader">Executive Leader</option>
-              <option value="Fellowship Leader">Fellowship Leader</option>
-              <option value="Other">Other</option>
+              <option value="Chair">Chair</option>
+              <option value="Treasurer">Treasurer</option>
+              <option value="Secretary">Secretary</option>
+              <option value="Usher">Usher</option>
+              <option value="Hospitality">Hospitality</option>
+              <option value="Organising Secretary">Organising Secretary</option>
+              <option value="Sunday School Leader">Sunday School Leader</option>
             </select>
           </div>
           <AuthInput

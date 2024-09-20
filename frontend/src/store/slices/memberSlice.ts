@@ -54,6 +54,8 @@ const initialState: MembersState = {
     error: null,
 };
 
+const apiUrl = 'http://localhost:5500';
+
 // Thunk to fetch all members
 export const fetchMembers = createAsyncThunk<Member[], void, { state: { members: MembersState } }>(
     'members/fetchMembers',
@@ -62,7 +64,7 @@ export const fetchMembers = createAsyncThunk<Member[], void, { state: { members:
         if (state.members.all.length > 0) {
             return state.members.all;
         }
-        const response = await axios.get('http://172.17.0.1:5500/member/find/all');
+        const response = await axios.get(`${apiUrl}/member/find/all`);
         return response.data;
     }
 );
@@ -71,7 +73,7 @@ export const fetchMembers = createAsyncThunk<Member[], void, { state: { members:
 export const fetchMembersByFellowship = createAsyncThunk<Member[], string, { state: { members: MembersState } }>(
     'members/fetchMembersByFellowship',
     async (fellowshipType: string, { getState, rejectWithValue }) => {
-        console.log(`Fetching ${fellowshipType} fellowship members`);
+       // console.log(`Fetching ${fellowshipType} fellowship members`);
         const state = getState();
         if (state.members.fellowships[fellowshipType] && state.members.fellowships[fellowshipType].length > 0) {
             return state.members.fellowships[fellowshipType];
@@ -79,16 +81,16 @@ export const fetchMembersByFellowship = createAsyncThunk<Member[], string, { sta
         let url = '';
         switch (fellowshipType) {
             case 'Men':
-                url = 'http://172.17.0.1:5500/reports/men-fellowship';
+                url = `${apiUrl}/reports/men-fellowship`;
                 break;
             case 'Women':
-                url = 'http://172.17.0.1:5500/reports/women-fellowship';
+                url = `${apiUrl}/reports/women-fellowship`;
                 break;
             case 'Youth':
-                url = 'http://172.17.0.1:5500/reports/youth-fellowship';
+                url = `${apiUrl}/reports/youth-fellowship`;
                 break;
             case 'JSS':
-                url = 'http://172.17.0.1:5500/reports/jss';
+                url = `${apiUrl}/reports/jss`;
                 break;
             default:
                 return rejectWithValue(`Unsupported fellowship type: ${fellowshipType}`);
@@ -99,7 +101,7 @@ export const fetchMembersByFellowship = createAsyncThunk<Member[], string, { sta
         } catch (error) {
             if (error instanceof Error) {
                 return rejectWithValue(error.message);
-                console.log(error)
+                //console.log(error)
 
             } else if (axios.isAxiosError(error) && error.response) {
                 return rejectWithValue(error.response.data);
@@ -112,9 +114,9 @@ export const fetchMembersByFellowship = createAsyncThunk<Member[], string, { sta
         condition: (fellowshipType, { getState }) => {
             const state = getState();
             const { loading, fellowships } = state.members;
-            console.log(`Condition check for ${fellowshipType}: loading=${loading}, has data=${!!fellowships[fellowshipType]}`);
+            //console.log(`Condition check for ${fellowshipType}: loading=${loading}, has data=${!!fellowships[fellowshipType]}`);
             if (loading || fellowships[fellowshipType]) {
-                console.log(`Skipping fetch for ${fellowshipType}`);
+                //console.log(`Skipping fetch for ${fellowshipType}`);
                 return false;
             }
             return true;
@@ -126,8 +128,9 @@ export const fetchMembersByFellowship = createAsyncThunk<Member[], string, { sta
 export const addMember = createAsyncThunk<Member, Omit<Member, '_id'>>(
     'members/addMember',
     async (newMember) => {
+        console.log('new member',newMember)
         try {
-            const response = await axios.post('http://172.17.0.1:5500/member/add', newMember);
+            const response = await axios.post(`${apiUrl}/member/add`, newMember);
             return response.data;
         } catch (error) {
             console.error('Error adding member:', error);
@@ -145,7 +148,7 @@ export const updateMember = createAsyncThunk<Member, { _id: string; updatedMembe
             const data = safeStringify(sanitizedData);
             console.log(data)
             const response = await axios.post(
-                `http://172.17.0.1:5500/member/update/${_id}`,
+                `${apiUrl}/member/update/${_id}`,
                 data,
                 {
                     headers: {
@@ -167,7 +170,7 @@ export const deleteMember = createAsyncThunk<string, string>(
     'members/deleteMember',
     async (_id) => {
         try {
-            await axios.delete(`http://172.17.0.1:5500/member/delete/${_id}`);
+            await axios.delete(`${apiUrl}/member/delete/${_id}`);
             return _id;
         } catch (error) {
             console.error(`Error deleting member with ID ${_id}:`, error);
@@ -199,18 +202,18 @@ const membersSlice = createSlice({
             })
 
             // Fetch members by fellowship
-            .addCase(fetchMembersByFellowship.pending, (state, action) => {
-                console.log(`Pending: ${action.meta.arg}`);
+            .addCase(fetchMembersByFellowship.pending, (state) => {
+               // console.log(`Pending: ${action.meta.arg}`);
                 state.loading = true;
                 state.error = null;
             })
             .addCase(fetchMembersByFellowship.fulfilled, (state, action: PayloadAction<Member[], string, { arg: string }>) => {
-                console.log(`Fulfilled: ${action.meta.arg}`);
+              //  console.log(`Fulfilled: ${action.meta.arg}`);
                 state.loading = false;
                 state.fellowships[action.meta.arg] = action.payload;
             })
             .addCase(fetchMembersByFellowship.rejected, (state, action) => {
-                console.log(`Rejected: ${action.meta.arg}`);
+             //   console.log(`Rejected: ${action.meta.arg}`);
                 state.loading = false;
                 state.error = action.error.message || 'An error occurred';
             })

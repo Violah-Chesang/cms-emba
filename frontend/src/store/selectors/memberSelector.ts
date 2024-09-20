@@ -9,15 +9,15 @@ export const makeSelectFellowshipMembers = () =>
   createSelector(
     [selectFellowships, (_: RootState, fellowshipType: string) => fellowshipType],
     (fellowships, fellowshipType) => {
-      console.log("Fellowships in selector:", fellowships);
-      console.log("Fellowship type:", fellowshipType);
+      // console.log("Fellowships in selector:", fellowships);
+      // console.log("Fellowship type:", fellowshipType);
       const members = fellowships[fellowshipType];
       if (typeof members === 'string') {
-        console.error(`Error for ${fellowshipType}:`, members);
+        // console.error(`Error for ${fellowshipType}:`, members);
         return [];
       }
       if (!members || !Array.isArray(members)) {
-        console.error(`Invalid members data for ${fellowshipType}:`, members);
+        // console.error(`Invalid members data for ${fellowshipType}:`, members);
         return [];
       }
       return members;

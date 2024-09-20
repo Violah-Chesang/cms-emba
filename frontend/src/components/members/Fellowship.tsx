@@ -115,6 +115,8 @@ const Fellowship: React.FC<FellowshipProps> = ({
   );
 
   const handleAction = (action: any, actionData: any, callback: () => void) => {
+    console.log('Action being dispatched:', action);
+    console.log('Action data:', actionData);
     dispatch(action(actionData))
       .unwrap()
       .then(() => {
@@ -126,6 +128,7 @@ const Fellowship: React.FC<FellowshipProps> = ({
         alert("Failed to complete action");
       });
   };
+
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = event.target;
@@ -204,6 +207,7 @@ const Fellowship: React.FC<FellowshipProps> = ({
         <AddForm
           onSave={(newData: Omit<Member, '_id'>) =>
             handleAction(addMember, newData, () => setIsAddFormVisible(false))
+            
           }
           onCancel={() => setIsAddFormVisible(false)}
           renderFilterDropdown={renderFilterDropdown}

@@ -55,7 +55,7 @@ router.post('/user/login', async(req, res) => {
         
         const isCorrectPass =await bcrypt.compare(password, passInDb);
         if(isCorrectPass){
-            //generate and sign a valid web token then verify them
+            //generate and sign a valid web token then verify them 
             // we need username to sign the data, have a secret key in .env and options to expire in 2 hr
             const tokenData = {
                 "name" : userInDb.userName,

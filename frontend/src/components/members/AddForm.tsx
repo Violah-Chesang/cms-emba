@@ -20,10 +20,10 @@ const fields: Field[] = [
   { accessor: "motherName", header: "Mother's Name", required: false },
   { accessor: "savedStatus", header: "Saved Status", required: true },
   { accessor: "baptisedStatus", header: "Baptized Status", required: true },
-  { accessor: "otherChurchMembership", header: "Other Church Membership", required: false },
+  { accessor: "otherChurchMembership", header: "Other Church Membership", required: true },
   { accessor: "memberType", header: "Member Type", required: true },
   { accessor: "cellGroup", header: "Cell Group", required: false },
-  { accessor: "leadershipRole", header: "Leadership Role", required: false },
+  { accessor: "leadershipRole", header: "Leadership Role", required: true },
   { accessor: "ministry", header: "Ministry", required: true },
   { accessor: "fellowship", header: "Fellowship", required: true },
   { accessor: "notes", header: "Notes", required: false },
@@ -144,7 +144,6 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
       return updatedFormData;
     });
   };
-
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof FormData, string>> = {};
 
@@ -171,14 +170,23 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
       }
     });
 
+    // // Log any validation errors found
+    // if (Object.keys(newErrors).length > 0) {
+    //   console.log("Validation failed with errors:", newErrors);
+    // }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    console.log('submitted')
     event.preventDefault();
     if (validate()) {
       onSave(formData);
+      console.log(formData)
+
     }
   };
 

@@ -1,7 +1,7 @@
 const options = {
-  fellowship: ["--NONE--", "JSS", "Youth", "Men", "Women"],
+  fellowship: ["Select","Men", "Youth", "JSS", "Women"],
   ministry: [
-    "--NONE--",
+    "Select",
     "praise&Worship",
     "Intercessory",
     "AwesomeMelodies",
@@ -13,16 +13,16 @@ const options = {
     "missions&Evangelism",
     "Leader",
   ],
-  cellGroup: ["--NONE--", "week2", "week3", "week4", "diaspora"],
-  status: ["--NONE--", "active", "inactive"],
-  baptisedStatus: ["--NONE--", "baptised", "notbaptised"],
-  maritalStatus: ["--NONE--", "Married", "Single", "Divorced", "Widowed"],
-  gender: ["--NONE--", "Male", "Female"],
-  marriageType: ["--NONE--", "monogamous", "polygamous"],
-  savedStatus: ["--NONE--", "saved", "not saved"],
-  otherChurchMembership: ["--NONE--", "Yes", "No"],
-  memberType: ["--NONE--", "full member", "associate"],
-  leadershipRole:["--NONE--", "Minister", "Chair", "Treasurer","Secretary", "Usher", "Hospitality", "Organising secretary", "Sunday School Leader", "Intercessory",  ]
+  cellGroup: ["Select","week2", "week3", "week4", "diaspora"],
+  status: ["Select","active", "inactive"],
+  baptisedStatus: ["Select","baptised", "notbaptised"],
+  maritalStatus: ["Select","Married", "Single", "Divorced", "Widowed"],
+  gender: ["Select","Male", "Female"],
+  marriageType: ["Select","--NONE--", "monogamous", "polygamous"],
+  savedStatus: ["Select","saved", "not saved"],
+  otherChurchMembership: ["Yes", "No"],
+  memberType: ["Select Member Type", "full member", "associate"],
+  leadershipRole:["Select role","Member","Minister", "Chair", "Treasurer","Secretary", "Usher", "Hospitality", "Organising secretary", "Sunday School Leader"]
 };
 
 export default options;

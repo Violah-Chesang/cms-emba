@@ -19,7 +19,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, userRole, onEditCl
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(25);
+  const [itemsPerPage] = useState(10);
 
   const handleDropdownToggle = (id: string) => {
     setDropdownOpen(dropdownOpen === id ? null : id);
