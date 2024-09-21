@@ -27,7 +27,9 @@ const initialState: EventState = {
     loading: false,
     error: null,
 };
-const apiUrl = 'http://localhost:5500';
+//const apiUrl = 'https://mckembakasichurch.or.ke/backend';
+const apiUrl = 'http://localhost:5500/backend';
+
 
 // Async thunk for fetching events
 export const fetchEvents = createAsyncThunk('events/fetchEvents', async () => {

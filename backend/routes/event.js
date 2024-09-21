@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 // Create a calendar event
-router.post('/add-event', async (req, res) => {
+router.post('/backend/add-event', async (req, res) => {
     try {
         // extract req.body info
         const {title, eventDate, endOfEventDate, leaderInCharge, targetAudience, location, eventLevel, deleted} = req.body;
@@ -42,7 +42,7 @@ router.post('/add-event', async (req, res) => {
 });
 
 // View all calendar of events
-router.get("/all-events", async (req, res) => {
+router.get("/backend/all-events", async (req, res) => {
     try {
         const allEvents = await Event.find({ deleted: false });
         res.status(200).json(allEvents);
@@ -53,7 +53,7 @@ router.get("/all-events", async (req, res) => {
 });
 
 // Retrieve a single event
-router.get("/single-event/:id", async (req, res) => {
+router.get("/backend/single-event/:id", async (req, res) => {
     try {
         const id = req.params.id;
         const event = await Event.findById(id);
@@ -77,7 +77,7 @@ router.get("/single-event/:id", async (req, res) => {
 });
 
 // Update an event 
-router.post("/update-event/:id", async (req, res) => {
+router.post("/backend/update-event/:id", async (req, res) => {
     try {
         const id = req.params.id;
         if (!id) {
@@ -127,7 +127,7 @@ router.post("/update-event/:id", async (req, res) => {
 });
 
 // Delete an event record (soft delete)
-router.post("/delete-event/:id", async (req, res) => {
+router.post("/backend/delete-event/:id", async (req, res) => {
     try {
         const id = req.params.id;
         

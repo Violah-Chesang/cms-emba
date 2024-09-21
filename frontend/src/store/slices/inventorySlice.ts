@@ -45,8 +45,9 @@ const initialState: InventoryState = {
     error: null,
 };
 
-// API base URLhttps://mckembakasichurch.or.ke:5500
-const apiUrl = 'http://localhost:5500/inventory';
+//const apiUrl = 'https://mckembakasichurch.or.ke/backend';
+const apiUrl = 'http://localhost:5500/backend';
+
 
 // Helper function to handle fetch errors
 const handleFetchError = async (response: Response) => {

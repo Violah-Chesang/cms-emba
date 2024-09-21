@@ -7,7 +7,7 @@ dotenv.config();
 
 const router = express.Router();
 
-router.post('/user/register', async (req, res) => {
+router.post('/backend/user/register', async (req, res) => {
     try{
         // extract req.body info
         const {firstname, lastname, userName, email, password, role} = req.body;
@@ -39,7 +39,7 @@ router.post('/user/register', async (req, res) => {
     }
 });
 
-router.post('/user/login', async(req, res) => {
+router.post('/backend/user/login', async(req, res) => {
     try{
         const {userName, password} = req.body;
 
@@ -80,7 +80,7 @@ router.post('/user/login', async(req, res) => {
 });
 
 // get a user
-router.post('/get-user',async (req,res)=> {
+router.post('/backend/get-user',async (req,res)=> {
     const userName = req.body.userName;
     const user = await User.findOne({userName})
     if(!user){

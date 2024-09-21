@@ -54,7 +54,9 @@ const initialState: MembersState = {
     error: null,
 };
 
-const apiUrl = 'http://localhost:5500';
+//const apiUrl = 'https://mckembakasichurch.or.ke/backend';
+const apiUrl = 'http://localhost:5500/backend';
+
 
 // Thunk to fetch all members
 export const fetchMembers = createAsyncThunk<Member[], void, { state: { members: MembersState } }>(

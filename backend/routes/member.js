@@ -21,7 +21,7 @@ const {
 const router = express.Router();
 
 //test
-router.post("/member/test", async (req, res) => {
+router.post("/backend/member/test", async (req, res) => {
   // No. of members
   // const count = await Member.countDocuments({});
 
@@ -48,11 +48,11 @@ router.post("/member/test", async (req, res) => {
   // }
 });
 
-router.get("/", (req, res) => {
+router.get("/backend/", (req, res) => {
   res.send("Welcome To The Church Members Management System!");
 });
 // Spouse details
-router.post("/member/spouse", async (req, res) => {
+router.post("/backend/member/spouse", async (req, res) => {
   try {
     //search for the spouse's details by phone no.
     const spouseDetails = await Member.findOne({ phone: req.body.spousePhone });
@@ -72,7 +72,7 @@ router.post("/member/spouse", async (req, res) => {
 });
 
 //member's age
-router.post("/member/age", (req, res) => {
+router.post("/backend/member/age", (req, res) => {
   try {
     const dob = req.body.dob;
     if (!dob) {
@@ -91,7 +91,7 @@ router.post("/member/age", (req, res) => {
 });
 
 //Father's details
-router.post("/member/father-details", async (req, res) => {
+router.post("/backend/member/father-details", async (req, res) => {
   try {
     const fathersPhone = req.body.fatherPhone;
     // if (!(fathersPhone)) {
@@ -114,7 +114,7 @@ router.post("/member/father-details", async (req, res) => {
 });
 
 //Mother's details
-router.post("/member/mother-details", async (req, res) => {
+router.post("/backend/member/mother-details", async (req, res) => {
   try {
     const mothersPhone = req.body.motherPhone;
     if (!mothersPhone) {
@@ -162,7 +162,7 @@ const generateUniquePassword = async () => {
 };
 
 //create a member record
-router.post("/member/add", async (req, res) => {
+router.post("/backend/member/add", async (req, res) => {
   try {
     const {
       firstName,
@@ -312,126 +312,7 @@ router.post("/member/add", async (req, res) => {
   }
 });
 
-// router.post("/member/add", async (req, res) => {
-//   try {
-//     const {
-//       firstName,
-//       middleName,
-//       surName,
-//       email,
-//       phone,
-//       phoneNumber,
-//       physicalAddress,
-//       dob,
-//       age,
-//       fatherName,
-//       motherName,
-//       fatherPhone,
-//       motherPhone,
-//       spouseName,
-//       maritalStatus,
-//       spouseId,
-//       nationalId,
-//       gender,
-//       marriageType,
-//       occupation,
-//       savedStatus,
-//       baptisedStatus,
-//       otherChurchMembership,
-//       memberType,
-//       cellGroup,
-//       ministry,
-//       fellowship,
-//       leadershipRole,
-//       deleted,
-//       notes,
-//     } = req.body;
-
-//     if (!nationalId) {
-//       return res.status(400).json({ message: "National ID is required." });
-//     }
-
-//     const query = { nationalId };
-//     if (phone) query.phone = phone;
-//     if (email) query.email = email;
-
-//     // Check if a member with the same nationalId or phone/email already exists
-//     const existingMember = await Member.findOne(query);
-//     if (existingMember) {
-//       return res
-//         .status(400)
-//         .json({
-//           message:
-//             "A member with the same National ID or phone/email already exists.",
-//         });
-//     }
-
-//     const counterData = await Counter.findOneAndUpdate(
-//       { name: "counter name" },
-//       { $inc: { seq: 1 } },
-//       { new: true, upsert: true }
-//     );
-
-//     let seqId;
-//     if (counterData.seq === null) {
-//       const newCounterSeq = new Counter({ name: "counter name", seq: 1 });
-//       await newCounterSeq.save();
-//       seqId = 1;
-//     } else {
-//       seqId = counterData.seq;
-//     }
-//     const paddedSeqId = seqId.toString().padStart(4, "0");
-//     const memberId = `MCKE${paddedSeqId}`;
-
-//     const regDate = new Date().toLocaleString();
-
-//     const newMember = new Member({
-//       memberId,
-//       firstName,
-//       middleName,
-//       surName,
-//       email,
-//       phone,
-//       phoneNumber,
-//       physicalAddress,
-//       dob,
-//       nationalId,
-//       age,
-//       fatherPhone,
-//       motherPhone,
-//       fatherName,
-//       motherName,
-//       maritalStatus,
-//       spouseId,
-//       spouseName,
-//       gender,
-//       marriageType,
-//       occupation,
-//       savedStatus,
-//       baptisedStatus,
-//       otherChurchMembership,
-//       memberType,
-//       cellGroup,
-//       ministry,
-//       fellowship,
-//       deleted,
-//       leadershipRole,
-//       notes,
-//       regDate,
-//     });
-
-//     const newRecord = await newMember.save();
-//     res.status(201).json(newRecord);
-//   } catch (err) {
-//     const errorMessage =
-//       err.message || "An error occurred while registering the member";
-//     res
-//       .status(500)
-//       .json({ message: "Error registering member", error: errorMessage });
-//   }
-// });
-
-router.get("/member/find/all", async (req, res) => {
+router.get("/backend/member/find/all", async (req, res) => {
   try {
     const allMembers = await Member.find({ deleted: false });
     res.status(200).json(allMembers);
@@ -444,7 +325,7 @@ router.get("/member/find/all", async (req, res) => {
 });
 
 // Search a member record by ID
-router.get("/member/:id", async (req, res) => {
+router.get("/backend/member/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const member = await Member.findById(id);
@@ -464,7 +345,7 @@ router.get("/member/:id", async (req, res) => {
 });
 
 // Update a member record
-router.post("/member/update/:id", async (req, res) => {
+router.post("/backend/member/update/:id", async (req, res) => {
   try {
     const id = req.params.id;
     if (!id) {
@@ -483,7 +364,7 @@ router.post("/member/update/:id", async (req, res) => {
 });
 
 // Delete a member record
-router.post("/member/delete", async (req, res) => {
+router.post("/backend/member/delete", async (req, res) => {
   try {
     const memberId = req.body.memberId;
     const record = await Member.findOne({ memberId });
@@ -505,7 +386,7 @@ router.post("/member/delete", async (req, res) => {
 });
 
 // Reports - Men Fellowship
-router.get("/reports/men-fellowship", async (req, res) => {
+router.get("/backend/reports/men-fellowship", async (req, res) => {
   try {
     const mmf = await Member.aggregate([{ $match: { fellowship: "Men" } }]);
     if (mmf.length === 0) {
@@ -526,7 +407,7 @@ router.get("/reports/men-fellowship", async (req, res) => {
 });
 
 // Reports - Women Fellowship
-router.get("/reports/women-fellowship", async (req, res) => {
+router.get("/backend/reports/women-fellowship", async (req, res) => {
   try {
     const wmf = await Member.aggregate([{ $match: { fellowship: "Women" } }]);
     if (wmf.length === 0) {
@@ -547,7 +428,7 @@ router.get("/reports/women-fellowship", async (req, res) => {
 });
 
 // Reports - Youth Fellowship
-router.get("/reports/youth-fellowship", async (req, res) => {
+router.get("/backend/reports/youth-fellowship", async (req, res) => {
   try {
     const ymf = await Member.aggregate([{ $match: { fellowship: "Youth" } }]);
     if (ymf.length === 0) {
@@ -568,7 +449,7 @@ router.get("/reports/youth-fellowship", async (req, res) => {
 });
 
 // Reports - JSS Fellowship
-router.get("/reports/jss", async (req, res) => {
+router.get("/backend/reports/jss", async (req, res) => {
   try {
     const jss = await Member.aggregate([{ $match: { fellowship: "JSS" } }]);
     if (jss.length === 0) {
@@ -589,7 +470,7 @@ router.get("/reports/jss", async (req, res) => {
 });
 
 // Find All those under age 18
-router.get("/reports/under-18", async (req, res) => {
+router.get("/backend/reports/under-18", async (req, res) => {
   const members = await Member.find();
   // console.log(members);
   let underEighteen = [];
@@ -603,7 +484,7 @@ router.get("/reports/under-18", async (req, res) => {
 
 //
 // Find All married members
-router.get("/reports/married", async (req, res) => {
+router.get("/backend/reports/married", async (req, res) => {
   const members = await Member.find();
   let married = [];
   for (x = 0; x < members.length; x++) {
@@ -615,7 +496,7 @@ router.get("/reports/married", async (req, res) => {
 });
 
 // Find All active members
-router.get("/reports/active", async (req, res) => {
+router.get("/backend/reports/active", async (req, res) => {
   const activeMembers = await Member.aggregate([
     { $match: { isActive: true } },
   ]);
@@ -624,7 +505,7 @@ router.get("/reports/active", async (req, res) => {
 });
 
 // Find All full members
-router.get("/reports/full-members", async (req, res) => {
+router.get("/backend/reports/full-members", async (req, res) => {
   const fullMembers = await Member.aggregate([
     { $match: { memberType: "full" } },
   ]);
@@ -637,7 +518,7 @@ router.get("/reports/full-members", async (req, res) => {
 });
 
 // Find All associate members
-router.get("/reports/associate-members", async (req, res) => {
+router.get("/backend/reports/associate-members", async (req, res) => {
   const associateMembers = await Member.aggregate([
     { $match: { memberType: "associate" } },
   ]);
@@ -648,13 +529,13 @@ router.get("/reports/associate-members", async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////
 // ministries
 // choir
-router.get("/ministry/choir", async (req, res) => {
+router.get("/backend/ministry/choir", async (req, res) => {
   const choir = await Member.aggregate([{ $match: { ministry: "choir" } }]);
   res.json(choir);
 });
 
 // praise&Worship
-router.get("/ministry/praise&Worship", async (req, res) => {
+router.get("/backend/ministry/praise&Worship", async (req, res) => {
   const praisenWorship = await Member.aggregate([
     { $match: { ministry: "praise&Worship" } },
   ]);
@@ -662,7 +543,7 @@ router.get("/ministry/praise&Worship", async (req, res) => {
 });
 
 // AwesomeMelodies
-router.get("/ministry/AwesomeMelodies", async (req, res) => {
+router.get("/backend/ministry/AwesomeMelodies", async (req, res) => {
   const AwesomeMelodies = await Member.aggregate([
     { $match: { ministry: "AwesomeMelodies" } },
   ]);
@@ -670,7 +551,7 @@ router.get("/ministry/AwesomeMelodies", async (req, res) => {
 });
 
 // Hospitality
-router.get("/ministry/Hospitality", async (req, res) => {
+router.get("/backend/ministry/Hospitality", async (req, res) => {
   const Hospitality = await Member.aggregate([
     { $match: { ministry: "Hospitality" } },
   ]);
@@ -678,7 +559,7 @@ router.get("/ministry/Hospitality", async (req, res) => {
 });
 
 // ushering
-router.get("/ministry/ushering", async (req, res) => {
+router.get("/backend/ministry/ushering", async (req, res) => {
   const ushering = await Member.aggregate([
     { $match: { ministry: "ushering" } },
   ]);
@@ -686,7 +567,7 @@ router.get("/ministry/ushering", async (req, res) => {
 });
 
 // SacramentStewards
-router.get("/ministry/SacramentStewards", async (req, res) => {
+router.get("/backend/ministry/SacramentStewards", async (req, res) => {
   const SacramentStewards = await Member.aggregate([
     { $match: { ministry: "SacramentStewards" } },
   ]);
@@ -694,13 +575,13 @@ router.get("/ministry/SacramentStewards", async (req, res) => {
 });
 
 // Csr
-router.get("/ministry/Csr", async (req, res) => {
+router.get("/backend/ministry/Csr", async (req, res) => {
   const Csr = await Member.aggregate([{ $match: { ministry: "Csr" } }]);
   res.json(Csr);
 });
 
 // missions&Evangelism
-router.get("/ministry/missions&Evangelism", async (req, res) => {
+router.get("/backend/ministry/missions&Evangelism", async (req, res) => {
   const missionsnEvangelism = await Member.aggregate([
     { $match: { ministry: "missions&Evangelism" } },
   ]);
@@ -708,14 +589,14 @@ router.get("/ministry/missions&Evangelism", async (req, res) => {
 });
 
 // Leader
-router.get("/ministry/Leader", async (req, res) => {
+router.get("/backend/ministry/Leader", async (req, res) => {
   const Leader = await Member.aggregate([{ $match: { ministry: "Leader" } }]);
   res.json(Leader);
 });
 
 /////////////////////////////////////////////////////////
 // Baptism
-router.get("/baptism/baptised", async (req, res) => {
+router.get("/backend/baptism/baptised", async (req, res) => {
   const baptised = await Member.aggregate([
     { $match: { baptisedStatus: "baptised" } },
   ]);
@@ -723,7 +604,7 @@ router.get("/baptism/baptised", async (req, res) => {
 });
 
 // Not Baptised
-router.get("/baptism/not-baptised", async (req, res) => {
+router.get("/backend/baptism/not-baptised", async (req, res) => {
   const notBaptised = await Member.aggregate([
     { $match: { baptisedStatus: "notBaptised" } },
   ]);
@@ -732,13 +613,13 @@ router.get("/baptism/not-baptised", async (req, res) => {
 ////////////////////////////
 // active status
 // active
-router.get("/activity/active", async (req, res) => {
+router.get("/backend/activity/active", async (req, res) => {
   const active = await Member.aggregate([{ $match: { isActive: "true" } }]);
   res.json(active);
 });
 
 // Find All dormant members
-router.get("/reports/dormant-members", async (req, res) => {
+router.get("/backend/reports/dormant-members", async (req, res) => {
   const dormant = await Member.aggregate([{ $match: { isActive: false } }]);
 
   res.json(dormant);
@@ -747,13 +628,13 @@ router.get("/reports/dormant-members", async (req, res) => {
 /////////////////////////////////////////////
 // Cell Groups
 // week2
-router.get("/cell-group/week2", async (req, res) => {
+router.get("/backend/cell-group/week2", async (req, res) => {
   const weekTwo = await Member.aggregate([{ $match: { cellGroup: "week2" } }]);
   res.json(weekTwo);
 });
 
 // week3
-router.get("/cell-group/week3", async (req, res) => {
+router.get("/backend/cell-group/week3", async (req, res) => {
   const weekThree = await Member.aggregate([
     { $match: { cellGroup: "week3" } },
   ]);
@@ -761,13 +642,13 @@ router.get("/cell-group/week3", async (req, res) => {
 });
 
 // week4
-router.get("/cell-group/week4", async (req, res) => {
+router.get("/backend/cell-group/week4", async (req, res) => {
   const weekFour = await Member.aggregate([{ $match: { cellGroup: "week4" } }]);
   res.json(weekFour);
 });
 
 // diaspora
-router.get("/cell-group/diaspora", async (req, res) => {
+router.get("/backend/cell-group/diaspora", async (req, res) => {
   const diaspora = await Member.aggregate([
     { $match: { cellGroup: "diaspora" } },
   ]);
@@ -777,14 +658,14 @@ router.get("/cell-group/diaspora", async (req, res) => {
 /////////////////
 // Youth
 // diaspora
-router.get("/Youth", async (req, res) => {
+router.get("/backend/Youth", async (req, res) => {
   const Youth = await Member.aggregate([{ $match: { fellowship: "Youth" } }]);
   res.json(Youth);
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // create fellowship
-router.post("/fellowships", async (req, res) => {
+router.post("/backend/fellowships", async (req, res) => {
   const { id, title } = req.body;
   const newFellowship = new Fellowship({
     id,
@@ -796,13 +677,13 @@ router.post("/fellowships", async (req, res) => {
 });
 
 // get fellowship
-router.get("/fellowships", async (req, res) => {
+router.get("/backend/fellowships", async (req, res) => {
   const fellowships = await Fellowship.find();
   res.status(200).json(fellowships);
 });
 
 // create marital status
-router.post("/marital-status", async (req, res) => {
+router.post("/backend/marital-status", async (req, res) => {
   const { id, title } = req.body;
 
   const newStatus = new MaritalStatus({
@@ -815,13 +696,13 @@ router.post("/marital-status", async (req, res) => {
 });
 
 // get marital status
-router.get("/marital-status", async (req, res) => {
+router.get("/backend/marital-status", async (req, res) => {
   const maritalStatus = await MaritalStatus.find();
   res.status(200).json(maritalStatus);
 });
 
 // create ministry
-router.post("/ministry", async (req, res) => {
+router.post("/backend/ministry", async (req, res) => {
   const { id, title } = req.body;
   const newMinistry = new Ministry({
     id,
@@ -833,13 +714,13 @@ router.post("/ministry", async (req, res) => {
 });
 
 // get ministry
-router.get("/ministry", async (req, res) => {
+router.get("/backend/ministry", async (req, res) => {
   const ministry = await Ministry.find();
   res.status(200).json(ministry);
 });
 
 // cell groups
-router.post("/cell-groups", async (req, res) => {
+router.post("/backend/cell-groups", async (req, res) => {
   const { id, title } = req.body;
   const newCellGroup = new ChurchCellGroup({
     id,
@@ -851,13 +732,13 @@ router.post("/cell-groups", async (req, res) => {
 });
 
 // get cell groups
-router.get("/cell-groups", async (req, res) => {
+router.get("/backend/cell-groups", async (req, res) => {
   const cellGroup = await ChurchCellGroup.find();
   res.status(200).json(cellGroup);
 });
 
 // create MarriageType
-router.post("/marriage-type", async (req, res) => {
+router.post("/backend/marriage-type", async (req, res) => {
   const { id, title } = req.body;
   const newMarriageType = new MarriageType({
     id,
@@ -869,13 +750,13 @@ router.post("/marriage-type", async (req, res) => {
 });
 
 // get MarriageType
-router.get("/marriage-type", async (req, res) => {
+router.get("/backend/marriage-type", async (req, res) => {
   const marriageType = await MarriageType.find();
   res.status(200).json(marriageType);
 });
 
 // create gender
-router.post("/gender", async (req, res) => {
+router.post("/backend/gender", async (req, res) => {
   const { id, title } = req.body;
   const newGender = new Gender({
     id,
@@ -887,13 +768,13 @@ router.post("/gender", async (req, res) => {
 });
 
 // get gender
-router.get("/gender", async (req, res) => {
+router.get("/backend/gender", async (req, res) => {
   const gender = await Gender.find();
   res.status(200).json(gender);
 });
 
 // create roles
-router.post("/roles", async (req, res) => {
+router.post("/backend/roles", async (req, res) => {
   const { id, title } = req.body;
   const newRoles = new Roles({
     id,
@@ -905,13 +786,13 @@ router.post("/roles", async (req, res) => {
 });
 
 // get roles
-router.get("/roles", async (req, res) => {
+router.get("/backend/roles", async (req, res) => {
   const roles = await Roles.find();
   res.status(200).json(roles);
 });
 
 // create saved status
-router.post("/saved-status", async (req, res) => {
+router.post("/backend/saved-status", async (req, res) => {
   const { id, title } = req.body;
   const newSavedStatus = new SavedStatus({
     id,
@@ -923,13 +804,13 @@ router.post("/saved-status", async (req, res) => {
 });
 
 // get saved status
-router.get("/saved-status", async (req, res) => {
+router.get("/backend/saved-status", async (req, res) => {
   const savedStatus = await SavedStatus.find();
   res.status(200).json(savedStatus);
 });
 
 // create Other church membership
-router.post("/other-church-membership", async (req, res) => {
+router.post("/backend/other-church-membership", async (req, res) => {
   const { id, title } = req.body;
   const newChurchMembeship = new OtherChurchMembership({
     id,
@@ -941,13 +822,13 @@ router.post("/other-church-membership", async (req, res) => {
 });
 
 // get other-church-membership
-router.get("/other-church-membership", async (req, res) => {
+router.get("/backend/other-church-membership", async (req, res) => {
   const churchMembeship = await OtherChurchMembership.find();
   res.status(200).json(churchMembeship);
 });
 
 // Baptised status
-router.post("/baptised-status", async (req, res) => {
+router.post("/backend/baptised-status", async (req, res) => {
   const { id, title } = req.body;
   const newBaptismStatus = new BaptisedStatus({
     id,
@@ -959,13 +840,13 @@ router.post("/baptised-status", async (req, res) => {
 });
 
 // get baptised status
-router.get("/baptised-status", async (req, res) => {
+router.get("/backend/baptised-status", async (req, res) => {
   const baptismStatus = await BaptisedStatus.find();
   res.status(200).json(baptismStatus);
 });
 
 // member type
-router.post("/member-type", async (req, res) => {
+router.post("/backend/member-type", async (req, res) => {
   const { id, title } = req.body;
   const newMemberType = new MemberType({
     id,
@@ -977,7 +858,7 @@ router.post("/member-type", async (req, res) => {
 });
 
 // get baptised status
-router.get("/member-type", async (req, res) => {
+router.get("/backend/member-type", async (req, res) => {
   const memberType = await MemberType.find();
   res.status(200).json(memberType);
 });

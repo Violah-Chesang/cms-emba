@@ -7,7 +7,7 @@ const {
 } = require("../models/inventory");
 
 // Type Routes
-router.post("/inventory/types", async (req, res) => {
+router.post("/backend/inventory/types", async (req, res) => {
   try {
     const { name } = req.body;
     const type = new inventoryType({ name });
@@ -18,7 +18,7 @@ router.post("/inventory/types", async (req, res) => {
   }
 });
 
-router.put("/inventory/types/:id", async (req, res) => {
+router.put("/backend/inventory/types/:id", async (req, res) => {
   try {
     const { name } = req.body;
     const type = await inventoryType.findByIdAndUpdate(
@@ -35,7 +35,7 @@ router.put("/inventory/types/:id", async (req, res) => {
   }
 });
 
-router.delete("/inventory/types/:id", async (req, res) => {
+router.delete("/backend/inventory/types/:id", async (req, res) => {
   try {
     const type = await inventoryType.findByIdAndDelete(req.params.id);
     if (!type) return res.status(404).json({ error: "Type not found" });
@@ -45,7 +45,7 @@ router.delete("/inventory/types/:id", async (req, res) => {
   }
 });
 
-router.get("/inventory/types", async (req, res) => {
+router.get("/backend/inventory/types", async (req, res) => {
   try {
     const types = await inventoryType.find(); // No need to populate 'subtypes'
     res.json(types);
@@ -55,7 +55,7 @@ router.get("/inventory/types", async (req, res) => {
 });
 
 // Subtype Routes
-router.post("/inventory/subtypes", async (req, res) => {
+router.post("/backend/inventory/subtypes", async (req, res) => {
   try {
     const subtype = new inventorySubtype(req.body);
     await subtype.save();
@@ -65,7 +65,7 @@ router.post("/inventory/subtypes", async (req, res) => {
   }
 });
 
-router.put("/inventory/subtypes/:id", async (req, res) => {
+router.put("/backend/inventory/subtypes/:id", async (req, res) => {
   try {
     const subtype = await inventorySubtype.findByIdAndUpdate(
       req.params.id,
@@ -81,7 +81,7 @@ router.put("/inventory/subtypes/:id", async (req, res) => {
   }
 });
 
-router.delete("/inventory/subtypes/:id", async (req, res) => {
+router.delete("/backend/inventory/subtypes/:id", async (req, res) => {
   try {
     const subtype = await inventorySubtype.findByIdAndDelete(req.params.id);
     if (!subtype) return res.status(404).json({ error: "Subtype not found" });
@@ -91,7 +91,7 @@ router.delete("/inventory/subtypes/:id", async (req, res) => {
   }
 });
 
-router.get("/inventory/subtypes", async (req, res) => {
+router.get("/backend/inventory/subtypes", async (req, res) => {
   try {
     const subtypes = await inventorySubtype.find().populate("type");
     res.json(subtypes);
@@ -101,7 +101,7 @@ router.get("/inventory/subtypes", async (req, res) => {
 });
 
 // Item Routes
-router.post("/inventory/items", async (req, res) => {
+router.post("/backend/inventory/items", async (req, res) => {
   try {
     const item = new inventoryItem(req.body);
     await item.save();
@@ -111,7 +111,7 @@ router.post("/inventory/items", async (req, res) => {
   }
 });
 
-router.put("/inventory/items/:id", async (req, res) => {
+router.put("/backend/inventory/items/:id", async (req, res) => {
   try {
     const item = await inventoryItem.findByIdAndUpdate(
       req.params.id,
@@ -127,7 +127,7 @@ router.put("/inventory/items/:id", async (req, res) => {
   }
 });
 
-router.delete("/inventory/items/:id", async (req, res) => {
+router.delete("/backend/inventory/items/:id", async (req, res) => {
   try {
     const item = await inventoryItem.findByIdAndDelete(req.params.id);
     if (!item) return res.status(404).json({ error: "Item not found" });
@@ -137,7 +137,7 @@ router.delete("/inventory/items/:id", async (req, res) => {
   }
 });
 
-router.get("/inventory/items", async (req, res) => {
+router.get("/backend/inventory/items", async (req, res) => {
   try {
     const items = await inventoryItem.find().populate("type subtype");
     res.json(items);
@@ -148,7 +148,7 @@ router.get("/inventory/items", async (req, res) => {
 
 // Custom Query Routes
 // Find All items by status
-router.get("/inventory/items/status/:status", async (req, res) => {
+router.get("/backend/inventory/items/status/:status", async (req, res) => {
   const { status } = req.params;
   try {
     const items = await inventoryItem.find({ status });
@@ -159,7 +159,7 @@ router.get("/inventory/items/status/:status", async (req, res) => {
 });
 
 // Find All items by type
-router.get("/inventory/items/type/:typeId", async (req, res) => {
+router.get("/backend/inventory/items/type/:typeId", async (req, res) => {
   const { typeId } = req.params;
   try {
     const items = await inventoryItem.find({ type: typeId });
@@ -170,7 +170,7 @@ router.get("/inventory/items/type/:typeId", async (req, res) => {
 });
 
 // Find All items by condition
-router.get("/inventory/items/condition/:condition", async (req, res) => {
+router.get("/backend/inventory/items/condition/:condition", async (req, res) => {
   const { condition } = req.params;
   try {
     const items = await inventoryItem.find({ condition });
@@ -181,7 +181,7 @@ router.get("/inventory/items/condition/:condition", async (req, res) => {
 });
 
 // Aggregate Example: Find All items and group by status
-router.get("/inventory/items/aggregate/status", async (req, res) => {
+router.get("/backend/inventory/items/aggregate/status", async (req, res) => {
   try {
     const result = await inventoryItem.aggregate([
       { $group: { _id: "$status", count: { $sum: 1 } } },

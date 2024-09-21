@@ -21,7 +21,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-
 //middlewares
 app.use(memberRouter);
 app.use(userRouter);

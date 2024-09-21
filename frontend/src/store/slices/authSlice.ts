@@ -20,7 +20,8 @@ const initialState: AuthState = {
   status: 'idle',
   error: null,
 };
-const apiUrl = 'http://localhost:5500';
+//const apiUrl = 'https://mckembakasichurch.or.ke/backend';
+const apiUrl= 'http://localhost:5500/backend';
 
 
 export const registerUser = createAsyncThunk(
@@ -39,13 +40,9 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (userData: { userName: string; password: string }, thunkAPI) => {
     try {
-     // console.log('Sending login request with:', userData);
 
       const response = await axios.post(`${apiUrl}/user/login`, userData);
-    //  console.log('Response from server:', response.data);
-
-     // console.log(userData)
-     // console.log(response)
+    
       const token = response.data.data.token;
       Cookies.set('token', token, { expires: 1, sameSite: 'none', secure: true });
       const username = userData.userName;
