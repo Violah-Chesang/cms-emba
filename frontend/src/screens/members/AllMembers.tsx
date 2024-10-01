@@ -47,7 +47,7 @@ const columns: Column[] = [
   { header: "MemberID", accessor: "memberId" },
   { header: "Name", accessor: "name" },
   { header: "Phone Number", accessor: "phone" },
-  { header: "National ID", accessor: "nationalId" },
+  { header: "Occupation", accessor: "occupation" },
   { header: "Marital Status", accessor: "maritalStatus" },
   { header: "Baptised", accessor: "baptisedStatus" },
   { header: "Cell Group", accessor: "cellGroup" },

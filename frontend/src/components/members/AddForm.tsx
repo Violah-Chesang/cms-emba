@@ -15,6 +15,7 @@ const fields: Field[] = [
   { accessor: "marriageType", header: "Marriage Type", required: true },
   { accessor: "spouseName", header: "Spouse Name", required: false },
   { accessor: "physicalAddress", header: "Physical Address", required: true },
+  { accessor: "occupation", header: "Occupation", required: true },
   { accessor: "motherPhone", header: "Mother's Phone", required: false },
   { accessor: "fatherName", header: "Father's Name", required: false },
   { accessor: "motherName", header: "Mother's Name", required: false },
@@ -198,7 +199,7 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
     switch (activeTab) {
       case "General":
         return fields
-          .filter((field) => ["firstName", "middleName", "surName", "dob", "gender", "nationalId", "maritalStatus", "marriageType","spouseName"].includes(field.accessor))
+          .filter((field) => ["firstName", "middleName", "surName", "dob", "gender", "nationalId", "maritalStatus", "marriageType","spouseName","occupation"].includes(field.accessor))
           .map((field) => renderField(field));
       case "Contact Info":
         return fields
@@ -219,9 +220,78 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
     return dropdownFields.includes(accessor);
   };
 
+  // const renderField = (field: Field) => (
+  //   <div key={field.accessor}>
+  //     {shouldRenderDropdown(field.accessor) ? (
+  //       <div>
+  //         <label className="block mb-2 font-bold">
+  //           {field.header}
+  //           <span className="text-red-500">*</span>
+  //         </label>
+  //         {field.accessor in options ? (
+  //           renderFilterDropdown(
+  //             field.accessor,
+  //             "",
+  //             options[field.accessor as keyof typeof options],
+  //             handleInputChange,
+  //             true
+  //           )
+  //         ) : (
+  //           <span>No options available</span>
+  //         )}
+  //         {errors[field.accessor] && (
+  //           <span className="text-red-500 text-sm">
+  //             {errors[field.accessor]}
+  //           </span>
+  //         )}
+  //       </div>
+  //     ) : (
+  //       <div>
+  //         <label className="block mb-2 font-bold">
+  //           {field.header}
+  //           {field.required && <span className="text-red-500">*</span>}
+  //         </label>
+  //         <input
+  //           type={field.accessor === "dob" ? "date" : "text"}
+  //           name={field.accessor}
+  //           value={formData[field.accessor] as string}
+  //           onChange={handleInputChange}
+  //           className="w-full border border-gray-300 px-4 py-2 rounded-md"
+  //           required={field.required}
+  //         />
+  //         {errors[field.accessor] && (
+  //           <span className="text-red-500 text-sm">
+  //             {errors[field.accessor]}
+  //           </span>
+  //         )}
+  //       </div>
+  //     )}
+  //   </div>
+  // );
+
   const renderField = (field: Field) => (
     <div key={field.accessor}>
-      {shouldRenderDropdown(field.accessor) ? (
+      {field.accessor === "ministry" ? (
+        <div>
+          <label className="block mb-2 font-bold">
+            {field.header}
+            {field.required && <span className="text-red-500">*</span>}
+          </label>
+          <input
+            type="text"
+            name={field.accessor}
+            value={formData[field.accessor] as string}
+            onChange={handleInputChange}
+            className="w-full border border-gray-300 px-4 py-2 rounded-md"
+            required={field.required}
+          />
+          {errors[field.accessor] && (
+            <span className="text-red-500 text-sm">
+              {errors[field.accessor]}
+            </span>
+          )}
+        </div>
+      ) : shouldRenderDropdown(field.accessor) ? (
         <div>
           <label className="block mb-2 font-bold">
             {field.header}
@@ -267,6 +337,7 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
       )}
     </div>
   );
+
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">

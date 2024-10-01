@@ -12,7 +12,7 @@ const initializeFromCookies = () => {
             const role = userDetails.role;
             return {
                 role,
-                canEdit: ['Minister', 'Executive Leader', 'Fellowship Leader'].includes(role),
+                canEdit: ['Minister', 'Executive Leader', 'Fellowship Leader','Chair'].includes(role),
                 canDelete: ['Minister', 'Executive Leader'].includes(role),
                 canView: true,
             };

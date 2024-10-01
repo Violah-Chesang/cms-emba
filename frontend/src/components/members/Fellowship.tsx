@@ -155,7 +155,7 @@ const Fellowship: React.FC<FellowshipProps> = ({
           )}
         </div>
 
-        {canEdit && (
+        {/* {canEdit && ( */}
           <button
             className="flex justify-center items-center py-2 px-5 text-sm font-medium text-white bg-blue-950 rounded-lg hover:bg-blue-600"
             onClick={() => setIsAddFormVisible(true)}
@@ -163,7 +163,7 @@ const Fellowship: React.FC<FellowshipProps> = ({
             <IoMdAdd size={20} />
             Add New Member
           </button>
-        )}
+        {/* )} */}
       </div>
 
       <DataTable

@@ -49,7 +49,7 @@ const columns: Column[] = [
   { header: "Member ID", accessor: "memberId" },
   { header: "Name", accessor: "name" },
   { header: "Phone Number", accessor: "phone" },
-  { header: "National ID No.", accessor: "nationalId" },
+  { header: "Occupation", accessor: "occupation" },
   { header: "Marital Status", accessor: "maritalStatus" },
   { header: "Baptised", accessor: "baptisedStatus" },
   { header: "Cell Group", accessor: "cellGroup" },
@@ -65,25 +65,20 @@ const MenFellowship: React.FC = () => {
   const selectFellowshipMembers = useMemo(() => makeSelectFellowshipMembers(), []);
   
   const members = useSelector((state: RootState) => {
-    console.log('Selecting members in MenFellowship');
     return selectFellowshipMembers(state, "Men");
   });
   const loading = useSelector((state: RootState) => {
-    console.log('Selecting loading in MenFellowship');
     return selectLoading(state);
   });
   const error = useSelector((state: RootState) => {
-    console.log('Selecting error in MenFellowship');
     return selectError(state);
   });
 
   const fetchMembers = useCallback(() => {
-    console.log('Fetching members in MenFellowship');
     dispatch(fetchMembersByFellowship("Men"));
   }, [dispatch]);
 
   React.useEffect(() => {
-    console.log('useEffect running in MenFellowship');
     if (members.length === 0 && !loading && !error) {
       fetchMembers();
     }
@@ -98,7 +93,6 @@ const MenFellowship: React.FC = () => {
   }, [colors]);
 
   const transformedMembers = useMemo(() => {
-    console.log('Transforming members in MenFellowship');
     if (!members || !Array.isArray(members)) {
       console.error('Men members is not an array:', members);
       return [];
@@ -119,7 +113,6 @@ const MenFellowship: React.FC = () => {
     }));
   }, [members, getRandomColor]);
 
-  console.log("Rendering MenFellowship, loading:", loading, "members:", members);
 
   if (loading) {
     return <p>Loading...</p>;

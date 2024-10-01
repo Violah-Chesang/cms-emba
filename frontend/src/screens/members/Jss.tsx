@@ -67,25 +67,20 @@ const JssFellowship: React.FC = () => {
   const selectFellowshipMembers = useMemo(() => makeSelectFellowshipMembers(), []);
   
   const members = useSelector((state: RootState) => {
-    console.log('Selecting members in JssFellowship');
     return selectFellowshipMembers(state, "JSS");
   });
   const loading = useSelector((state: RootState) => {
-    console.log('Selecting loading in JssFellowship');
     return selectLoading(state);
   });
   const error = useSelector((state: RootState) => {
-    console.log('Selecting error in JssFellowship');
     return selectError(state);
   });
 
   const fetchMembers = useCallback(() => {
-    console.log('Fetching members in JssFellowship');
     dispatch(fetchMembersByFellowship("JSS"));
   }, [dispatch]);
 
   React.useEffect(() => {
-    console.log('useEffect running in JssFellowship');
     if (members.length === 0 && !loading && !error) {
       fetchMembers();
     }
@@ -106,7 +101,6 @@ const JssFellowship: React.FC = () => {
   }, [colors]);
 
   const transformedMembers = useMemo(() => {
-    console.log('Transforming members in JssFellowship');
     if (!members || !Array.isArray(members)) {
       console.error('JSS members is not an array:', members);
       return [];
@@ -127,7 +121,6 @@ const JssFellowship: React.FC = () => {
     }));
   }, [members, getRandomColor]);
 
-  console.log("Rendering JssFellowship, loading:", loading, "members:", members);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -136,10 +129,6 @@ const JssFellowship: React.FC = () => {
   if (error) {
     return <p>Error: {error}</p>;
   }
-
-  // if (!members || !Array.isArray(members) || members.length === 0) {
-  //   return <p>No JSS members data available</p>;
-  // }
 
   return (
    <div className="p-2">

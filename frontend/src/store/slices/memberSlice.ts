@@ -126,20 +126,26 @@ export const fetchMembersByFellowship = createAsyncThunk<Member[], string, { sta
     }
 );
 
-// Thunk to add a new member
 export const addMember = createAsyncThunk<Member, Omit<Member, '_id'>>(
     'members/addMember',
-    async (newMember) => {
-        console.log('new member',newMember)
+    async (newMember, { rejectWithValue }) => {
+        console.log('New member:', newMember);
         try {
             const response = await axios.post(`${apiUrl}/member/add`, newMember);
-            return response.data;
-        } catch (error) {
-            console.error('Error adding member:', error);
-            throw error;
+            return response.data; // Assuming the response contains the new member data
+        } catch (error: any) {
+            console.error('Error adding member:', error.response?.data || error.message);
+
+            // If the server provides an error message, return it via `rejectWithValue`
+            if (error.response && error.response.data) {
+                return rejectWithValue(error.response.data);
+            } else {
+                return rejectWithValue('Something went wrong');
+            }
         }
     }
 );
+
 
 // Thunk to update a member with cyclic object check
 export const updateMember = createAsyncThunk<Member, { _id: string; updatedMember: Partial<Member> }>(

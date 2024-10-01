@@ -49,8 +49,8 @@ const columns: Column[] = [
   { header: "Name", accessor: "name" }, 
   { header: "Phone Number", accessor: "phone" },
   { header: "Position", accessor: "leadershipRole" },
+  { header: "Occupation", accessor: "occupation" },
   { header: "Fellowship", accessor: "fellowship" },
-  { header: "Status", accessor: "isActive" },
 ];
 
 const colors = [

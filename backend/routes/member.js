@@ -197,31 +197,32 @@ router.post("/backend/member/add", async (req, res) => {
       notes,
     } = req.body;
 
-    console.log(req.body)
+    console.log("Request body:", req.body);
 
-    if (!nationalId) {
-      return res.status(400).json({ message: "National ID is required." });
-    }
-    if (!firstName || !middleName) {
-      return res
-        .status(400)
-        .json({ message: "First and Last name is required." });
-    }
-
-    if (!leadershipRole) {
-      return res.status(400).json({ message: "The member role is required." });
-    }
-
-    const query = { nationalId };
-    if (phone) query.phone = phone;
-    if (email) query.email = email;
-
-    const existingMember = await Member.findOne(query);
-    if (existingMember) {
+    if (!nationalId || !firstName || !middleName || !email) {
       return res.status(400).json({
-        message: "A member with the same National ID or phone already exists.",
+        message:
+          "National ID, First Name, Middle Name, and Email are required.",
       });
     }
+
+    // Check if a member already exists based on nationalId, email, firstName, and middleName
+    const existingMember = await Member.findOne({
+      nationalId,
+      email,
+      firstName,
+      middleName,
+    });
+
+    if (existingMember) {
+      return res.status(400).json({
+        message:
+          "A member with the same National ID, Email, First Name, or Middle Name already exists.",
+      });
+    }
+
+    // Check if a user already exists based on email in the User collection
+    const existingUser = await User.findOne({ email });
 
     const counterData = await Counter.findOneAndUpdate(
       { name: "memberCounter" },
@@ -233,33 +234,64 @@ router.post("/backend/member/add", async (req, res) => {
     const memberId = `MCKE${seqId}`;
     const regDate = new Date().toLocaleString();
 
+    // If user exists, create only the member
+    if (existingUser) {
+      const newMember = new Member({
+        memberId, 
+        firstName,
+        middleName,
+        surName,
+        email,
+        phone,
+        phoneNumber,
+        physicalAddress,
+        dob,
+        nationalId,
+        age,
+        fatherPhone,
+        motherPhone,
+        fatherName,
+        motherName,
+        maritalStatus,
+        spouseId,
+        spouseName,
+        gender,
+        marriageType,
+        occupation,
+        savedStatus,
+        baptisedStatus,
+        otherChurchMembership,
+        memberType,
+        cellGroup,
+        ministry,
+        fellowship,
+        deleted,
+        leadershipRole,
+        notes,
+        regDate, 
+      });
+
+      const newRecord = await newMember.save();
+      return res.status(201).json({
+        message: "Member created successfully!",
+        member: newRecord,
+      });
+    }
+
     // Generate a unique password for the user
     const generatedPassword = await generateUniquePassword();
-
     const userRegistrationData = {
       firstname: firstName,
       lastname: surName,
-      userName: email ? email : `${firstName}${surName}`,
-      email: email || "",
+      userName: email,
+      email: email,
       password: generatedPassword,
       role: leadershipRole || "Member",
     };
 
-    const userResponse = await fetch(`http://localhost:5500/user/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userRegistrationData),
-    });
+    const userResponse = await User.create(userRegistrationData);
 
-    // Check if user registration was successful
-    if (!userResponse.ok) {
-      const errorResponse = await userResponse.json();
-      throw new Error(errorResponse.message || "User registration failed.");
-    }
-
-    // Create the member only if user creation is successful
+    // Create the member after user registration
     const newMember = new Member({
       memberId,
       firstName,
@@ -300,7 +332,7 @@ router.post("/backend/member/add", async (req, res) => {
     res.status(201).json({
       message: "Member and User account created successfully!",
       member: newRecord,
-      user: await userResponse.json(),
+      user: userResponse,
       generatedPassword,
     });
   } catch (err) {
@@ -311,6 +343,155 @@ router.post("/backend/member/add", async (req, res) => {
     });
   }
 });
+
+//   try {
+//     const {
+//       firstName,
+//       middleName,
+//       surName,
+//       email,
+//       phone,
+//       phoneNumber,
+//       physicalAddress,
+//       dob,
+//       age,
+//       fatherName,
+//       motherName,
+//       fatherPhone,
+//       motherPhone,
+//       spouseName,
+//       maritalStatus,
+//       spouseId,
+//       nationalId,
+//       gender,
+//       marriageType,
+//       occupation,
+//       savedStatus,
+//       baptisedStatus,
+//       otherChurchMembership,
+//       memberType,
+//       cellGroup,
+//       ministry,
+//       fellowship,
+//       leadershipRole,
+//       deleted,
+//       notes,
+//     } = req.body;
+
+//     console.log(req.body)
+
+//     if (!nationalId) {
+//       return res.status(400).json({ message: "National ID is required." });
+//     }
+//     if (!firstName || !middleName) {
+//       return res
+//         .status(400)
+//         .json({ message: "First and Last name is required." });
+//     }
+
+//     if (!leadershipRole) {
+//       return res.status(400).json({ message: "The member role is required." });
+//     }
+
+//     const query = { nationalId };
+//     if (phone) query.phone = phone;
+//     if (email) query.email = email;
+
+//     const existingMember = await Member.findOne(query);
+//     if (existingMember) {
+//       return res.status(400).json({
+//         message: "A member with the same National ID or phone already exists.",
+//       });
+//     }
+
+//     const counterData = await Counter.findOneAndUpdate(
+//       { name: "memberCounter" },
+//       { $inc: { seq: 1 } },
+//       { new: true, upsert: true }
+//     );
+
+//     let seqId = counterData.seq.toString().padStart(4, "0");
+//     const memberId = `MCKE${seqId}`;
+//     const regDate = new Date().toLocaleString();
+
+//     // Generate a unique password for the user
+//     const generatedPassword = await generateUniquePassword();
+
+//     const userRegistrationData = {
+//       firstname: firstName,
+//       lastname: surName,
+//       userName: email ? email : `${firstName}${surName}`,
+//       email: email || "",
+//       password: generatedPassword,
+//       role: leadershipRole || "Member",
+//     };
+
+//     const userResponse = await fetch(`http://localhost:5500/backend/user/register`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(userRegistrationData),
+//     });
+
+//     // Check if user registration was successful
+//     if (!userResponse.ok) {
+//       const errorResponse = await userResponse.json();
+//       throw new Error(errorResponse.message || "User registration failed.");
+//     }
+
+//     // Create the member only if user creation is successful
+//     const newMember = new Member({
+//       memberId,
+//       firstName,
+//       middleName,
+//       surName,
+//       email,
+//       phone,
+//       phoneNumber,
+//       physicalAddress,
+//       dob,
+//       nationalId,
+//       age,
+//       fatherPhone,
+//       motherPhone,
+//       fatherName,
+//       motherName,
+//       maritalStatus,
+//       spouseId,
+//       spouseName,
+//       gender,
+//       marriageType,
+//       occupation,
+//       savedStatus,
+//       baptisedStatus,
+//       otherChurchMembership,
+//       memberType,
+//       cellGroup,
+//       ministry,
+//       fellowship,
+//       deleted,
+//       leadershipRole,
+//       notes,
+//       regDate,
+//     });
+
+//     const newRecord = await newMember.save();
+
+//     res.status(201).json({
+//       message: "Member and User account created successfully!",
+//       member: newRecord,
+//       user: await userResponse.json(),
+//       generatedPassword,
+//     });
+//   } catch (err) {
+//     console.error("Error:", err);
+//     res.status(500).json({
+//       message: "Error registering member and user account",
+//       error: err.message || "An error occurred",
+//     });
+//   }
+// });
 
 router.get("/backend/member/find/all", async (req, res) => {
   try {
@@ -397,12 +578,10 @@ router.get("/backend/reports/men-fellowship", async (req, res) => {
     res.json(mmf);
   } catch (err) {
     console.error("Error in /reports/men-fellowship:", err);
-    res
-      .status(500)
-      .json({
-        message: "Error generating Men Fellowship report.",
-        error: err.message,
-      });
+    res.status(500).json({
+      message: "Error generating Men Fellowship report.",
+      error: err.message,
+    });
   }
 });
 
@@ -418,12 +597,10 @@ router.get("/backend/reports/women-fellowship", async (req, res) => {
     res.json(wmf);
   } catch (err) {
     console.error("Error in /reports/women-fellowship:", err);
-    res
-      .status(500)
-      .json({
-        message: "Error generating Women Fellowship report.",
-        error: err.message,
-      });
+    res.status(500).json({
+      message: "Error generating Women Fellowship report.",
+      error: err.message,
+    });
   }
 });
 
@@ -439,12 +616,10 @@ router.get("/backend/reports/youth-fellowship", async (req, res) => {
     res.json(ymf);
   } catch (err) {
     console.error("Error in /reports/youth-fellowship:", err);
-    res
-      .status(500)
-      .json({
-        message: "Error generating Youth Fellowship report.",
-        error: err.message,
-      });
+    res.status(500).json({
+      message: "Error generating Youth Fellowship report.",
+      error: err.message,
+    });
   }
 });
 
@@ -460,12 +635,10 @@ router.get("/backend/reports/jss", async (req, res) => {
     res.json(jss);
   } catch (err) {
     console.error("Error in /reports/jss-fellowship:", err);
-    res
-      .status(500)
-      .json({
-        message: "Error generating JSS Fellowship report.",
-        error: err.message,
-      });
+    res.status(500).json({
+      message: "Error generating JSS Fellowship report.",
+      error: err.message,
+    });
   }
 });
 

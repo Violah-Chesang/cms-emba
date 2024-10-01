@@ -49,7 +49,7 @@ const columns: Column[] = [
   { header: "Member ID", accessor: "memberId" },
   { header: "Name", accessor: "name" },
   { header: "Phone Number", accessor: "phone" },
-  { header: "National ID No.", accessor: "nationalId" },
+  { header: "Occupation", accessor: "occupation" },
   { header: "Marital Status", accessor: "maritalStatus" },
   { header: "Baptised", accessor: "baptisedStatus" },
   { header: "Cell Group", accessor: "cellGroup" },
@@ -65,25 +65,20 @@ const WomenFellowship: React.FC = () => {
   const selectFellowshipMembers = useMemo(() => makeSelectFellowshipMembers(), []);
   
   const members = useSelector((state: RootState) => {
-    console.log('Selecting members in WomenFellowship');
     return selectFellowshipMembers(state, "Women");
   });
   const loading = useSelector((state: RootState) => {
-    console.log('Selecting loading in WomenFellowship');
     return selectLoading(state);
   });
   const error = useSelector((state: RootState) => {
-    console.log('Selecting error in WomenFellowship');
     return selectError(state);
   });
 
   const fetchMembers = useCallback(() => {
-    console.log('Fetching members in WomenFellowship');
     dispatch(fetchMembersByFellowship("Women"));
   }, [dispatch]);
 
   React.useEffect(() => {
-    console.log('useEffect running in WomenFellowship');
     if (members.length === 0 && !loading && !error) {
       fetchMembers();
     }
@@ -98,7 +93,6 @@ const WomenFellowship: React.FC = () => {
   }, [colors]);
 
   const transformedMembers = useMemo(() => {
-    console.log('Transforming members in WomenFellowship');
     if (!members || !Array.isArray(members)) {
       console.error('Women members is not an array:', members);
       return [];
@@ -119,7 +113,6 @@ const WomenFellowship: React.FC = () => {
     }));
   }, [members, getRandomColor]);
 
-  console.log("Rendering WomenFellowship, loading:", loading, "members:", members);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -128,10 +121,6 @@ const WomenFellowship: React.FC = () => {
   if (error) {
     return <p>Error: {error}</p>;
   }
-
-  // if (!members || !Array.isArray(members) || members.length === 0) {
-  //   return <p>No women members data available</p>;
-  // }
 
   return (
     <div className="p-2">
