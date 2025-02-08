@@ -12,25 +12,24 @@ interface Member {
   surName: string;
   dob: string;
   phone: string;
+  email: string;
   physicalAddress: string;
   nationalId: string;
-  motherPhone: string;
-  fatherName: string;
-  motherName: string;
   maritalStatus: string;
   marriageType: string;
   spouseName: string;
   gender: string;
-  occupation: string;
   savedStatus: string;
   baptisedStatus: string;
-  otherChurchMembership: string;
-  memberType: string;
   cellGroup: string;
+  confirmationStatus: string;
+  otherChurchMembership: string;
+  marriageCeremonyType: string;
+  memberType: string;
   ministry: string;
   fellowship: string;
   age: number;
-  leadershipRole:string;
+  leadershipRole: string;
   deleted: boolean;
   isActive: string;
   regDate: string;
@@ -47,12 +46,11 @@ const columns: Column[] = [
   { header: "MemberID", accessor: "memberId" },
   { header: "Name", accessor: "name" },
   { header: "Phone Number", accessor: "phone" },
-  { header: "Occupation", accessor: "occupation" },
   { header: "Marital Status", accessor: "maritalStatus" },
   { header: "Baptised", accessor: "baptisedStatus" },
-  { header: "Cell Group", accessor: "cellGroup" },
   { header: "Fellowship", accessor: "fellowship" },
   { header: "Ministry", accessor: "ministry" },
+  { header: "Gender", accessor: "gender" },
   { header: "Status", accessor: "isActive" },
 ];
 const colors = [
@@ -82,20 +80,28 @@ const AllMembers: React.FC = () => {
     setSearchQuery(event.target.value);
   };
 
-  const transformedData: Member[] = members.map((member: Member) => ({
-    ...member,
-    name: (
-      <div className="flex items-center">
-        <button
-          className="w-12 h-12 rounded-3xl text-lg font-bold mr-4"
-          style={{ backgroundColor: getRandomColor() }}
-        >
-          {member.firstName.charAt(0)}{member.middleName ? member.middleName.charAt(0) : ""}
-        </button>
-        <span>{`${member.firstName} ${member.middleName ? member.middleName + ' ' : ''}${member.surName}`}</span>
-      </div>
-    )
-  }));
+  const transformedData: Member[] = (members || []).map((member: Member, index: number) => {
+    if (!member || !member.firstName) {
+      console.log(`Invalid member at index ${index}:`, member);
+      return null as any; // Skip invalid entries
+    }
+
+    return {
+      ...member,
+      name: (
+        <div className="flex items-center">
+          <button
+            className="w-10 h-10 rounded-3xl text-sm font-bold mr-4"
+            style={{ backgroundColor: getRandomColor() }}
+          >
+            {member.firstName.charAt(0)}{member.middleName ? member.middleName.charAt(0) : ""}
+          </button>
+          <span>{`${member.firstName} ${member.middleName ? member.middleName + ' ' : ''}${member.surName}`}</span>
+        </div>
+      )
+    };
+  }).filter(Boolean); 
+
 
   const filteredData = transformedData.filter((member: Member) =>
     (member.firstName + ' ' + member.middleName + ' ' + member.surName).toLowerCase().includes(searchQuery.toLowerCase()) ||

@@ -14,21 +14,20 @@ interface Member {
   surName: string;
   dob: string;
   phone: string;
+  email: string;
   physicalAddress: string;
   nationalId: string;
-  motherPhone: string;
-  fatherName: string;
-  motherName: string;
+  cellGroup: string;
   maritalStatus: string;
   marriageType: string;
   spouseName: string;
   gender: string;
-  occupation: string;
   savedStatus: string;
   baptisedStatus: string;
+  confirmationStatus: string;
   otherChurchMembership: string;
+  marriageCeremonyType: string;
   memberType: string;
-  cellGroup: string;
   ministry: string;
   fellowship: string;
   age: number;
@@ -39,7 +38,6 @@ interface Member {
   notes: string;
   __v: number;
 }
-
 interface Column {
   header: string;
   accessor: keyof Member | 'name';
@@ -49,10 +47,9 @@ const columns: Column[] = [
   { header: "Member ID", accessor: "memberId" },
   { header: "Name", accessor: "name" },
   { header: "Phone Number", accessor: "phone" },
-  { header: "Occupation", accessor: "occupation" },
+  { header: "Email", accessor: "email" },
   { header: "Marital Status", accessor: "maritalStatus" },
   { header: "Baptised", accessor: "baptisedStatus" },
-  { header: "Cell Group", accessor: "cellGroup" },
   { header: "Ministry", accessor: "ministry" },
   { header: "Fellowship", accessor: "fellowship" },
   { header: "Status", accessor: "isActive" },

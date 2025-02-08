@@ -39,8 +39,8 @@ const accessControlSlice = createSlice({
                     const userDetails = JSON.parse(userDetailsCookie);
                     const role = userDetails.role;
                     state.role = role;
-                    state.canEdit = ['Minister', 'Executive Leader', 'Fellowship Leader'].includes(role);
-                    state.canDelete = ['Minister', 'Executive Leader'].includes(role);
+                    state.canEdit = ['Minister', 'Chair', 'Treasurer', 'Secretary'].includes(role);
+                    state.canDelete = ['Minister'].includes(role);
                     state.canView = true;
                 } catch (error) {
                     console.error('Error parsing user details cookie:', error);

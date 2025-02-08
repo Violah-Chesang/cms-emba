@@ -19,11 +19,13 @@ interface Member {
     motherName: string;
     maritalStatus: string;
     marriageType: string;
+    marriageCeremonyType:string;
     spouseName: string;
     gender: string;
     occupation: string;
     savedStatus: string;
     baptisedStatus: string;
+    confirmationStatus: string;
     otherChurchMembership: string;
     memberType: string;
     cellGroup: string;
@@ -67,6 +69,7 @@ export const fetchMembers = createAsyncThunk<Member[], void, { state: { members:
             return state.members.all;
         }
         const response = await axios.get(`${apiUrl}/member/find/all`);
+        console.log(response.data)
         return response.data;
     }
 );
@@ -104,7 +107,6 @@ export const fetchMembersByFellowship = createAsyncThunk<Member[], string, { sta
             if (error instanceof Error) {
                 return rejectWithValue(error.message);
                 //console.log(error)
-
             } else if (axios.isAxiosError(error) && error.response) {
                 return rejectWithValue(error.response.data);
             } else {
@@ -208,7 +210,6 @@ const membersSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message || null;
             })
-
             // Fetch members by fellowship
             .addCase(fetchMembersByFellowship.pending, (state) => {
                // console.log(`Pending: ${action.meta.arg}`);
@@ -244,7 +245,6 @@ const membersSlice = createSlice({
             .addCase(updateMember.rejected, (state, action) => {
                 state.error = action.error.message || null;
             })
-
             // Delete member
             .addCase(deleteMember.fulfilled, (state, action: PayloadAction<string>) => {
                 state.all = state.all.filter((member) => member._id !== action.payload);

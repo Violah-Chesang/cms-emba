@@ -19,7 +19,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, userRole, onEditCl
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(13);
 
   const handleDropdownToggle = (id: string) => {
     setDropdownOpen(dropdownOpen === id ? null : id);
@@ -52,8 +52,8 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, userRole, onEditCl
   const paginatedData = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
-  const canEdit = ["Minister", "Executive Leader", "Fellowship Leader"].includes(userRole);
-  const canDelete = ["Minister", "Executive Leader"].includes(userRole);
+  const canEdit = ['Minister', 'Chair', 'Treasurer', 'Secretary'].includes(userRole);
+  const canDelete = ["Minister"].includes(userRole);
 
   return (
     <div>
@@ -91,7 +91,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, userRole, onEditCl
                 />
               </td>
               {columns.map((col) => (
-                <td key={col.accessor} className="py-2 px-4 capitalize">
+                <td key={col.accessor} className="py-2 px-3 capitalize">
                   {row[col.accessor]}
                 </td>
               ))}

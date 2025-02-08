@@ -43,10 +43,10 @@ const EventCards: React.FC = () => {
         dispatch(fetchEvents());
     }, [dispatch]);
 
-    const today = new Date();
-    const totalEvents = events.length;
-    const pastEvents = events.filter(event => new Date(event.eventDate) < today).length;
-    const upcomingEvents = events.filter(event => new Date(event.eventDate) >= today).length;
+    const currentYear = new Date().getFullYear();
+    const eventsThisYear = events.filter(event => new Date(event.eventDate).getFullYear() === currentYear);
+    const pastEvents = eventsThisYear.filter(event => new Date(event.eventDate) < new Date());
+    const upcomingEvents = eventsThisYear.filter(event => new Date(event.eventDate) >= new Date());
 
     if (loading) {
         return <p>Loading...</p>;
@@ -60,23 +60,23 @@ const EventCards: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
             <EventCard
                 icon={<MdEmojiEvents color="#fb923c" size={30} />}
-                count={totalEvents}
+                count={eventsThisYear.length}
                 label="events"
-                description="Total Events in 2024"
+                description={`Total Events in ${currentYear}`}
                 iconBgColor="bg-orange-200"
             />
             <EventCard
                 icon={<IoArrowUndoSharp color="#c084fc" size={25} />}
-                count={pastEvents}
+                count={pastEvents.length}
                 label="events"
-                description="Past Events in 2024"
+                description={`Past Events in ${currentYear}`}
                 iconBgColor="bg-purple-200"
             />
             <EventCard
                 icon={<IoArrowRedo color="#38bdf8" size={25} />}
-                count={upcomingEvents}
+                count={upcomingEvents.length}
                 label="events"
-                description="Upcoming Events in 2024"
+                description={`Upcoming Events in ${currentYear}`}
                 iconBgColor="bg-sky-200"
             />
         </div>

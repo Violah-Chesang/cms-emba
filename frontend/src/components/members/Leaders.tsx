@@ -13,6 +13,7 @@ interface Member {
   surName: string;
   dob: string;
   phone: string;
+  email:string;
   physicalAddress: string;
   nationalId: string;
   motherPhone: string;
@@ -20,6 +21,8 @@ interface Member {
   motherName: string;
   maritalStatus: string;
   marriageType: string;
+  marriageCeremonyType: string;
+  confirmationStatus:string;
   spouseName: string;
   gender: string;
   occupation: string;
@@ -48,8 +51,8 @@ const columns: Column[] = [
   { header: "Member ID", accessor: "memberId" },
   { header: "Name", accessor: "name" }, 
   { header: "Phone Number", accessor: "phone" },
-  { header: "Position", accessor: "leadershipRole" },
-  { header: "Occupation", accessor: "occupation" },
+  { header: "Email", accessor: "email" },
+  { header: "Position", accessor: "leadershipRole" },  
   { header: "Fellowship", accessor: "fellowship" },
 ];
 
@@ -88,7 +91,7 @@ const Leaders: React.FC = () => {
       name: (
         <div className="flex items-center">
           <button
-            className="px-2 py-2 rounded-3xl text-lg font-bold mr-4"
+            className="w-10 h-10 rounded-3xl text-sm font-bold mr-4"
             style={{ backgroundColor: getRandomColor() }}
           >
             { member.firstName ? member.firstName.charAt(0) : ""}{member.middleName ? member.middleName.charAt(0) : ""}

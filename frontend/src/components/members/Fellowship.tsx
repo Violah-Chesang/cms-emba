@@ -5,6 +5,7 @@ import {
   addMember,
   updateMember,
   deleteMember,
+  fetchMembers,
 } from "../../store/slices/memberSlice";
 import DataTable from "./DataTable";
 import ViewForm from "./ViewForm";
@@ -21,21 +22,20 @@ interface Member {
   surName: string;
   dob: string;
   phone: string;
+  email:string;
   physicalAddress: string;
   nationalId: string;
-  motherPhone: string;
-  fatherName: string;
-  motherName: string;
+  cellGroup:string;
   maritalStatus: string;
   marriageType: string;
   spouseName: string;
   gender: string;
-  occupation: string;
   savedStatus: string;
   baptisedStatus: string;
+  confirmationStatus: string;
   otherChurchMembership: string;
+  marriageCeremonyType: string;
   memberType: string;
-  cellGroup: string;
   ministry: string;
   fellowship: string;
   age: number;
@@ -97,6 +97,8 @@ const Fellowship: React.FC<FellowshipProps> = ({
   }, [dispatch]);
 
   const uniqueValues = useMemo(() => {
+    
+
     const unique = (key: keyof Member) =>
       ["All", ...new Set(data.map(item => item[key] as string))].sort();
     return {
@@ -114,20 +116,22 @@ const Fellowship: React.FC<FellowshipProps> = ({
     )
   );
 
-  const handleAction = (action: any, actionData: any, callback: () => void) => {
-    console.log('Action being dispatched:', action);
-    console.log('Action data:', actionData);
-    dispatch(action(actionData))
+  const handleAction = (action:any, data:any, callback:any) => {
+    dispatch(action(data))
       .unwrap()
       .then(() => {
         callback();
-        alert("Action completed successfully");
+        return dispatch(fetchMembers()); // Ensure fetchMembers runs after action completes
       })
-      .catch((error: Error) => {
+      .then(() => {
+        console.log("fetchMembers completed, UI should refresh");
+      })
+      .catch((error:any) => {
         console.error("Error performing action:", error);
         alert("Failed to complete action");
       });
   };
+
 
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -226,21 +230,25 @@ const renderFilterDropdown = (
   label: string,
   options: string[],
   handleChange: (event: React.ChangeEvent<HTMLSelectElement>) => void
-) => (
-  <div key={name} className="flex flex-col px-1 mr-1">
-    <label className="text-xs font-medium text-blue-950">{label}</label>
-    <select
-      name={name}
-      className="w-full p-2 mt-1 text-sm border border-gray-300 rounded-lg capitalize"
-      onChange={handleChange}
-    >
-      {options.map(option => (
-        <option key={option} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
-  </div>
-);
+) => {
+
+  return (
+    <div key={name} className="flex flex-col px-1 mr-1">
+      <label className="text-xs font-medium text-blue-950">{label}</label>
+      <select
+        name={name}
+        className="w-full p-2 mt-1 text-sm border border-gray-300 rounded-lg capitalize"
+        onChange={handleChange}
+      >
+        {options.map(option => (
+          <option key={`${name}-${option}`} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
 
 export default Fellowship;

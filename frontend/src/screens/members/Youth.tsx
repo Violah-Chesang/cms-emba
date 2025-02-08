@@ -14,47 +14,44 @@ interface Member {
   surName: string;
   dob: string;
   phone: string;
+  email: string;
   physicalAddress: string;
   nationalId: string;
-  motherPhone: string;
-  fatherName: string;
-  motherName: string;
   maritalStatus: string;
   marriageType: string;
   spouseName: string;
   gender: string;
-  occupation: string;
   savedStatus: string;
   baptisedStatus: string;
-  otherChurchMembership: string;
-  memberType: string;
   cellGroup: string;
+  confirmationStatus: string;
+  otherChurchMembership: string;
+  marriageCeremonyType: string;
+  memberType: string;
   ministry: string;
   fellowship: string;
-  leadershipRole: string;
   age: number;
+  leadershipRole: string;
   deleted: boolean;
   isActive: string;
   regDate: string;
   notes: string;
   __v: number;
 }
-
 interface Column {
   header: string;
   accessor: keyof Member | 'name';
 }
 
 const columns: Column[] = [
-  { header: "Member ID", accessor: "memberId" },
+  { header: "MemberID", accessor: "memberId" },
   { header: "Name", accessor: "name" },
   { header: "Phone Number", accessor: "phone" },
-  { header: "Occupation", accessor: "occupation" },
-  { header: "Marital Status", accessor: "maritalStatus" },
+  { header: "Email", accessor: "email" },
   { header: "Baptised", accessor: "baptisedStatus" },
-  { header: "Cell Group", accessor: "cellGroup" },
-  { header: "Ministry", accessor: "ministry" },
   { header: "Fellowship", accessor: "fellowship" },
+  { header: "Ministry", accessor: "ministry" },
+  { header: "Gender", accessor: "gender" },
   { header: "Status", accessor: "isActive" },
 ];
 

@@ -36,15 +36,16 @@ const CalendarCards = () => {
         dispatch(fetchEvents());
     }, [dispatch]);
 
-
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
 
-    const upcomingEvents = events.filter(event => {
-        const eventDate = new Date(event.eventDate);
-        return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
-    });
+    const upcomingEvents = events
+        .filter(event => {
+            const eventDate = new Date(event.eventDate);
+            return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
+        })
+        .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime());
 
     if (loading) {
         return <p>Loading...</p>;

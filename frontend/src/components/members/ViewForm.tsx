@@ -10,19 +10,15 @@ interface Member {
   phone: string;
   physicalAddress: string;
   nationalId: string;
-  motherPhone: string;
-  fatherName: string;
-  motherName: string;
+  
   maritalStatus: string;
   marriageType: string;
   spouseName: string;
   gender: string;
-  occupation: string;
   savedStatus: string;
   baptisedStatus: string;
   otherChurchMembership: string;
   memberType: string;
-  cellGroup: string;
   ministry: string;
   fellowship: string;
   leadershipRole:string;
@@ -64,16 +60,13 @@ const ViewForm: React.FC<ViewFormProps> = ({ viewData, onClose }) => {
     contact: [
       { accessor: "phone", header: "Phone" },
       { accessor: "physicalAddress", header: "Physical Address" },
-      { accessor: "motherPhone", header: "Mother's Phone" },
-      { accessor: "fatherName", header: "Father's Name" },
-      { accessor: "motherName", header: "Mother's Name" },
+      
     ],
     church: [
       { accessor: "savedStatus", header: "Saved Status" },
       { accessor: "baptisedStatus", header: "Baptised Status" },
       { accessor: "otherChurchMembership", header: "Other Church Membership" },
       { accessor: "memberType", header: "Member Type" },
-      { accessor: "cellGroup", header: "Cell Group" },
       { accessor: "ministry", header: "Ministry" },
       { accessor: "fellowship", header: "Fellowship" },
       { accessor: "notes", header: "Notes" },

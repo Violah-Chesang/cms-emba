@@ -12,21 +12,20 @@ interface Member {
   surName: string;
   dob: string;
   phone: string;
+  email: string;
   physicalAddress: string;
   nationalId: string;
-  motherPhone: string;
-  fatherName: string;
-  motherName: string;
+ 
   maritalStatus: string;
   marriageType: string;
+  marriageCeremonyType: string;
   spouseName: string;
   gender: string;
-  occupation: string;
   savedStatus: string;
   baptisedStatus: string;
+  confirmationStatus: string;
   otherChurchMembership: string;
   memberType: string;
-  cellGroup: string;
   ministry: string;
   fellowship: string;
   age: number;
@@ -89,6 +88,8 @@ const EditForm: React.FC<EditFormProps> = ({ editData, onSave, onCancel }) => {
       { accessor: "gender", header: "Gender", required: true },
       { accessor: "maritalStatus", header: "Marital Status", required: true },
       { accessor: "marriageType", header: "Marriage Type", required: true },
+      { accessor: "marriageCeremonyType", header: "Marriage Ceremony Type", required: false },
+
       { accessor: "spouseName", header: "Spouse Name", required: false },
       { accessor: "nationalId", header: "National ID", required: false },
       { accessor: "age", header: "Age", required: false },
@@ -96,17 +97,16 @@ const EditForm: React.FC<EditFormProps> = ({ editData, onSave, onCancel }) => {
     ],
     contact: [
       { accessor: "phone", header: "Phone", required: false },
-      { accessor: "physicalAddress", header: "Physical Address", required: false },
-      { accessor: "motherPhone", header: "Mother's Phone", required: false },
-      { accessor: "fatherName", header: "Father's Name", required: false },
-      { accessor: "motherName", header: "Mother's Name", required: false },
+      { accessor: "physicalAddress", header: "Place of Residence", required: false },
+      { accessor: "email", header: "Email", required: false },
+     
     ],
     church: [
       { accessor: "savedStatus", header: "Saved Status", required: true },
       { accessor: "baptisedStatus", header: "Baptised Status", required: true },
+      { accessor: "confirmationStatus", header: "Confirmation Status", required: false },
       { accessor: "otherChurchMembership", header: "Other Church Membership", required: true },
       { accessor: "memberType", header: "Member Type", required: true },
-      { accessor: "cellGroup", header: "Cell Group", required: false },
       { accessor: "ministry", header: "Ministry", required: false },
       { accessor: "fellowship", header: "Fellowship", required: false },
       { accessor: "notes", header: "Notes", required: false },
@@ -209,7 +209,7 @@ const EditForm: React.FC<EditFormProps> = ({ editData, onSave, onCancel }) => {
             {columns[currentTab].map((column) => (
               <div key={column.accessor}>
                 <label className="block mb-2 font-bold">{column.header}</label>
-                {["fellowship", "ministry", "cellGroup", "status", "baptisedStatus", "maritalStatus", "gender", "marriageType", "savedStatus", "otherChurchMembership", "memberType", "leadershipRole"].includes(column.accessor) ? (
+                {["fellowship", "ministry", "cellGroup", "status", "baptisedStatus", "maritalStatus", "gender", "marriageType", "savedStatus", "otherChurchMembership", "memberType", "leadershipRole", "confirmationStatus", "marriageCeremonyType"].includes(column.accessor) ? (
                   renderDropdown(
                     column.accessor,
                     column.header,

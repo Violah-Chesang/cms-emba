@@ -3,27 +3,24 @@ import options from "../../assets/dropdown";
 
 const fields: Field[] = [
   { accessor: "firstName", header: "First Name", required: true },
-  { accessor: "middleName", header: "Middle Name", required: false },
+  { accessor: "middleName", header: "Middle Name", required: true },
   { accessor: "surName", header: "Surname", required: true },
   { accessor: "dob", header: "Date of Birth", required: true },
   { accessor: "gender", header: "Gender", required: true },
   { accessor: "age", header: "Age", required: true },
-  { accessor: "nationalId", header: "National ID", required: true },
+  { accessor: "nationalId", header: "National ID/Passport No.", required: false },
   { accessor: "phone", header: "Phone", required: true },
   { accessor: "email", header: "Email", required: true },
   { accessor: "maritalStatus", header: "Marital Status", required: true },
   { accessor: "marriageType", header: "Marriage Type", required: true },
   { accessor: "spouseName", header: "Spouse Name", required: false },
-  { accessor: "physicalAddress", header: "Physical Address", required: true },
-  { accessor: "occupation", header: "Occupation", required: true },
-  { accessor: "motherPhone", header: "Mother's Phone", required: false },
-  { accessor: "fatherName", header: "Father's Name", required: false },
-  { accessor: "motherName", header: "Mother's Name", required: false },
+  { accessor: "physicalAddress", header: "Place of Residence", required: true },
   { accessor: "savedStatus", header: "Saved Status", required: true },
   { accessor: "baptisedStatus", header: "Baptized Status", required: true },
   { accessor: "otherChurchMembership", header: "Other Church Membership", required: true },
+  { accessor: "marriageCeremonyType", header: "Marriage Ceremony Type", required: false },
+  { accessor: "confirmationStatus", header: "Confirmation Status", required: false },
   { accessor: "memberType", header: "Member Type", required: true },
-  { accessor: "cellGroup", header: "Cell Group", required: false },
   { accessor: "leadershipRole", header: "Leadership Role", required: true },
   { accessor: "ministry", header: "Ministry", required: true },
   { accessor: "fellowship", header: "Fellowship", required: true },
@@ -31,6 +28,7 @@ const fields: Field[] = [
 ];
 
 interface FormData {
+  _id?:string;
   memberId: string;
   firstName: string;
   middleName: string;
@@ -40,21 +38,20 @@ interface FormData {
   phone: string;
   physicalAddress: string;
   nationalId: string;
-  motherPhone: string;
-  fatherName: string;
-  motherName: string;
   maritalStatus: string;
   marriageType: string;
   spouseName: string;
   gender: string;
-  occupation: string;
+  cellGroup: string;
+
   savedStatus: string;
   baptisedStatus: string;
+  confirmationStatus: string;
   otherChurchMembership: string;
   memberType: string;
-  cellGroup: string;
   ministry: string;
   fellowship: string;
+  marriageCeremonyType: string;
   age: number;
   deleted: boolean;
   leadershipRole: string;
@@ -94,21 +91,19 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
     phone: "",
     physicalAddress: "",
     nationalId: "",
-    motherPhone: "",
-    fatherName: "",
-    motherName: "",
     maritalStatus: "",
     marriageType: "",
     spouseName: "",
     gender: "",
-    occupation: "",
     savedStatus: "",
     baptisedStatus: "",
     otherChurchMembership: "",
     memberType: "",
-    cellGroup: "",
+    cellGroup:"",
     ministry: "",
     fellowship: "",
+    marriageCeremonyType: "",
+    confirmationStatus: "",
     age: 0,
     notes: "",
     regDate: "",
@@ -199,15 +194,15 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
     switch (activeTab) {
       case "General":
         return fields
-          .filter((field) => ["firstName", "middleName", "surName", "dob", "gender", "nationalId", "maritalStatus", "marriageType","spouseName","occupation"].includes(field.accessor))
+          .filter((field) => ["firstName", "middleName", "surName", "dob", "gender", "nationalId", "maritalStatus", "marriageType", "marriageCeremonyType", "spouseName", "occupation"].includes(field.accessor))
           .map((field) => renderField(field));
       case "Contact Info":
         return fields
-          .filter((field) => ["phone", "email", "physicalAddress", "motherPhone", "fatherName", "motherName"].includes(field.accessor))
+          .filter((field) => ["phone", "email", "physicalAddress"].includes(field.accessor))
           .map((field) => renderField(field));
       case "Church Info":
         return fields
-          .filter((field) => ["savedStatus", "baptisedStatus", "otherChurchMembership", "memberType", "fellowship", "ministry", "cellGroup", "notes", "leadershipRole"].includes(field.accessor))
+          .filter((field) => ["savedStatus", "baptisedStatus", "confirmationStatus", "otherChurchMembership", "memberType", "fellowship", "ministry", "cellGroup", "notes", "leadershipRole"].includes(field.accessor))
           .map((field) => renderField(field));
 
       default:
@@ -216,13 +211,33 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
   };
 
   const shouldRenderDropdown = (accessor: keyof FormData): boolean => {
-    const dropdownFields: (keyof FormData)[] = ["gender", "savedStatus", "baptisedStatus", "memberType", "fellowship", "ministry", "cellGroup", "otherChurchMembership", "marriageType", "maritalStatus", "leadershipRole"];
+    const dropdownFields: (keyof FormData)[] = ["gender", "savedStatus", "baptisedStatus", "memberType", "fellowship", "ministry", "otherChurchMembership", "marriageType", "maritalStatus", "leadershipRole", "confirmationStatus", "marriageCeremonyType"];
     return dropdownFields.includes(accessor);
   };
 
   // const renderField = (field: Field) => (
   //   <div key={field.accessor}>
-  //     {shouldRenderDropdown(field.accessor) ? (
+  //     {field.accessor === "gender" ? (
+  //       <div>
+  //         <label className="block mb-2 font-bold">
+  //           {field.header}
+  //           {field.required && <span className="text-red-500">*</span>}
+  //         </label>
+  //         <input
+  //           type="text"
+  //           name={field.accessor}
+  //           value={formData[field.accessor] as string}
+  //           onChange={handleInputChange}
+  //           className="w-full border border-gray-300 px-4 py-2 rounded-md"
+  //           required={field.required}
+  //         />
+  //         {errors[field.accessor] && (
+  //           <span className="text-red-500 text-sm">
+  //             {errors[field.accessor]}
+  //           </span>
+  //         )}
+  //       </div>
+  //     ) : shouldRenderDropdown(field.accessor) ? (
   //       <div>
   //         <label className="block mb-2 font-bold">
   //           {field.header}
@@ -269,29 +284,10 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
   //   </div>
   // );
 
+
   const renderField = (field: Field) => (
     <div key={field.accessor}>
-      {field.accessor === "ministry" ? (
-        <div>
-          <label className="block mb-2 font-bold">
-            {field.header}
-            {field.required && <span className="text-red-500">*</span>}
-          </label>
-          <input
-            type="text"
-            name={field.accessor}
-            value={formData[field.accessor] as string}
-            onChange={handleInputChange}
-            className="w-full border border-gray-300 px-4 py-2 rounded-md"
-            required={field.required}
-          />
-          {errors[field.accessor] && (
-            <span className="text-red-500 text-sm">
-              {errors[field.accessor]}
-            </span>
-          )}
-        </div>
-      ) : shouldRenderDropdown(field.accessor) ? (
+      {shouldRenderDropdown(field.accessor) ? (
         <div>
           <label className="block mb-2 font-bold">
             {field.header}
