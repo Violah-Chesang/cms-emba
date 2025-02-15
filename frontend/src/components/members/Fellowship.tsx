@@ -22,10 +22,10 @@ interface Member {
   surName: string;
   dob: string;
   phone: string;
-  email:string;
+  email: string;
   physicalAddress: string;
   nationalId: string;
-  cellGroup:string;
+  cellGroup: string;
   maritalStatus: string;
   marriageType: string;
   spouseName: string;
@@ -39,7 +39,7 @@ interface Member {
   ministry: string;
   fellowship: string;
   age: number;
-  leadershipRole:string;
+  leadershipRole: string;
   deleted: boolean;
   isActive: string;
   regDate: string;
@@ -97,7 +97,7 @@ const Fellowship: React.FC<FellowshipProps> = ({
   }, [dispatch]);
 
   const uniqueValues = useMemo(() => {
-    
+
 
     const unique = (key: keyof Member) =>
       ["All", ...new Set(data.map(item => item[key] as string))].sort();
@@ -116,21 +116,26 @@ const Fellowship: React.FC<FellowshipProps> = ({
     )
   );
 
-  const handleAction = (action:any, data:any, callback:any) => {
+  const handleAction = (action: any, data: any, callback: any) => {
     dispatch(action(data))
       .unwrap()
       .then(() => {
         callback();
-        return dispatch(fetchMembers()); // Ensure fetchMembers runs after action completes
+        dispatch(fetchMembers()).then(() => {
+          console.log("fetchMembers completed, UI should refresh");
+
+          // Show success popup only for edit action
+          if (action === updateMember) {
+            window.alert("Member updated successfully!");
+          }
+        });
       })
-      .then(() => {
-        console.log("fetchMembers completed, UI should refresh");
-      })
-      .catch((error:any) => {
+      .catch((error: any) => {
         console.error("Error performing action:", error);
         alert("Failed to complete action");
       });
   };
+
 
 
 
@@ -160,13 +165,13 @@ const Fellowship: React.FC<FellowshipProps> = ({
         </div>
 
         {/* {canEdit && ( */}
-          <button
-            className="flex justify-center items-center py-2 px-5 text-sm font-medium text-white bg-blue-950 rounded-lg hover:bg-blue-600"
-            onClick={() => setIsAddFormVisible(true)}
-          >
-            <IoMdAdd size={20} />
-            Add New Member
-          </button>
+        <button
+          className="flex justify-center items-center py-2 px-5 text-sm font-medium text-white bg-blue-950 rounded-lg hover:bg-blue-600"
+          onClick={() => setIsAddFormVisible(true)}
+        >
+          <IoMdAdd size={20} />
+          Add New Member
+        </button>
         {/* )} */}
       </div>
 
@@ -188,7 +193,13 @@ const Fellowship: React.FC<FellowshipProps> = ({
         }}
         onDeleteClick={(rowData: Member) => {
           if (canDelete) {
-            handleAction(deleteMember, rowData._id, () => { });
+            const firstName = rowData.firstName || "this member";
+            const middleName = rowData.middleName || "";
+            const surName = rowData.surName || "";
+
+            if (window.confirm(`Are you sure you want to remove ${firstName} ${middleName} ${surName} from the records permanently?`)) {
+              handleAction(deleteMember, rowData._id, () => { });
+            }
           }
         }}
       />
@@ -211,7 +222,7 @@ const Fellowship: React.FC<FellowshipProps> = ({
         <AddForm
           onSave={(newData: Omit<Member, '_id'>) =>
             handleAction(addMember, newData, () => setIsAddFormVisible(false))
-            
+
           }
           onCancel={() => setIsAddFormVisible(false)}
           renderFilterDropdown={renderFilterDropdown}

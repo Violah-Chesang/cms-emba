@@ -49,7 +49,7 @@ const accessControlSlice = createSlice({
                 state.role = null;
                 state.canEdit = false;
                 state.canDelete = false;
-                state.canView = true;
+                state.canView = true; 
             }
         },
     },

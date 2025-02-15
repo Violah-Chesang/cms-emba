@@ -545,18 +545,20 @@ router.post("/backend/member/update/:id", async (req, res) => {
 });
 
 // Delete a member record
-router.post("/backend/member/delete", async (req, res) => {
+router.delete("/backend/member/delete/:id", async (req, res) => {
   try {
-    const memberId = req.body.memberId;
-    const record = await Member.findOne({ memberId });
+    const { id } = req.params;
+    const record = await Member.findById(id);
+    
     if (!record) {
       return res.status(404).json({ message: "Member not found" });
     }
-    const id = record._id;
+    
     const deleted = { $set: { deleted: true } };
     const options = { new: true };
     const deletedMember = await Member.findByIdAndUpdate(id, deleted, options);
-    res.status(200).json(deletedMember);
+    
+    res.status(200).json({ message: "Member deleted successfully", _id: deletedMember._id });
   } catch (err) {
     console.error("Error in /member/delete:", err);
     res.status(500).json({
@@ -565,6 +567,7 @@ router.post("/backend/member/delete", async (req, res) => {
     });
   }
 });
+  
 
 // Reports - Men Fellowship
 router.get("/backend/reports/men-fellowship", async (req, res) => {
