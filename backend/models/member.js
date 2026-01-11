@@ -39,6 +39,7 @@ const memberSchema = new mongoose.Schema({
   isActive: { type: String, default: true },
   regDate: { type: Date, required: true, default: Date.now() },
   notes: { type: String, required: false },
+  color:{ type:String, required:true},
 });
 
 const Member = mongoose.model('Member', memberSchema);
