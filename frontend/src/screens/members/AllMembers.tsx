@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMembers } from '../../store/slices/memberSlice';
-import Fellowship from '../../components/members/Fellowship';
+import FellowshipComponent from "../../components/members/Fellowship";
 import { AppDispatch, RootState } from '../../store/store';
 
 interface Member {
@@ -33,6 +33,7 @@ interface Member {
   deleted: boolean;
   isActive: string;
   regDate: string;
+  color: string; // Added color to the interface
   notes: string;
   __v: number;
 }
@@ -53,19 +54,6 @@ const columns: Column[] = [
   { header: "Gender", accessor: "gender" },
   { header: "Status", accessor: "isActive" },
 ];
-const colors = [
-  "#C8D0FE",
-  "#FFB6C1",
-  "#90EE90",
-  "#FFD700",
-  "#FF69B4",
-  "#E6E6FA",
-  "#FFE4E1",
-];
-
-const getRandomColor = () => {
-  return colors[Math.floor(Math.random() * colors.length)];
-};
 
 const AllMembers: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -80,58 +68,74 @@ const AllMembers: React.FC = () => {
     setSearchQuery(event.target.value);
   };
 
-  const transformedData: Member[] = (members || []).map((member: Member, index: number) => {
+  const transformedData = (members || []).map((member: Member, index: number) => {
     if (!member || !member.firstName) {
       console.log(`Invalid member at index ${index}:`, member);
-      return null as any; // Skip invalid entries
+      return null;
     }
+
+    // Determine the style based on whether member.color exists
+    const avatarStyle = member.color
+      ? { backgroundColor: member.color }
+      : { backgroundColor: 'transparent', border: '2px solid black' };
 
     return {
       ...member,
       name: (
         <div className="flex items-center">
-          <button
-            className="w-10 h-10 rounded-3xl text-sm font-bold mr-4"
-            style={{ backgroundColor: getRandomColor() }}
+          <div
+            className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mr-4"
+            style={avatarStyle}
           >
-            {member.firstName.charAt(0)}{member.middleName ? member.middleName.charAt(0) : ""}
-          </button>
-          <span>{`${member.firstName} ${member.middleName ? member.middleName + ' ' : ''}${member.surName}`}</span>
+            {member.firstName.charAt(0)}
+            {member.middleName ? member.middleName.charAt(0) : member.surName.charAt(0)}
+          </div>
+          <span className="font-medium text-blue-950">
+            {`${member.firstName} ${member.middleName ? member.middleName + ' ' : ''}${member.surName}`}
+          </span>
         </div>
       )
     };
-  }).filter(Boolean); 
+  }).filter(Boolean);
 
-
-  const filteredData = transformedData.filter((member: Member) =>
-    (member.firstName + ' ' + member.middleName + ' ' + member.surName).toLowerCase().includes(searchQuery.toLowerCase()) ||
+  const filteredData = transformedData.filter((member: any) =>
+    (member.firstName + ' ' + (member.middleName || '') + ' ' + member.surName).toLowerCase().includes(searchQuery.toLowerCase()) ||
     (member.phone?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
     (member.physicalAddress?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
     (member.nationalId?.toLowerCase() || '').includes(searchQuery.toLowerCase())
   );
 
   return (
-    <div className='p-4'>
-      <div className="flex justify-between pt-1">
-        <h1 className="text-xl font-bold text-blue-950 capitalize">Church Members</h1>
-        <div>
+    <div className='p-6'>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <h1 className="text-2xl font-bold text-blue-950 uppercase tracking-tight">
+          Church Members Management
+        </h1>
+        <div className="relative w-full md:w-auto">
           <input
             type="search"
-            placeholder="Search by Name, Phone no., Address or ID..."
-            className="border-x-2 border-blue-950 w-96 h-11 rounded-lg border-spacing-2 border-gray-1 pl-5 bg-blue-950 text-white"
+            placeholder="Search members..."
+            className="w-full md:w-96 h-12 rounded-xl pl-5 bg-blue-950 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
             value={searchQuery}
             onChange={handleSearchChange}
           />
         </div>
       </div>
-      <Fellowship
+
+      <FellowshipComponent
         title=""
         data={filteredData as any}
         columns={columns}
         loading={loading}
         error={error}
       />
-      {members.length === 0 && <p className="text-center text-red-500 justify-center items-center font-bold text-2xl mt-20">No data available. Please add to manage members</p>}
+
+      {!loading && members.length === 0 && (
+        <div className="flex flex-col items-center justify-center mt-20 text-gray-400">
+          <p className="text-2xl font-bold">No data available</p>
+          <p className="text-sm">Please add members to manage the database</p>
+        </div>
+      )}
     </div>
   );
 };

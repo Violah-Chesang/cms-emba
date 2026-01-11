@@ -16,6 +16,7 @@ import Signup from "./screens/Signup";
 import Topnav from "./components/nav/Topnav";
 import Inventory from "./screens/Inventory";
 import { RootState } from "./store/store";
+import Clergy from "./screens/members/Clergy";
 
 const AppRouter: React.FC = () => {
   const { token } = useSelector((state: RootState) => state.auth);
@@ -26,7 +27,6 @@ const AppRouter: React.FC = () => {
 
   return (
     <Routes>
-      {/* Redirect root path to login */}
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
@@ -35,38 +35,51 @@ const AppRouter: React.FC = () => {
         <Route
           path="*"
           element={
-            <div className="flex flex-row bg-slate-50" style={{ width: "99vw" }}>
-              <div style={{width:"14%"}}>
+            <div className="flex min-h-screen bg-slate-50">
+              {/* SIDENAV CONTAINER 
+                On screens > 1500px: It takes up fixed space (w-72).
+                On screens <= 1500px: The container itself disappears from the flow, 
+                letting the Sidenav component handle its own floating/fixed logic.
+              */}
+              <div className="hidden min-[1501px]:block min-[1501px]:w-72 flex-shrink-0">
                 <Sidenav />
               </div>
 
-              <div style={{width:"86%", margin: "", justifyContent: "center" }}>
-                <Topnav />
-                <Routes>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/calendar" element={<Calendar />} />
-                  <Route path="/finance" element={<Finance />} />
-                  <Route path="/inventory" element={<Inventory />} />
-                  <Route path="/archives" element={<Archives />} />
-                  <Route path="/members/all" element={<AllMembers />} />
-                  <Route path="/members/men" element={<Men />} />
-                  <Route path="/members/women" element={<Women />} />
-                  <Route path="/members/youth" element={<Youth />} />
-                  <Route path="/members/jss" element={<Jss />} />
-                </Routes>
+              {/* MAIN CONTENT AREA
+                'flex-1' makes it take up all remaining space.
+                When sidebar is hidden (<= 1500px), this automatically becomes 100% width.
+              */}
+              <div className="flex-1 flex flex-col min-w-0">
+                  <Topnav />
+                
+
+                {/* Independent Sidenav for mobile/tablet (<= 1500px) */}
+                <div className="min-[1501px]:hidden">
+                  <Sidenav />
+                </div>
+
+                <main className="flex-1 overflow-y-auto">
+                  <Routes>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/calendar" element={<Calendar />} />
+                    <Route path="/finance" element={<Finance />} />
+                    <Route path="/inventory" element={<Inventory />} />
+                    <Route path="/archives" element={<Archives />} />
+                    <Route path="/members/all" element={<AllMembers />} />
+                    <Route path="/members/men" element={<Men />} />
+                    <Route path="/members/women" element={<Women />} />
+                    <Route path="/members/youth" element={<Youth />} />
+                    <Route path="/members/jss" element={<Jss />} />
+                    <Route path="/members/clergy" element={<Clergy />} />
+                    <Route path="*" element={<Navigate to="/dashboard" />} />
+                  </Routes>
+                </main>
               </div>
             </div>
           }
         />
       ) : (
-        <>
-          {/* Redirect any other paths to login */}
-          <Route path="*" element={<Navigate to="/login" />} />
-          <Route
-            path="/login"
-            element={<Login/>}
-          />
-        </>
+        <Route path="*" element={<Navigate to="/login" />} />
       )}
     </Routes>
   );

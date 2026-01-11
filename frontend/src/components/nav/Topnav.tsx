@@ -4,11 +4,9 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { logout } from '../../store/slices/authSlice'
-import { IoNotifications, IoSettings } from "react-icons/io5";
+import { IoNotifications, IoSettings, IoLogOut } from "react-icons/io5";
 import UserModal from './UserModal';
-import { IoLogOut } from "react-icons/io5";
 
-// Update the UserDetails interface to include all required properties
 interface UserDetails {
   _id: string;
   userName: string;
@@ -39,10 +37,11 @@ const Topnav = () => {
         console.error('Error parsing user details from cookie:', error);
       }
     };
-
     fetchData();
   }, [navigate]);
-  const handleLogout = () => {
+
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
     Cookies.remove('token');
     Cookies.remove('userDetails');
     dispatch(logout());
@@ -50,48 +49,73 @@ const Topnav = () => {
   };
 
   return (
-    <div className="flex flex-row h-16 bg-[#f0f5fe] items-center border-b-1 border-[#01102d] shadow-3xl p-2 justify-between" >
-      <div className='flex flex-col justify-between'>
-        <p className="text-blue-900 font-bold text-xl">
-          Welcome {userDetails ? userDetails.userName : "Guest"}
-        </p>
-        <div className="flex flex-row text-gray-600 font-normal text-sm ">
-          <p className="text-gray-600 font-normal text-sm flex">
-            Today is
-          </p>
-          <DateToday />
+    <header className="sticky top-0 z-30 w-full bg-[#f0f5fe] border-b border-blue-900/10 shadow-sm">
+      <div className="h-20 px-4 md:px-8 flex items-center justify-between">
+
+        {/* LEFT SECTION: Branding & Text */}
+        <div className="flex items-center">
+
+          {/* This container handles the "room" for the hamburger.
+              - min-[1502px]:pl-0 -> No extra space when sidebar is docked.
+              - max-[1501px]:pl-16 -> Creates 64px of space for the floating button.
+          */}
+          <div className="flex flex-col justify-center transition-all duration-300 ease-in-out max-[1501px]:pl-16">
+            <h1 className="text-blue-950 font-bold text-lg md:text-xl leading-tight">
+              Welcome, {userDetails ? userDetails.userName : "Guest"}
+            </h1>
+            <div className="flex items-center gap-1 text-gray-500 font-medium text-xs">
+              <span className="hidden sm:inline">Today is</span>
+              <DateToday />
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT SECTION: Actions & Profile */}
+        <div className="flex items-center gap-3 md:gap-6">
+
+          {/* Action Icons */}
+          <div className="flex items-center gap-1 sm:gap-2 border-r border-blue-900/10 pr-3 md:pr-6">
+            <button title="Settings" className="p-2 text-blue-900 hover:bg-blue-100 rounded-full transition-all">
+              <IoSettings size={22} />
+            </button>
+            <div className="relative p-2 text-blue-900 hover:bg-blue-100 rounded-full transition-all cursor-pointer">
+              <IoNotifications size={22} />
+              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-[#f0f5fe]"></span>
+            </div>
+          </div>
+
+          {/* User Profile Area */}
+          <div className="flex items-center gap-4">
+            <div className="hidden lg:flex flex-col items-end justify-center">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-blue-950">
+                  {userDetails ? `${userDetails.firstname} ${userDetails.lastname}` : "User"}
+                </span>
+                <span className="text-[10px] bg-blue-950 text-white px-2 py-0.5 rounded font-bold uppercase">
+                  {userDetails?.role || "Staff"}
+                </span>
+              </div>
+              <span className="text-xs text-gray-500 font-medium">
+                {userDetails?.email}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <UserModal userDetails={userDetails} />
+              <button
+                onClick={handleLogout}
+                className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                title="Logout"
+              >
+                <IoLogOut size={26} />
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
-      <div className='flex flex-row gap-4 items-center pr-3'>
-       
-        {/* <button onClick={handleLogout} className="bg-blue-950 px-4 py-1 text-white rounded text-sm">
-          Logout
-        </button> */}
-        <a href="#">
-          <IoSettings size={25} />
-        </a>
-        <a href="#" className='items-center'>
-          <IoNotifications size={24} color='#01102d' />
-        </a>
-        
-        <a href="" onClick={handleLogout}>
-          <IoLogOut size={30} />
-        </a>
-         <UserModal userDetails={userDetails} />
-        <div className='flex flex-col h-3 justify-center text-blue-950 gap-0'>
-          <p className='font-bold text-md'>
-            {userDetails ? `${userDetails.firstname} ${userDetails.lastname}` : ""} {userDetails ? `(${userDetails.role})` : ""}
-          </p>
-          <p className='font-normal text-sm'>
-            {userDetails ? `${userDetails.email}` : ""}
-          </p>
-        </div>
-       
+    </header>
+  );
+};
 
-
-      </div>
-    </div>
-  )
-}
-
-export default Topnav
+export default Topnav;

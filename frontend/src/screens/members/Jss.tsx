@@ -35,6 +35,7 @@ interface Member {
   deleted: boolean;
   isActive: string;
   regDate: string;
+  color: string; // From Database
   notes: string;
   __v: number;
 }
@@ -60,16 +61,11 @@ const JssFellowship: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const selectFellowshipMembers = useMemo(() => makeSelectFellowshipMembers(), []);
-  
-  const members = useSelector((state: RootState) => {
-    return selectFellowshipMembers(state, "JSS");
-  });
-  const loading = useSelector((state: RootState) => {
-    return selectLoading(state);
-  });
-  const error = useSelector((state: RootState) => {
-    return selectError(state);
-  });
+
+  // Cleaned up Selectors
+  const members = useSelector((state: RootState) => selectFellowshipMembers(state, "JSS"));
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
 
   const fetchMembers = useCallback(() => {
     dispatch(fetchMembersByFellowship("JSS"));
@@ -81,61 +77,60 @@ const JssFellowship: React.FC = () => {
     }
   }, [members.length, loading, error, fetchMembers]);
 
-  const colors = useMemo(() => [
-    "#C8D0FE",
-    "#FFB6C1",
-    "#90EE90",
-    "#FFD700",
-    "#FF69B4",
-    "#E6E6FA",
-    "#FFE4E1",
-  ], []);
-
-  const getRandomColor = useCallback(() => {
-    return colors[Math.floor(Math.random() * colors.length)];
-  }, [colors]);
-
   const transformedMembers = useMemo(() => {
-    if (!members || !Array.isArray(members)) {
-      console.error('JSS members is not an array:', members);
-      return [];
-    }
-    return members.map((member: Member) => ({
-      ...member,
-      name: (
-        <div className="flex items-center">
-          <button
-            className="w-12 h-12 rounded-3xl text-lg font-bold mr-4"
-            style={{ backgroundColor: getRandomColor() }}
-          >
-            {member.firstName.charAt(0)}{member.middleName ? member.middleName.charAt(0) : ""}
-          </button>
-          <span>{`${member.firstName} ${member.middleName ? member.middleName + ' ' : ''}${member.surName}`}</span>
-        </div>
-      )
-    }));
-  }, [members, getRandomColor]);
+    if (!members || !Array.isArray(members)) return [];
 
+    return members.map((member: Member) => {
+      // Logic: Use DB color, fallback to black border if undefined
+      const avatarStyle = member.color
+        ? { backgroundColor: member.color }
+        : { backgroundColor: 'transparent', border: '2px solid black' };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+      return {
+        ...member,
+        name: (
+          <div className="flex items-center">
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mr-4"
+              style={avatarStyle}
+            >
+              {member.firstName.charAt(0)}
+              {member.middleName ? member.middleName.charAt(0) : member.surName.charAt(0)}
+            </div>
+            <span className="font-medium text-blue-950">
+              {`${member.firstName} ${member.middleName ? member.middleName + ' ' : ''}${member.surName}`}
+            </span>
+          </div>
+        )
+      };
+    });
+  }, [members]);
 
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
+  if (loading) return <div className="p-10 text-center text-blue-950 font-bold">Loading JSS Records...</div>;
+  if (error) return <div className="p-10 text-center text-red-500 font-bold italic border border-red-200 bg-red-50 rounded">Error: {error}</div>;
 
   return (
-   <div className="p-2">
+    <div className="p-4">
+      <div className="mb-4">
+        <h1 className="text-2xl font-bold text-blue-950 uppercase tracking-tight">Junior Sunday School (JSS)</h1>
+        <p className="text-gray-500 text-sm italic">Managing children and early teenagers' fellowship data</p>
+      </div>
+
       <FellowshipComponent
-        title="Junior Sunday School (JSS) Fellowship"
-        data={transformedMembers}
+        title=""
+        data={transformedMembers as any}
         columns={columns}
         loading={loading}
         error={error}
       />
-      {members.length===0 && <p className="text-center text-red-500 justify-center items-center font-bold text-2xl mt-20">No data available. Please add to manage members</p>}
-   </div>
+
+      {!loading && members.length === 0 && (
+        <div className="flex flex-col items-center justify-center mt-20 text-gray-400">
+          <p className="text-2xl font-bold">No JSS data available</p>
+          <p className="text-sm">Please register new children in the "All Members" section.</p>
+        </div>
+      )}
+    </div>
   );
 };
 

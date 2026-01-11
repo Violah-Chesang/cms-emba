@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import options from "../../assets/dropdown";
 
+const colors = [
+  "#C8D0FE", "#FFB6C1", "#90EE90", "#FFD700", "#FF69B4",
+  "#E6E6FA", "#FFE4E1", "#AFEEEE", "#FFDAB9", "#B0E0E6",
+  "#F0E68C", "#D8BFD8", "#B4F8C8", "#FBE7C6", "#FFAEBC",
+  "#A0E7E5", "#B9FBC0", "#CFBAF0", "#F1C0E8", "#A3C1AD"
+];
+
 const fields: Field[] = [
   { accessor: "firstName", header: "First Name", required: true },
   { accessor: "middleName", header: "Middle Name", required: true },
@@ -28,7 +35,7 @@ const fields: Field[] = [
 ];
 
 interface FormData {
-  _id?:string;
+  _id?: string;
   memberId: string;
   firstName: string;
   middleName: string;
@@ -43,7 +50,6 @@ interface FormData {
   spouseName: string;
   gender: string;
   cellGroup: string;
-
   savedStatus: string;
   baptisedStatus: string;
   confirmationStatus: string;
@@ -57,6 +63,7 @@ interface FormData {
   leadershipRole: string;
   isActive: string;
   regDate: string;
+  color: string;
   notes: string;
   __v: number;
 }
@@ -81,6 +88,8 @@ interface AddFormProps {
 
 const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdown }) => {
   const [activeTab, setActiveTab] = useState("General");
+
+  // Initialize with a random color from the array
   const [formData, setFormData] = useState<FormData>({
     memberId: "",
     firstName: "",
@@ -99,7 +108,7 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
     baptisedStatus: "",
     otherChurchMembership: "",
     memberType: "",
-    cellGroup:"",
+    cellGroup: "",
     ministry: "",
     fellowship: "",
     marriageCeremonyType: "",
@@ -110,12 +119,13 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
     leadershipRole: "",
     deleted: false,
     isActive: "true",
+    // Random color selection logic
+    color: colors[Math.floor(Math.random() * colors.length)],
     __v: 0,
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
 
-  // Function to calculate age from dob
   const calculateAge = (dob: string): number => {
     const birthDate = new Date(dob);
     const today = new Date();
@@ -129,60 +139,43 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
-
     setFormData((prevFormData) => {
       const updatedFormData = { ...prevFormData, [name]: value };
-
       if (name === "dob") {
         updatedFormData.age = calculateAge(value);
       }
-
       return updatedFormData;
     });
   };
+
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof FormData, string>> = {};
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       newErrors.email = "Invalid email format.";
     }
-
-    if (!/^\d{8}$/.test(formData.nationalId)) {
+    if (formData.nationalId && !/^\d{8}$/.test(formData.nationalId)) {
       newErrors.nationalId = "National ID must be exactly 8 digits.";
     }
-
     if (!/^\d{10,13}$/.test(formData.phone)) {
       newErrors.phone = "Phone number must be between 10 and 13 digits.";
     }
-
     if (!formData.dob) {
       newErrors.dob = "Date of Birth is required.";
     }
-
     fields.forEach((field) => {
       if (field.required && !formData[field.accessor]) {
         newErrors[field.accessor] = `${field.header} is required.`;
       }
     });
-
-    // // Log any validation errors found
-    // if (Object.keys(newErrors).length > 0) {
-    //   console.log("Validation failed with errors:", newErrors);
-    // }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log('submitted')
     event.preventDefault();
     if (validate()) {
       onSave(formData);
-      console.log(formData)
-
     }
   };
 
@@ -194,7 +187,7 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
     switch (activeTab) {
       case "General":
         return fields
-          .filter((field) => ["firstName", "middleName", "surName", "dob", "gender", "nationalId", "maritalStatus", "marriageType", "marriageCeremonyType", "spouseName", "occupation"].includes(field.accessor))
+          .filter((field) => ["firstName", "middleName", "surName", "dob", "gender", "nationalId", "maritalStatus", "marriageType", "marriageCeremonyType", "spouseName"].includes(field.accessor))
           .map((field) => renderField(field));
       case "Contact Info":
         return fields
@@ -204,7 +197,6 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
         return fields
           .filter((field) => ["savedStatus", "baptisedStatus", "confirmationStatus", "otherChurchMembership", "memberType", "fellowship", "ministry", "cellGroup", "notes", "leadershipRole"].includes(field.accessor))
           .map((field) => renderField(field));
-
       default:
         return null;
     }
@@ -215,83 +207,13 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
     return dropdownFields.includes(accessor);
   };
 
-  // const renderField = (field: Field) => (
-  //   <div key={field.accessor}>
-  //     {field.accessor === "gender" ? (
-  //       <div>
-  //         <label className="block mb-2 font-bold">
-  //           {field.header}
-  //           {field.required && <span className="text-red-500">*</span>}
-  //         </label>
-  //         <input
-  //           type="text"
-  //           name={field.accessor}
-  //           value={formData[field.accessor] as string}
-  //           onChange={handleInputChange}
-  //           className="w-full border border-gray-300 px-4 py-2 rounded-md"
-  //           required={field.required}
-  //         />
-  //         {errors[field.accessor] && (
-  //           <span className="text-red-500 text-sm">
-  //             {errors[field.accessor]}
-  //           </span>
-  //         )}
-  //       </div>
-  //     ) : shouldRenderDropdown(field.accessor) ? (
-  //       <div>
-  //         <label className="block mb-2 font-bold">
-  //           {field.header}
-  //           <span className="text-red-500">*</span>
-  //         </label>
-  //         {field.accessor in options ? (
-  //           renderFilterDropdown(
-  //             field.accessor,
-  //             "",
-  //             options[field.accessor as keyof typeof options],
-  //             handleInputChange,
-  //             true
-  //           )
-  //         ) : (
-  //           <span>No options available</span>
-  //         )}
-  //         {errors[field.accessor] && (
-  //           <span className="text-red-500 text-sm">
-  //             {errors[field.accessor]}
-  //           </span>
-  //         )}
-  //       </div>
-  //     ) : (
-  //       <div>
-  //         <label className="block mb-2 font-bold">
-  //           {field.header}
-  //           {field.required && <span className="text-red-500">*</span>}
-  //         </label>
-  //         <input
-  //           type={field.accessor === "dob" ? "date" : "text"}
-  //           name={field.accessor}
-  //           value={formData[field.accessor] as string}
-  //           onChange={handleInputChange}
-  //           className="w-full border border-gray-300 px-4 py-2 rounded-md"
-  //           required={field.required}
-  //         />
-  //         {errors[field.accessor] && (
-  //           <span className="text-red-500 text-sm">
-  //             {errors[field.accessor]}
-  //           </span>
-  //         )}
-  //       </div>
-  //     )}
-  //   </div>
-  // );
-
-
   const renderField = (field: Field) => (
     <div key={field.accessor}>
       {shouldRenderDropdown(field.accessor) ? (
         <div>
-          <label className="block mb-2 font-bold">
+          <label className="block mb-2 font-bold text-sm text-gray-700">
             {field.header}
-            <span className="text-red-500">*</span>
+            {field.required && <span className="text-red-500">*</span>}
           </label>
           {field.accessor in options ? (
             renderFilterDropdown(
@@ -305,14 +227,14 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
             <span>No options available</span>
           )}
           {errors[field.accessor] && (
-            <span className="text-red-500 text-sm">
+            <span className="text-red-500 text-xs mt-1 block">
               {errors[field.accessor]}
             </span>
           )}
         </div>
       ) : (
         <div>
-          <label className="block mb-2 font-bold">
+          <label className="block mb-2 font-bold text-sm text-gray-700">
             {field.header}
             {field.required && <span className="text-red-500">*</span>}
           </label>
@@ -321,11 +243,11 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
             name={field.accessor}
             value={formData[field.accessor] as string}
             onChange={handleInputChange}
-            className="w-full border border-gray-300 px-4 py-2 rounded-md"
+            className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
             required={field.required}
           />
           {errors[field.accessor] && (
-            <span className="text-red-500 text-sm">
+            <span className="text-red-500 text-xs mt-1 block">
               {errors[field.accessor]}
             </span>
           )}
@@ -334,58 +256,60 @@ const AddForm: React.FC<AddFormProps> = ({ onSave, onCancel, renderFilterDropdow
     </div>
   );
 
-
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg w-11/12 md:w-2/3 lg:w-1/2">
-        <div className="flex justify-between items-center bg-blue-950 text-white p-3 uppercase rounded">
-          <h2 className="text-md font-semibold">Add New Member</h2>
-          <button className="text-gray-400 hover:text-gray-600" onClick={onCancel}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="white"
-              strokeWidth={2}
-            >
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 backdrop-blur-sm">
+      <div className="bg-white rounded-xl shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 overflow-hidden animate-in fade-in zoom-in duration-300">
+        <div className="flex justify-between items-center bg-blue-950 text-white p-5">
+          <div className="flex items-center gap-3">
+            {/* Visual indicator showing the randomly chosen color */}
+            <div
+              className="w-4 h-4 rounded-full border border-white shadow-sm"
+              style={{ backgroundColor: formData.color }}
+              title="Assigned profile color"
+            />
+            <h2 className="text-lg font-bold tracking-wide uppercase">Add New Member</h2>
+          </div>
+          <button className="text-white hover:bg-white/20 p-1 rounded-md transition-colors" onClick={onCancel}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
+
         <div className="p-6">
-          <div className="border-b border-gray-300 mb-4">
-            <button
-              onClick={() => switchTab("General")}
-              className={`mr-8 py-2 px-4 rounded-lg ${activeTab === "General" ? "text-blue-600 border-b-2 border-blue-600 font-bold text-md" : "text-gray-500"}`}
-            >
-              General
-            </button>
-            <button
-              onClick={() => switchTab("Contact Info")}
-              className={`mr-8 py-2 px-4 rounded-lg ${activeTab === "Contact Info" ? "text-blue-600 border-b-2 border-blue-600 font-bold text-md" : "text-gray-500"}`}
-            >
-              Contact Info
-            </button>
-            <button
-              onClick={() => switchTab("Church Info")}
-              className={`py-2 px-4 rounded-lg ${activeTab === "Church Info" ? "text-blue-600 border-b-2 border-blue-600 font-bold text-md" : "text-gray-500"}`}
-            >
-              Church Info
-            </button>
-          </div>
-          <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-2 gap-4">{tabContent()}</div>
-            <div className="mt-4 flex justify-end">
-              <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                Save
+          <div className="flex border-b border-gray-200 mb-6 overflow-x-auto">
+            {["General", "Contact Info", "Church Info"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => switchTab(tab)}
+                className={`mr-4 md:mr-8 py-3 px-2 transition-all relative ${activeTab === tab
+                    ? "text-blue-600 font-bold border-b-2 border-blue-600"
+                    : "text-gray-400 hover:text-gray-600"
+                  }`}
+              >
+                {tab}
               </button>
+            ))}
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 max-h-[60vh] overflow-y-auto px-1">
+              {tabContent()}
+            </div>
+
+            <div className="mt-8 pt-4 border-t border-gray-100 flex justify-end gap-3">
               <button
                 type="button"
-                className="ml-2 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400"
+                className="px-6 py-2 rounded-lg text-gray-600 hover:bg-gray-100 font-medium transition-colors"
                 onClick={onCancel}
               >
                 Cancel
+              </button>
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-8 py-2 rounded-lg hover:bg-blue-700 font-bold shadow-md transition-all active:scale-95"
+              >
+                Save Member
               </button>
             </div>
           </form>

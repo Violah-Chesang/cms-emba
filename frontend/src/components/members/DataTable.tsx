@@ -47,6 +47,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, userRole, onEditCl
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+    setDropdownOpen(null); // Close any open dropdowns on page change
   };
 
   const paginatedData = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -56,110 +57,147 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, userRole, onEditCl
   const canDelete = ["Minister"].includes(userRole);
 
   return (
-    <div>
-      <table className="bg-white border-collapse mb-12 w-full">
-        <thead>
-          <tr className="border-b border-gray-300 bg-[#6d8ad0]">
-            <th className="py-2 px-4 bg-gray-200 text-gray-600 font-bold uppercase text-sm text-left">
-              <input
-                type="checkbox"
-                checked={selectedRows.size === data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).length}
-                onChange={handleSelectAllChange}
-              />
-            </th>
-            {columns.map((col) => (
-              <th
-                key={col.accessor}
-                className="py-2 px-4 bg-gray-200 text-gray-600 font-bold uppercase text-sm text-left"
-              >
-                {col.header}
-              </th>
-            ))}
-            <th className="py-2 px-4 bg-gray-200 text-gray-600 font-bold uppercase text-sm text-left">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedData.map((row, rowIndex) => (
-            <tr key={row.memberId} className={`border-b border-gray-300 hover:bg-blue-100 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-sky-50 '}`}>
-              <td className="py-2 px-4">
+    <div className="w-full">
+      {/* Table Wrapper for Horizontal Scrolling */}
+      <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+        <table className="min-w-full bg-white border-collapse">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="py-3 px-4 text-gray-600 font-bold uppercase text-xs text-left whitespace-nowrap">
                 <input
                   type="checkbox"
-                  checked={selectedRows.has(row.memberId)}
-                  onChange={() => handleCheckboxChange(row.memberId)}
+                  className="w-4 h-4 accent-blue-600"
+                  checked={paginatedData.length > 0 && selectedRows.size === paginatedData.length}
+                  onChange={handleSelectAllChange}
                 />
-              </td>
+              </th>
               {columns.map((col) => (
-                <td key={col.accessor} className="py-2 px-3 capitalize">
-                  {row[col.accessor]}
-                </td>
-              ))}
-              <td className="py-1 px-4 relative">
-                <button
-                  className="focus:outline-none"
-                  onClick={() => handleDropdownToggle(row.memberId)}
+                <th
+                  key={col.accessor}
+                  className="py-3 px-4 text-gray-600 font-bold uppercase text-xs text-left whitespace-nowrap"
                 >
-                  <FaEllipsisV />
-                </button>
-                {dropdownOpen === row.memberId && (
-                  <div className="absolute right-0 mt-2 py-2 w-28 bg-white rounded-md shadow-2xl z-10">
-                    {canEdit && (
-                      <button
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                        onClick={() => {
-                          onEditClick(row);
-                          setDropdownOpen(null);
-                        }}
-                      >
-                        Edit
-                      </button>
-                    )}
-                    <button
-                      className="block px-4 py-2 text-sm text-blue-700 hover:bg-gray-100 w-full text-left"
-                      onClick={() => {
-                        onViewClick(row);
-                        setDropdownOpen(null);
-                      }}
-                    >
-                      View
-                    </button>
-                    {canDelete && (
-                      <button
-                        className="block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 w-full text-left"
-                        onClick={() => {
-                          onDeleteClick(row);
-                          setDropdownOpen(null);
-                        }}
-                      >
-                        Delete
-                      </button>
-                    )}
-                  </div>
-                )}
-              </td>
+                  {col.header}
+                </th>
+              ))}
+              <th className="py-3 px-4 text-gray-600 font-bold uppercase text-xs text-center whitespace-nowrap">
+                Actions
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {paginatedData.map((row, rowIndex) => (
+              <tr
+                key={row.memberId}
+                className={`transition-colors hover:bg-blue-50/50 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`}
+              >
+                <td className="py-3 px-4">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 accent-blue-600"
+                    checked={selectedRows.has(row.memberId)}
+                    onChange={() => handleCheckboxChange(row.memberId)}
+                  />
+                </td>
+                {columns.map((col) => (
+                  <td key={col.accessor} className="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
+                    {/* If row[col.accessor] is a React Element (like our Name with Avatar), render it directly */}
+                    {row[col.accessor]}
+                  </td>
+                ))}
+                <td className="py-3 px-4 relative text-center">
+                  <button
+                    className="p-2 hover:bg-gray-200 rounded-full transition-colors focus:outline-none"
+                    onClick={() => handleDropdownToggle(row.memberId)}
+                  >
+                    <FaEllipsisV className="text-gray-500" />
+                  </button>
 
-      <div className="flex justify-between items-center py-2">
-        <div>
-          {`${(currentPage - 1) * itemsPerPage + 1} - ${Math.min(currentPage * itemsPerPage, data.length)} of ${data.length}`}
+                  {dropdownOpen === row.memberId && (
+                    <div className="absolute right-4 mt-1 w-32 bg-white rounded-lg shadow-xl border border-gray-100 z-50">
+                      <div className="py-1">
+                        <button
+                          className="flex items-center w-full px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 transition-colors"
+                          onClick={() => {
+                            onViewClick(row);
+                            setDropdownOpen(null);
+                          }}
+                        >
+                          View Details
+                        </button>
+                        {canEdit && (
+                          <button
+                            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                            onClick={() => {
+                              onEditClick(row);
+                              setDropdownOpen(null);
+                            }}
+                          >
+                            Edit
+                          </button>
+                        )}
+                        {canDelete && (
+                          <button
+                            className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                            onClick={() => {
+                              onDeleteClick(row);
+                              setDropdownOpen(null);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Responsive Pagination Controls */}
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4 px-2">
+        <div className="text-sm text-gray-600 font-medium order-2 sm:order-1">
+          Showing <span className="font-bold text-blue-900">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-bold text-blue-900">{Math.min(currentPage * itemsPerPage, data.length)}</span> of <span className="font-bold text-blue-900">{data.length}</span> members
         </div>
-        <div className="flex items-center">
-          <span className="mx-2">Page {currentPage}</span>
-        </div>
-        <div className="flex items-center">
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map(pageNumber => (
-            <button
-              key={pageNumber}
-              className={`mx-1 px-3 py-1 rounded ${currentPage === pageNumber ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
-              onClick={() => handlePageChange(pageNumber)}
-            >
-              {pageNumber}
-            </button>
-          ))}
+
+        <div className="flex items-center gap-1 order-1 sm:order-2">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => handlePageChange(currentPage - 1)}
+            className="px-3 py-1 rounded border border-gray-300 text-sm disabled:opacity-50 hover:bg-gray-50 transition-colors"
+          >
+            Prev
+          </button>
+
+          <div className="hidden md:flex gap-1">
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map(pageNumber => (
+              <button
+                key={pageNumber}
+                className={`w-8 h-8 flex items-center justify-center rounded-md text-sm transition-all ${currentPage === pageNumber
+                    ? 'bg-blue-950 text-white shadow-md'
+                    : 'bg-white text-gray-600 border border-gray-200 hover:border-blue-400 hover:text-blue-500'
+                  }`}
+                onClick={() => handlePageChange(pageNumber)}
+              >
+                {pageNumber}
+              </button>
+            ))}
+          </div>
+
+          {/* Simple Page Indicator for Mobile */}
+          <span className="md:hidden text-sm text-gray-600 px-2 font-bold italic">
+            Page {currentPage} of {totalPages}
+          </span>
+
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="px-3 py-1 rounded border border-gray-300 text-sm disabled:opacity-50 hover:bg-gray-50 transition-colors"
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>

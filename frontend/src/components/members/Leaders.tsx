@@ -13,33 +13,14 @@ interface Member {
   surName: string;
   dob: string;
   phone: string;
-  email:string;
+  email: string;
   physicalAddress: string;
   nationalId: string;
-  motherPhone: string;
-  fatherName: string;
-  motherName: string;
   maritalStatus: string;
-  marriageType: string;
-  marriageCeremonyType: string;
-  confirmationStatus:string;
-  spouseName: string;
-  gender: string;
-  occupation: string;
-  savedStatus: string;
-  baptisedStatus: string;
-  otherChurchMembership: string;
-  memberType: string;
-  cellGroup: string;
-  ministry: string;
-  fellowship: string;
-  age: number;
   leadershipRole: string;
-  deleted: boolean;
+  fellowship: string;
+  color: string; // From Database
   isActive: string;
-  regDate: string;
-  notes: string;
-  __v: number;
 }
 
 interface Column {
@@ -49,26 +30,12 @@ interface Column {
 
 const columns: Column[] = [
   { header: "Member ID", accessor: "memberId" },
-  { header: "Name", accessor: "name" }, 
+  { header: "Name", accessor: "name" },
   { header: "Phone Number", accessor: "phone" },
   { header: "Email", accessor: "email" },
-  { header: "Position", accessor: "leadershipRole" },  
+  { header: "Position", accessor: "leadershipRole" },
   { header: "Fellowship", accessor: "fellowship" },
 ];
-
-const colors = [
-  "#C8D0FE",
-  "#FFB6C1",
-  "#90EE90",
-  "#FFD700",
-  "#FF69B4",
-  "#E6E6FA",
-  "#FFE4E1",
-];
-
-const getRandomColor = () => {
-  return colors[Math.floor(Math.random() * colors.length)];
-};
 
 const Leaders: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -77,41 +44,84 @@ const Leaders: React.FC = () => {
   const error = useSelector(selectError);
 
   useEffect(() => {
-    dispatch(fetchMembers());
-  }, [dispatch]);
+    // Only fetch if members list is empty
+    if (members.length === 0) {
+      dispatch(fetchMembers());
+    }
+  }, [dispatch, members.length]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-950"></div>
+        <p className="ml-4 text-blue-950 font-bold uppercase tracking-widest text-xs">Loading Leaders...</p>
+      </div>
+    );
+  }
 
-  // Filter and concatenate name
-  const leaders: Member[] = members
-    .filter(member => member.leadershipRole !== "Member" && member.leadershipRole !=="--NONE--" && member.leadershipRole !== null)
-    .map(member => ({
-      ...member,
-      name: (
-        <div className="flex items-center">
-          <button
-            className="w-10 h-10 rounded-3xl text-sm font-bold mr-4"
-            style={{ backgroundColor: getRandomColor() }}
-          >
-            { member.firstName ? member.firstName.charAt(0) : ""}{member.middleName ? member.middleName.charAt(0) : ""}
-          </button>
-          <span>
-            {`${member?.firstName || ''}${member?.middleName ? ' ' + member.middleName : ''}${member?.surName ? ' ' + member.surName : ''}`}
-          </span>
-        </div>
-      )
-      
-    }));
+  if (error) {
+    return (
+      <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm italic">
+        Error: {error}
+      </div>
+    );
+  }
+
+  // Filter and transform leaders
+  const leadersData = members
+    .filter(member =>
+      member.leadershipRole &&
+      member.leadershipRole !== "Member" &&
+      member.leadershipRole !== "--NONE--" &&
+      member.leadershipRole !== "None"
+    )
+    .map(member => {
+      // Logic: Use stored color or fallback to black border
+      const avatarStyle = member.color
+        ? { backgroundColor: member.color }
+        : { backgroundColor: 'transparent', border: '2px solid black' };
+
+      return {
+        ...member,
+        name: (
+          <div className="flex items-center">
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mr-4 shrink-0"
+              style={avatarStyle}
+            >
+              {member.firstName?.charAt(0) || ""}
+              {member.middleName ? member.middleName.charAt(0) : member.surName?.charAt(0) || ""}
+            </div>
+            <span className="font-medium text-blue-950">
+              {`${member.firstName || ''} ${member.middleName ? member.middleName + ' ' : ''}${member.surName || ''}`}
+            </span>
+          </div>
+        )
+      };
+    });
 
   return (
-    <Fellowship
-      title="Leaders"
-      data={leaders}
-      columns={columns as any}
-      loading={loading}
-      error={error}
-    />
+    <div className="p-1">
+      <div className="mb-6">
+        <h1 className="text-xl font-bold text-blue-950 caipatile tracking-tight">Church Leadership</h1>
+        <p className="text-gray-500 text-sm italic">Showing all members currently holding leadership positions.</p>
+      </div>
+
+      <Fellowship
+        title=""
+        data={leadersData as any}
+        columns={columns as any}
+        loading={loading}
+        error={error}
+      />
+
+      {!loading && leadersData.length === 0 && (
+        <div className="flex flex-col items-center justify-center mt-20 text-gray-400 border-2 border-dashed border-gray-100 rounded-xl p-10 text-center">
+          <p className="text-xl font-bold">No Leaders Found</p>
+          <p className="text-sm">Update a member's Leadership Role to see them appear in this list.</p>
+        </div>
+      )}
+    </div>
   );
 };
 

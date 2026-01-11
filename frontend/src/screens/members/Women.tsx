@@ -35,6 +35,7 @@ interface Member {
   deleted: boolean;
   isActive: string;
   regDate: string;
+  color: string; // From Database
   notes: string;
   __v: number;
 }
@@ -61,16 +62,10 @@ const WomenFellowship: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const selectFellowshipMembers = useMemo(() => makeSelectFellowshipMembers(), []);
-  
-  const members = useSelector((state: RootState) => {
-    return selectFellowshipMembers(state, "Women");
-  });
-  const loading = useSelector((state: RootState) => {
-    return selectLoading(state);
-  });
-  const error = useSelector((state: RootState) => {
-    return selectError(state);
-  });
+
+  const members = useSelector((state: RootState) => selectFellowshipMembers(state, "Women"));
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
 
   const fetchMembers = useCallback(() => {
     dispatch(fetchMembersByFellowship("Women"));
@@ -82,57 +77,75 @@ const WomenFellowship: React.FC = () => {
     }
   }, [members.length, loading, error, fetchMembers]);
 
-  const colors = useMemo(() => [
-    "#C8D0FE", "#FFB6C1", "#90EE90", "#FFD700", "#FF69B4", "#E6E6FA", "#FFE4E1",
-  ], []);
-
-  const getRandomColor = useCallback(() => {
-    return colors[Math.floor(Math.random() * colors.length)];
-  }, [colors]);
-
   const transformedMembers = useMemo(() => {
-    if (!members || !Array.isArray(members)) {
-      console.error('Women members is not an array:', members);
-      return [];
-    }
-    return members.map((member: Member) => ({
-      ...member,
-      name: (
-        <div className="flex items-center">
-          <button
-            className="w-12 h-12 rounded-3xl text-lg font-bold mr-4"
-            style={{ backgroundColor: getRandomColor() }}
-          >
-            {member.firstName.charAt(0)}{member.middleName ? member.middleName.charAt(0) : member.surName.charAt(0)}
-          </button>
-          <span>{`${member.firstName} ${member.middleName ? member.middleName + ' ' : ''}${member.surName}`}</span>
-        </div>
-      )
-    }));
-  }, [members, getRandomColor]);
+    if (!members || !Array.isArray(members)) return [];
 
+    return members.map((member: Member) => {
+      // Logic: Use stored color or fallback to black border if null/undefined
+      const avatarStyle = member.color
+        ? { backgroundColor: member.color }
+        : { backgroundColor: 'transparent', border: '2px solid black' };
+
+      return {
+        ...member,
+        name: (
+          <div className="flex items-center">
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mr-4 shrink-0"
+              style={avatarStyle}
+            >
+              {member.firstName.charAt(0)}
+              {member.middleName ? member.middleName.charAt(0) : member.surName.charAt(0)}
+            </div>
+            <span className="font-medium text-blue-950 truncate max-w-[200px]">
+              {`${member.firstName} ${member.middleName ? member.middleName + ' ' : ''}${member.surName}`}
+            </span>
+          </div>
+        )
+      };
+    });
+  }, [members]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-950"></div>
+        <p className="ml-4 text-blue-950 font-bold uppercase tracking-widest text-sm">Loading Women's Fellowship...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return (
+      <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 font-medium">
+        Error loading data: {error}
+      </div>
+    );
   }
 
   return (
-    <div className="p-2">
+    <div className="p-4">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-blue-950 uppercase tracking-tight">Women's Fellowship</h1>
+        <p className="text-gray-500 text-sm italic">Detailed records and ministry involvement of church women.</p>
+      </div>
+
       <FellowshipComponent
-        title="Women Fellowship"
-        data={transformedMembers}
+        title=""
+        data={transformedMembers as any}
         columns={columns}
         loading={loading}
         error={error}
       />
-      {members.length===0 && <p className="text-center text-red-500 justify-center items-center font-bold text-2xl mt-20">No data available. Please add to manage members</p>}
+
+      {!loading && members.length === 0 && (
+        <div className="flex flex-col items-center justify-center mt-20 text-gray-400 border-2 border-dashed border-gray-200 rounded-xl p-10">
+          <p className="text-2xl font-bold">No Women's Fellowship data</p>
+          <p className="text-sm">New female members will appear here automatically when registered.</p>
+        </div>
+      )}
     </div>
   );
 };
 
 export default React.memo(WomenFellowship);
-

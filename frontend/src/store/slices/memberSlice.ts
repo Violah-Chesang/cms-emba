@@ -37,6 +37,7 @@ interface Member {
     isActive: string;
     regDate: string;
     notes: string;
+    color:string;
     __v: number;
 }
 
